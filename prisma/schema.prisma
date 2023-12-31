@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Models list
+model Usuarios {
+  id             Int              @id @default(autoincrement())
+  usuario        String           @unique @db.VarChar(30)
+  apellido       String           @db.VarChar(50)
+  nombre         String           @db.VarChar(50)
+  dni            String           @db.VarChar(30)
+  password       String
+  email          String           @db.VarChar(50)
+  role           String?          @default("ADMIN_ROLE")
+  activo         Boolean?         @default(true)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  UnidadesMedida UnidadesMedida[]
+  // Productos      Productos[]
+  Marcas         Marcas[]
+  Productos      Productos[]
+}
+
+model UnidadesMedida {
+  id            Int         @id @default(autoincrement())
+  descripcion   String      @unique @db.VarChar(100)
+  activo        Boolean?    @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  creatorUserId Int
+  creatorUser   Usuarios    @relation(fields: [creatorUserId], references: [id])
+  Productos     Productos[]
+}
+
+model Marcas {
+  id            Int         @id @default(autoincrement())
+  descripcion   String      @unique @db.VarChar(150)
+  activo        Boolean?    @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  creatorUserId Int
+  creatorUser   Usuarios    @relation(fields: [creatorUserId], references: [id])
+  Productos     Productos[]
+}
+
+model Productos {
+  id                 Int            @id @default(autoincrement())
+  codigo             String         @unique @db.VarChar(100)
+  descripcion        String         @unique @db.VarChar(150)
+  cantidad           Float          @default(0)
+  precioCompra       Float          @default(0)
+  precioVenta        Float          @default(0)
+  porcentajeGanancia Float          @default(0)
+  balanza            Boolean        @default(false)
+  alicuota           Float          @default(21)
+  activo             Boolean?       @default(true)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  creatorUserId      Int
+  creatorUser        Usuarios       @relation(fields: [creatorUserId], references: [id])
+  unidadMedidaId     Int
+  unidadMedida       UnidadesMedida @relation(fields: [unidadMedidaId], references: [id])
+  marcaId            Int
+  marca              Marcas         @relation(fields: [marcaId], references: [id])
+}
