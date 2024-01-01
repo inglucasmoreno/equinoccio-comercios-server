@@ -21,8 +21,7 @@ $ docker compose up -d
 ## Prisma ORM
 - Migracion de inicializacion
 ```bash
-$ yarn prisma migrate dev --name Inicializacion
-```
+$ yarn prisma:init
 
 ## Ejecucion de proyecto
 ```bash
