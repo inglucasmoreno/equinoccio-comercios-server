@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Productos } from '@prisma/client';
+import { create } from 'domain';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -13,7 +14,7 @@ export class ProductosService {
     const producto = await this.prisma.productos.findFirst({
       where: { id },
       include: {
-        marca: true,
+        // marca: true,
         unidadMedida: true,
         creatorUser: true,
       }
@@ -48,6 +49,17 @@ export class ProductosService {
     //   }
     // })
 
+    // OrderBy -> Con unidad de medida
+    if (columna === 'unidadMedida') {
+      orderBy = {
+        unidadMedida: {
+          descripcion: direccion
+        }
+      }
+    }else{
+      orderBy[columna] = direccion;
+    }
+    
     // Total de productos
     const totalItems = await this.prisma.productos.count({ where });
 
@@ -55,12 +67,12 @@ export class ProductosService {
     const productos = await this.prisma.productos.findMany({
       take: Number(itemsPorPagina),
       include: {
-        marca: true,
+        // marca: true,
         unidadMedida: true,
         creatorUser: true,
       },
       // skip: (pagina - 1) * itemsPorPagina,
-      orderBy,
+      orderBy
       // where: {
       //   activo: false
       // }
@@ -78,12 +90,23 @@ export class ProductosService {
 
     // Uppercase
     createData.descripcion = createData.descripcion?.toLocaleUpperCase().trim();
+    createData.codigo = createData.codigo?.toLocaleUpperCase().trim();
+
+    let productoDB: any = {};
+
+    // Verificacion: Codigo repetido
+    if(createData.codigo.trim() !== ''){
+      productoDB = await this.prisma.productos.findFirst({ where: { codigo: createData.codigo } });
+      if (productoDB) throw new NotFoundException('El código ya se encuentra cargado');
+    }
 
     // Verificacion: Descripcion repetida
-    let productoDB = await this.prisma.productos.findFirst({ where: { descripcion: createData.descripcion } });
-    if (productoDB) throw new NotFoundException('El producto ya se encuentra cargada');
+    productoDB = await this.prisma.productos.findFirst({ where: { descripcion: createData.descripcion } });
+    if (productoDB) throw new NotFoundException('La descripción ya se encuentra cargada');
 
-    return await this.prisma.productos.create({ data: createData, include: { creatorUser: true } });
+    const nuevoProducto = await this.prisma.productos.create({ data: createData, include: { creatorUser: true } });
+
+    return this.getId(nuevoProducto.id);
 
   }
 
@@ -110,11 +133,28 @@ export class ProductosService {
       where: { id },
       data: updateData,
       include: {
-        marca: true,
+        // marca: true,
         unidadMedida: true,
         creatorUser: true,
       }
     })
+
+  }
+
+  // Generar codigo
+  async generarCodigo(): Promise<string> {
+
+    const ultimoProducto = await this.prisma.productos.findFirst({
+      orderBy: {
+        id: 'desc'
+      }
+    });
+  
+    if (!ultimoProducto) return '0000000000001';
+
+    const codigo = Number(ultimoProducto.id) + 1;
+
+    return codigo.toString().padStart(13, '0');
 
   }
 

@@ -12,6 +12,8 @@ import { InicializacionModule } from './modules/inicializacion/inicializacion.mo
 import { UnidadesMedidaModule } from './modules/unidades-medida/unidades-medida.module';
 import { ProductosModule } from './modules/productos/productos.module';
 import { MarcasModule } from './modules/marcas/marcas.module';
+import { IngresosModule } from './modules/ingresos/ingresos.module';
+import { IngresosProductosModule } from './modules/ingresos-productos/ingresos-productos.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { MarcasModule } from './modules/marcas/marcas.module';
     UnidadesMedidaModule,
     ProductosModule,
     MarcasModule,
+    IngresosModule,
+    IngresosProductosModule,
 
   ],
   controllers: [AppController],

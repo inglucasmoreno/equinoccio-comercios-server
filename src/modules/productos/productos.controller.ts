@@ -65,4 +65,18 @@ export class ProductosController {
 
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/generar/codigo')
+  async generarCodigo(@Res() res): Promise<any> {
+
+    const codigo = await this.productosService.generarCodigo();
+    
+    return res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'Codigo obtenido correctamente',
+      codigo     
+    })
+
+  }
+
 }

@@ -12,21 +12,23 @@ datasource db {
 
 // Models list
 model Usuarios {
-  id             Int              @id @default(autoincrement())
-  usuario        String           @unique @db.VarChar(30)
-  apellido       String           @db.VarChar(50)
-  nombre         String           @db.VarChar(50)
-  dni            String           @db.VarChar(30)
-  password       String
-  email          String           @db.VarChar(50)
-  role           String?          @default("ADMIN_ROLE")
-  activo         Boolean?         @default(true)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  UnidadesMedida UnidadesMedida[]
+  id                Int                 @id @default(autoincrement())
+  usuario           String              @unique @db.VarChar(30)
+  apellido          String              @db.VarChar(50)
+  nombre            String              @db.VarChar(50)
+  dni               String              @db.VarChar(30)
+  password          String
+  email             String              @db.VarChar(50)
+  role              String?             @default("ADMIN_ROLE")
+  activo            Boolean?            @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  UnidadesMedida    UnidadesMedida[]
   // Productos      Productos[]
-  Marcas         Marcas[]
-  Productos      Productos[]
+  Marcas            Marcas[]
+  Productos         Productos[]
+  Ingresos          Ingresos[]
+  IngresosProductos IngresosProductos[]
 }
 
 model UnidadesMedida {
@@ -41,33 +43,67 @@ model UnidadesMedida {
 }
 
 model Marcas {
-  id            Int         @id @default(autoincrement())
-  descripcion   String      @unique @db.VarChar(150)
-  activo        Boolean?    @default(true)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id            Int      @id @default(autoincrement())
+  descripcion   String   @unique @db.VarChar(150)
+  activo        Boolean? @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   creatorUserId Int
-  creatorUser   Usuarios    @relation(fields: [creatorUserId], references: [id])
-  Productos     Productos[]
+  creatorUser   Usuarios @relation(fields: [creatorUserId], references: [id])
+  // Productos     Productos[]
 }
 
 model Productos {
-  id                 Int            @id @default(autoincrement())
-  codigo             String         @unique @db.VarChar(100)
-  descripcion        String         @unique @db.VarChar(150)
-  cantidad           Float          @default(0)
-  precioCompra       Float          @default(0)
-  precioVenta        Float          @default(0)
-  porcentajeGanancia Float          @default(0)
-  balanza            Boolean        @default(false)
-  alicuota           Float          @default(21)
-  activo             Boolean?       @default(true)
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  id                 Int                 @id @default(autoincrement())
+  codigo             String?             @default("") @db.VarChar(100)
+  descripcion        String              @unique @db.VarChar(150)
+  cantidad           Float?              @default(0)
+  cantidadMinima     Float?              @default(0)
+  alertaStock        Boolean?            @default(false)
+  precioCompra       Float?              @default(0)
+  precioVenta        Float
+  porcentajeGanancia Float?              @default(0)
+  balanza            Boolean             @default(false)
+  alicuota           Float               @default(21)
+  activo             Boolean?            @default(true)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
   creatorUserId      Int
-  creatorUser        Usuarios       @relation(fields: [creatorUserId], references: [id])
+  creatorUser        Usuarios            @relation(fields: [creatorUserId], references: [id])
   unidadMedidaId     Int
-  unidadMedida       UnidadesMedida @relation(fields: [unidadMedidaId], references: [id])
-  marcaId            Int
-  marca              Marcas         @relation(fields: [marcaId], references: [id])
+  unidadMedida       UnidadesMedida      @relation(fields: [unidadMedidaId], references: [id])
+  // marcaId            Int
+  // marca              Marcas         @relation(fields: [marcaId], references: [id])
+  IngresosProductos  IngresosProductos[]
+}
+
+model Ingresos {
+  id                Int                 @id @default(autoincrement())
+  fechaIngreso      DateTime?           @default(now())
+  nroFactura        String?             @db.VarChar(150)
+  comentario        String?             @default("") @db.VarChar(150)
+  estado            String?             @default("Pendiente") @db.VarChar(150)
+  activo            Boolean?            @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  creatorUserId     Int
+  creatorUser       Usuarios            @relation(fields: [creatorUserId], references: [id])
+  IngresosProductos IngresosProductos[]
+}
+
+model IngresosProductos {
+  id            Int       @id @default(autoincrement())
+  precioCompra  Float
+  cantidad      Float
+  comentario    String?   @default("") @db.VarChar(150)
+  estado        String?   @default("Pendiente") @db.VarChar(150)
+  activo        Boolean?  @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  creatorUserId Int
+  creatorUser   Usuarios  @relation(fields: [creatorUserId], references: [id])
+  productoId    Int
+  producto      Productos @relation(fields: [productoId], references: [id])
+  ingresoId     Int
+  ingreso       Ingresos  @relation(fields: [ingresoId], references: [id])
 }

@@ -36,10 +36,10 @@ export class UnidadesMedidaService {
     let orderBy = {};
     orderBy[columna] = direccion;
 
-    let where: any = {
-      activo: activo === 'true' ? true : false
-    };
+    let where = {};
 
+    if(activo) where = { activo: activo === 'true' ? true : false };
+  
     // where.OR.push({
     //   descripcion: {
     //     contains: parametro.toUpperCase()
@@ -56,10 +56,8 @@ export class UnidadesMedidaService {
         creatorUser: true,
       },
       // skip: (pagina - 1) * itemsPorPagina,
-      orderBy,
-      // where: {
-      //   activo: false
-      // }
+      // orderBy,
+      where
     })
 
     return {
