@@ -95,8 +95,6 @@ model IngresosProductos {
   id            Int       @id @default(autoincrement())
   precioCompra  Float
   cantidad      Float
-  comentario    String?   @default("") @db.VarChar(150)
-  estado        String?   @default("Pendiente") @db.VarChar(150)
   activo        Boolean?  @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

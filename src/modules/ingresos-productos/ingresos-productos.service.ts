@@ -72,7 +72,18 @@ export class IngresosProductosService {
   }
 
   // Crear relacion
-  async insert(createData: Prisma.IngresosProductosCreateInput): Promise<IngresosProductos> {
+  async insert(createData: any): Promise<IngresosProductos> {
+
+    // Verificacion: El producto ya se encuentra en el ingreso
+    const relacionDB = await this.prisma.ingresosProductos.findFirst({
+      where: {
+        ingresoId: createData.ingresoId,
+        productoId: createData.productoId
+      }
+    });
+
+    if (relacionDB) throw new NotFoundException('El producto ya se encuentra en el ingreso');
+
     return await this.prisma.ingresosProductos.create({
       data: createData,
       include: {

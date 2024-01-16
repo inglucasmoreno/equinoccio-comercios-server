@@ -38,8 +38,8 @@ export class IngresosService {
 
     let where = {};
 
-    if(activo) where = { activo: activo === 'true' ? true : false };
-  
+    if (activo) where = { activo: activo === 'true' ? true : false };
+
     // where.OR.push({
     //   descripcion: {
     //     contains: parametro.toUpperCase()
@@ -56,7 +56,7 @@ export class IngresosService {
         creatorUser: true,
       },
       // skip: (pagina - 1) * itemsPorPagina,
-      // orderBy,
+      orderBy,
       where
     })
 
@@ -74,16 +74,26 @@ export class IngresosService {
     createData.nroFactura = createData.nroFactura?.toLocaleUpperCase().trim();
     createData.comentario = createData.comentario?.toLocaleUpperCase().trim();
 
+    // Se le suma 3hs a la fecha de ingreso
+    createData.fechaIngreso = new Date(createData.fechaIngreso);
+    createData.fechaIngreso.setHours(createData.fechaIngreso.getHours() + 3);
+
     return await this.prisma.ingresos.create({ data: createData, include: { creatorUser: true } });
 
   }
 
   // Actualizar ingreso
-  async update(id: number, updateData: Prisma.IngresosUpdateInput): Promise<Ingresos> {
+  async update(id: number, updateData: any): Promise<Ingresos> {
+
+    console.log(updateData);
 
     // Uppercase
     updateData.nroFactura = updateData.nroFactura?.toString().toLocaleUpperCase().trim();
     updateData.comentario = updateData.comentario?.toString().toLocaleUpperCase().trim();
+
+    // Se le suma 3hs a la fecha de ingreso
+    updateData.fechaIngreso = new Date(updateData.fechaIngreso);
+    updateData.fechaIngreso.setHours(updateData.fechaIngreso.getHours() + 3);
 
     const ingresoDB = await this.prisma.ingresos.findFirst({ where: { id } });
 

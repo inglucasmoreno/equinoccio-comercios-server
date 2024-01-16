@@ -70,6 +70,8 @@ export class UnidadesMedidaService {
   // Crear unidad
   async insert(createData: Prisma.UnidadesMedidaCreateInput): Promise<UnidadesMedida> {
 
+    console.log(createData);
+
     // Uppercase
     createData.descripcion = createData.descripcion?.toLocaleUpperCase().trim();
 
