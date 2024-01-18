@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { IngresosProductosService } from './ingresos-productos.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Prisma } from '@prisma/client';
@@ -61,6 +61,19 @@ export class IngresosProductosController {
       success: true,
       message: 'Relacion actualizada correctamente',
       relacion
+    })
+
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async eliminar(@Res() res, @Param('id') id: number){
+
+    await this.ingresosProductosService.delete(id);
+
+    res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'Producto eliminado correctamente',
     })
 
   }

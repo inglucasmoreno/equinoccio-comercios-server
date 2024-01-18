@@ -13,7 +13,11 @@ export class IngresosProductosService {
     const relacion = await this.prisma.ingresosProductos.findFirst({
       where: { id },
       include: {
-        producto: true,
+        producto: {
+          include: {
+            unidadMedida: true,
+          }
+        },
         ingreso: true,
         creatorUser: true,
       }
@@ -87,7 +91,11 @@ export class IngresosProductosService {
     return await this.prisma.ingresosProductos.create({
       data: createData,
       include: {
-        producto: true,
+        producto: {
+          include: {
+            unidadMedida: true,
+          }
+        },
         ingreso: true,
         creatorUser: true
       }
@@ -111,6 +119,19 @@ export class IngresosProductosService {
         creatorUser: true
       }
     })
+  }
+
+  // Eliminar relacion
+  async delete(id: number): Promise<String> {
+
+    // Verificar si existe la relacion
+    const relacionDB = await this.prisma.ingresosProductos.findFirst({ where: { id } });
+    if (!relacionDB) throw new NotFoundException('El producto no existe');
+
+    // Eliminar relacion por ID
+    await this.prisma.ingresosProductos.delete({ where: { id } });
+
+    return 'Producto eliminado correctamente';
   }
 
 }

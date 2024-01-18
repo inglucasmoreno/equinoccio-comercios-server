@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -455,
-    "scrollLeft": -323,
+    "scrollTop": -459,
+    "scrollLeft": -406,
     "zoomLevel": 1,
     "show": {
       "tableComment": true,
@@ -1226,7 +1226,7 @@
           "active": false,
           "left": 464.8572,
           "top": 456.9997,
-          "zIndex": 34,
+          "zIndex": 5,
           "widthName": 60,
           "widthComment": 60,
           "color": "#3411FF"
@@ -1308,10 +1308,33 @@
             }
           },
           {
+            "id": "ee757e35-fce7-436c-aa0e-f9e326ac57ea",
+            "name": "porcentajeGanancia",
+            "comment": "",
+            "dataType": "float",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 118.35888671875,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "ad7eb645-d5cb-43f5-b2d5-6fe81a7248ff",
             "name": "precioCompra",
             "comment": "",
-            "dataType": "int",
+            "dataType": "float",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -1331,10 +1354,79 @@
             }
           },
           {
+            "id": "c2cf92bc-5dbb-4f9e-a097-bd2598f7840d",
+            "name": "precioVentaAnterior",
+            "comment": "",
+            "dataType": "float",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 116.181640625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "3824b003-9465-4bf6-8bd8-9c7944e7f179",
+            "name": "precioVentaNuevo",
+            "comment": "",
+            "dataType": "float",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 108.24072265625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "ebbf2ae1-89b8-40cf-8a98-000b7c983287",
+            "name": "actualizarPrecio",
+            "comment": "",
+            "dataType": "boolean",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 94.4853515625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "02c1cba3-0d1e-400a-a0e7-9356c9f5d21f",
             "name": "cantidad",
             "comment": "",
-            "dataType": "int",
+            "dataType": "float",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -1450,7 +1542,7 @@
           "active": false,
           "left": 927.9989,
           "top": 559.0002,
-          "zIndex": 47,
+          "zIndex": 231,
           "widthName": 110.392578125,
           "widthComment": 60,
           "color": "#2600FF"
@@ -1537,7 +1629,7 @@
             "bab79282-2e91-4d34-9a03-fb27d838ac68"
           ],
           "x": 927.9989,
-          "y": 685.7502,
+          "y": 726.7502,
           "direction": "left"
         },
         "constraintName": "fk_compras_to_comprasproductos",
@@ -1562,7 +1654,7 @@
           "columnIds": [
             "830f01cc-f2c5-4795-bfa8-e51f0c24ba06"
           ],
-          "x": 1113.32067734375,
+          "x": 1130.678343359375,
           "y": 559.0002,
           "direction": "top"
         },

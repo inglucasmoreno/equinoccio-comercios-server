@@ -52,6 +52,19 @@ export class IngresosController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('completar/:id')
+  async completar(@Res() res, @Param('id') id: number): Promise<any> {
+
+    await this.ingresosService.completar(id);
+    
+    return res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'Ingreso obtenido correctamente',
+    })
+
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Res() res, @Param('id') id: number, @Body() dataUpdate: Prisma.IngresosUpdateInput){
 

@@ -13,6 +13,15 @@ export class IngresosService {
     const ingreso = await this.prisma.ingresos.findFirst({
       where: { id },
       include: {
+        IngresosProductos: {
+          include: {
+            producto: {
+              include: {
+                unidadMedida: true
+              }
+            }
+          }
+        },
         creatorUser: true,
       }
     })
@@ -78,14 +87,76 @@ export class IngresosService {
     createData.fechaIngreso = new Date(createData.fechaIngreso);
     createData.fechaIngreso.setHours(createData.fechaIngreso.getHours() + 3);
 
-    return await this.prisma.ingresos.create({ data: createData, include: { creatorUser: true } });
+    return await this.prisma.ingresos.create({ 
+      data: createData, 
+      include: {
+        IngresosProductos: {
+          include: {
+            producto: {
+              include: {
+                unidadMedida: true
+              }
+            }
+          }
+        },
+        creatorUser: true,
+      }
+    });
+
+  }
+
+  // Completar ingreso
+  async completar(id: number): Promise<any> {
+
+    const relaciones = await this.prisma.ingresosProductos.findMany({
+      where: { ingresoId: id }
+    });
+
+    // Recorrer relaciones
+    for(let relacion of relaciones) {
+
+      // Se aumenta el stock de cada producto
+      await this.prisma.productos.update({
+        where: { id: relacion.productoId },
+        data: {
+          cantidad: {
+            increment: relacion.cantidad
+          }
+        }
+      });
+
+      // Se actualizar el precio en caso que sea necesario
+      if (relacion.actualizarPrecio) {
+        await this.prisma.productos.update({
+          where: { id: relacion.productoId },
+          data: {
+            precioCompra: relacion.precioCompra,
+            precioVenta: relacion.precioVentaNuevo,
+            porcentajeGanancia: relacion.porcentajeGanancia
+          }
+        });
+      }
+
+      // Se deshabilita la relacion
+      await this.prisma.ingresosProductos.update({
+        where: { id: relacion.id },
+        data: { activo: false }
+      });
+
+    }
+
+    // El ingreso se coloca en estado de completado
+    await this.prisma.ingresos.update({
+      where: { id },
+      data: { estado: 'Completado' }
+    });
+
+    return 'Ingreso completado'
 
   }
 
   // Actualizar ingreso
   async update(id: number, updateData: any): Promise<Ingresos> {
-
-    console.log(updateData);
 
     // Uppercase
     updateData.nroFactura = updateData.nroFactura?.toString().toLocaleUpperCase().trim();

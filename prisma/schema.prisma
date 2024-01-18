@@ -92,16 +92,20 @@ model Ingresos {
 }
 
 model IngresosProductos {
-  id            Int       @id @default(autoincrement())
-  precioCompra  Float
-  cantidad      Float
-  activo        Boolean?  @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  creatorUserId Int
-  creatorUser   Usuarios  @relation(fields: [creatorUserId], references: [id])
-  productoId    Int
-  producto      Productos @relation(fields: [productoId], references: [id])
-  ingresoId     Int
-  ingreso       Ingresos  @relation(fields: [ingresoId], references: [id])
+  id                  Int       @id @default(autoincrement())
+  precioCompra        Float?    @default(0)
+  precioVentaAnterior Float?    @default(0)
+  precioVentaNuevo    Float?    @default(0)
+  porcentajeGanancia  Float?    @default(0)
+  actualizarPrecio    Boolean?  @default(false)
+  cantidad            Float
+  activo              Boolean?  @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  creatorUserId       Int
+  creatorUser         Usuarios  @relation(fields: [creatorUserId], references: [id])
+  productoId          Int
+  producto            Productos @relation(fields: [productoId], references: [id])
+  ingresoId           Int
+  ingreso             Ingresos  @relation(fields: [ingresoId], references: [id])
 }
