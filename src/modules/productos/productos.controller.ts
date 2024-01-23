@@ -6,18 +6,32 @@ import { Prisma } from '@prisma/client';
 @Controller('productos')
 export class ProductosController {
 
-  constructor(private readonly productosService: ProductosService){}
+  constructor(private readonly productosService: ProductosService) { }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getId(@Res() res, @Param('id') id: number): Promise<any> {
 
     const producto = await this.productosService.getId(id);
-    
+
     return res.status(HttpStatus.OK).json({
       success: true,
       message: 'Producto obtenido correctamente',
-      producto      
+      producto
+    })
+
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('buscar/codigo/:codigo')
+  async getPorCodigo(@Res() res, @Param('codigo') codigo: string): Promise<any> {
+
+    const producto = await this.productosService.getPorCodigo(codigo);
+
+    return res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'Producto obtenido correctamente',
+      producto
     })
 
   }
@@ -25,14 +39,14 @@ export class ProductosController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async getAll(@Res() res, @Query() query): Promise<any> {
-    
-    const {productos, totalItems} = await this.productosService.getAll(query);
+
+    const { productos, totalItems } = await this.productosService.getAll(query);
 
     return res.status(HttpStatus.OK).json({
       success: true,
       message: 'Productos obtenidos correctamente',
       productos,
-      totalItems   
+      totalItems
     })
 
   }
@@ -48,12 +62,12 @@ export class ProductosController {
       message: 'Producto creado correctamente',
       producto
     })
-  
+
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(@Res() res, @Param('id') id: number, @Body() dataUpdate: Prisma.ProductosUpdateInput){
+  async update(@Res() res, @Param('id') id: number, @Body() dataUpdate: Prisma.ProductosUpdateInput) {
 
     const producto = await this.productosService.update(id, dataUpdate);
 
@@ -70,11 +84,11 @@ export class ProductosController {
   async generarCodigo(@Res() res): Promise<any> {
 
     const codigo = await this.productosService.generarCodigo();
-    
+
     return res.status(HttpStatus.OK).json({
       success: true,
       message: 'Codigo obtenido correctamente',
-      codigo     
+      codigo
     })
 
   }

@@ -6,7 +6,9 @@ import { Prisma } from '@prisma/client';
 @Controller('ingresos')
 export class IngresosController {
 
-  constructor(private readonly ingresosService: IngresosService){}
+  constructor(
+    private readonly ingresosService: IngresosService
+  ){}
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')

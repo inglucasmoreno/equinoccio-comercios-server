@@ -13,7 +13,7 @@ export class IngresosService {
     const ingreso = await this.prisma.ingresos.findFirst({
       where: { id },
       include: {
-        IngresosProductos: {
+        ingresosProductos: {
           include: {
             producto: {
               include: {
@@ -90,7 +90,7 @@ export class IngresosService {
     return await this.prisma.ingresos.create({ 
       data: createData, 
       include: {
-        IngresosProductos: {
+        ingresosProductos: {
           include: {
             producto: {
               include: {

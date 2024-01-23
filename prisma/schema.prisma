@@ -23,12 +23,16 @@ model Usuarios {
   activo            Boolean?            @default(true)
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
-  UnidadesMedida    UnidadesMedida[]
+  unidadesMedida    UnidadesMedida[]
   // Productos      Productos[]
-  Marcas            Marcas[]
-  Productos         Productos[]
-  Ingresos          Ingresos[]
-  IngresosProductos IngresosProductos[]
+  marcas            Marcas[]
+  productos         Productos[]
+  ingresos          Ingresos[]
+  ingresosProductos IngresosProductos[]
+  ventas            Ventas[]
+  ventasProductos   VentasProductos[]
+  ventasFormasPago  VentasFormasPago[]
+  ventasFacturacion VentasFacturacion[]
 }
 
 model UnidadesMedida {
@@ -74,7 +78,8 @@ model Productos {
   unidadMedida       UnidadesMedida      @relation(fields: [unidadMedidaId], references: [id])
   // marcaId            Int
   // marca              Marcas         @relation(fields: [marcaId], references: [id])
-  IngresosProductos  IngresosProductos[]
+  ingresosProductos  IngresosProductos[]
+  ventasProductos    VentasProductos[]
 }
 
 model Ingresos {
@@ -88,7 +93,7 @@ model Ingresos {
   updatedAt         DateTime            @updatedAt
   creatorUserId     Int
   creatorUser       Usuarios            @relation(fields: [creatorUserId], references: [id])
-  IngresosProductos IngresosProductos[]
+  ingresosProductos IngresosProductos[]
 }
 
 model IngresosProductos {
@@ -108,4 +113,67 @@ model IngresosProductos {
   producto            Productos @relation(fields: [productoId], references: [id])
   ingresoId           Int
   ingreso             Ingresos  @relation(fields: [ingresoId], references: [id])
+}
+
+model Ventas {
+  id                Int                 @id @default(autoincrement())
+  fechaVenta        DateTime?           @default(now())
+  precioTotal       Float
+  precioTotalLimpio Float
+  adicionalCredito  Float
+  comprobante       String?             @default("Normal") @db.VarChar(100)
+  totalBalanza      Float
+  totalNoBalanza    Float
+  activo            Boolean?            @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  creatorUserId     Int
+  creatorUser       Usuarios            @relation(fields: [creatorUserId], references: [id])
+  ventasProductos   VentasProductos[]
+  ventasFormasPago  VentasFormasPago[]
+  ventasFacturacion VentasFacturacion[]
+}
+
+model VentasProductos {
+  id             Int       @id @default(autoincrement())
+  cantidad       Float
+  precioTotal    Float
+  precioUnitario Float
+  activo         Boolean?  @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  creatorUserId  Int
+  ventaId        Int
+  productoId     Int
+  venta          Ventas    @relation(fields: [ventaId], references: [id])
+  producto       Productos @relation(fields: [productoId], references: [id])
+  creatorUser    Usuarios  @relation(fields: [creatorUserId], references: [id])
+}
+
+model VentasFormasPago {
+  id             Int      @id @default(autoincrement())
+  descripcion    String
+  valor          Float
+  nroComprobante String?  @default("") @db.VarChar(100)
+  activo         Boolean? @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  creatorUserId  Int
+  ventaId        Int
+  venta          Ventas   @relation(fields: [ventaId], references: [id])
+  creatorUser    Usuarios @relation(fields: [creatorUserId], references: [id])
+}
+
+model VentasFacturacion {
+  id              Int      @id @default(autoincrement())
+  puntoVenta      Int
+  tipoComprobante Int
+  nroComprobante  Int
+  activo          Boolean? @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  creatorUserId   Int
+  ventaId         Int
+  venta           Ventas   @relation(fields: [ventaId], references: [id])
+  creatorUser     Usuarios @relation(fields: [creatorUserId], references: [id])
 }

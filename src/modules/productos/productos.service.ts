@@ -25,6 +25,23 @@ export class ProductosService {
 
   }
 
+  // Codigo por ID
+  async getPorCodigo(codigo: string): Promise<Productos> {
+
+    const producto = await this.prisma.productos.findFirst({
+      where: { codigo },
+      include: {
+        // marca: true,
+        unidadMedida: true,
+        creatorUser: true,
+      }
+    })
+
+    if (!producto) throw new NotFoundException('El producto no esta cargado');
+    return producto;
+
+  }
+
   // Listar productos
   async getAll({
     columna = 'descripcion',
@@ -56,10 +73,10 @@ export class ProductosService {
           descripcion: direccion
         }
       }
-    }else{
+    } else {
       orderBy[columna] = direccion;
     }
-    
+
     // Total de productos
     const totalItems = await this.prisma.productos.count({ where });
 
@@ -95,7 +112,7 @@ export class ProductosService {
     let productoDB: any = {};
 
     // Verificacion: Codigo repetido
-    if(createData.codigo.trim() !== ''){
+    if (createData.codigo.trim() !== '') {
       productoDB = await this.prisma.productos.findFirst({ where: { codigo: createData.codigo } });
       if (productoDB) throw new NotFoundException('El código ya se encuentra cargado');
     }
@@ -149,7 +166,7 @@ export class ProductosService {
         id: 'desc'
       }
     });
-  
+
     if (!ultimoProducto) return '0000000000001';
 
     const codigo = Number(ultimoProducto.id) + 1;

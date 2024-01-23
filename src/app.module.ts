@@ -14,6 +14,10 @@ import { ProductosModule } from './modules/productos/productos.module';
 import { MarcasModule } from './modules/marcas/marcas.module';
 import { IngresosModule } from './modules/ingresos/ingresos.module';
 import { IngresosProductosModule } from './modules/ingresos-productos/ingresos-productos.module';
+import { VentasModule } from './modules/ventas/ventas.module';
+import { VentasProductosModule } from './modules/ventas-productos/ventas-productos.module';
+import { VentasFormasPagoModule } from './modules/ventas-formas-pago/ventas-formas-pago.module';
+import { VentasFacturacionModule } from './modules/ventas-facturacion/ventas-facturacion.module';
 
 @Module({
   imports: [
@@ -46,6 +50,10 @@ import { IngresosProductosModule } from './modules/ingresos-productos/ingresos-p
     MarcasModule,
     IngresosModule,
     IngresosProductosModule,
+    VentasModule,
+    VentasProductosModule,
+    VentasFormasPagoModule,
+    VentasFacturacionModule,
 
   ],
   controllers: [AppController],
