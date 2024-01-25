@@ -18,6 +18,12 @@ import { VentasModule } from './modules/ventas/ventas.module';
 import { VentasProductosModule } from './modules/ventas-productos/ventas-productos.module';
 import { VentasFormasPagoModule } from './modules/ventas-formas-pago/ventas-formas-pago.module';
 import { VentasFacturacionModule } from './modules/ventas-facturacion/ventas-facturacion.module';
+import { TiposIngresosModule } from './modules/tipos-ingresos/tipos-ingresos.module';
+import { TiposGastosModule } from './modules/tipos-gastos/tipos-gastos.module';
+import { CajasModule } from './modules/cajas/cajas.module';
+import { IngresosCajasModule } from './modules/ingresos-cajas/ingresos-cajas.module';
+import { GastosCajasModule } from './modules/gastos-cajas/gastos-cajas.module';
+import { CajasVentasModule } from './modules/cajas-ventas/cajas-ventas.module';
 
 @Module({
   imports: [
@@ -54,6 +60,12 @@ import { VentasFacturacionModule } from './modules/ventas-facturacion/ventas-fac
     VentasProductosModule,
     VentasFormasPagoModule,
     VentasFacturacionModule,
+    TiposIngresosModule,
+    TiposGastosModule,
+    CajasModule,
+    IngresosCajasModule,
+    GastosCajasModule,
+    CajasVentasModule,
 
   ],
   controllers: [AppController],

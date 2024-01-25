@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Ventas } from '@prisma/client';
+import { add } from 'date-fns';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -30,55 +31,173 @@ export class VentasService {
         columna = 'createdAt',
         direccion = 'desc',
         activo = '',
-        parametro = '',
+        formaPago = '',
+        comprobante = '',
         pagina = 1,
-        itemsPorPagina = 10000
+        fechaDesde = '',
+        fechaHasta = '',
+        itemsPorPagina = 1000
     }: any): Promise<any> {
 
         // Ordenando datos
         let orderBy = {};
         orderBy[columna] = direccion;
 
-        let where: any = {
-            activo: activo === 'true' ? true : false
-        };
+        let where: any = {}
 
-        // where.OR.push({
-        //   descripcion: {
-        //     contains: parametro.toUpperCase()
-        //   }
-        // })
+        let whereTotales: any = {
 
-        // Total de ventas
-        const totalItems = await this.prisma.ventas.count({ where });
+        }
 
-        // Listado de ventas
-        const ventas = await this.prisma.ventas.findMany({
-            take: Number(itemsPorPagina),
-            include: {
-                ventasProductos: {
-                    include: {
-                        producto: {
-                            include: {
-                                unidadMedida: true
+        let activoTotales: any = {}
+
+        if (activo !== '') {
+            where = {
+                ...where,
+                activo: activo === 'true' ? true : false
+            },
+                activoTotales = activo === 'true' ? true : false
+        }
+
+        if (formaPago !== '') {
+            where = {
+                ...where,
+                ventasFormasPago: {
+                    some: {
+                        descripcion: {
+                            equals: formaPago
+                        }
+                    }
+                },
+            }
+        }
+
+        if (comprobante !== '') {
+            where = {
+                ...where,
+                comprobante: {
+                    equals: comprobante
+                }
+            }
+        }
+        // Filtrado por fechaDesde
+        if (fechaDesde !== '') {
+            where = {
+                ...where,
+                fechaVenta: {
+                    gte: add(new Date(fechaDesde), { hours: 3 })
+                }
+            }
+        }
+
+        // Filtrado por fechaHasta
+        if (fechaHasta !== '') {
+            where = {
+                ...where,
+                fechaVenta: {
+                    lte: add(new Date(fechaHasta), { days: 1, hours: 3 })
+                }
+            }
+        }
+
+        const [totalItems, ventas, totalVentasTMP, totalVentasFacturadasTMP, totalVentasPedidosYaTMP] = await Promise.all([
+            await this.prisma.ventas.count({
+                where: {
+                    ...where,
+                    fechaVenta: {
+                        gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
+                        lte: fechaDesde !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+                    },
+                }
+            }),
+            await this.prisma.ventas.findMany({
+                take: Number(itemsPorPagina),
+                include: {
+                    ventasProductos: {
+                        include: {
+                            producto: {
+                                include: {
+                                    unidadMedida: true
+                                }
+                            }
+                        },
+                    },
+                    ventasFacturacion: true,
+                    ventasFormasPago: true,
+                    creatorUser: true,
+                },
+                skip: (pagina - 1) * itemsPorPagina,
+                orderBy,
+                where: {
+                    ...where,
+                    fechaVenta: {
+                        gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
+                        lte: fechaDesde !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+                    },
+                }
+            }),
+
+            await this.prisma.ventas.aggregate({
+                _sum: {
+                    precioTotal: true,
+                },
+                where: {
+                    fechaVenta: {
+                        gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
+                        lte: fechaDesde !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+                    },
+                    activo: activoTotales
+                }
+            }),
+
+            await this.prisma.ventas.aggregate({
+                _sum: {
+                    precioTotal: true,
+                },
+                where: {
+                    comprobante: 'Facturacion',
+                    fechaVenta: {
+                        gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
+                        lte: fechaDesde !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+                    },
+                    activo: activoTotales
+                }
+            }),
+
+            // Calcular precioTotal acumulado de las ventas pedidosYa
+            await this.prisma.ventas.aggregate({
+                _sum: {
+                    precioTotal: true,
+                },
+                where: {
+                    ventasFormasPago: {
+                        some: {
+                            descripcion: {
+                                in: ['PedidosYa - Efectivo', 'PedidosYa - Online']
                             }
                         }
                     },
-                },
-                ventasFacturacion: true,
-                ventasFormasPago: true,
-                creatorUser: true,
-            },
-            // skip: (pagina - 1) * itemsPorPagina,
-            orderBy,
-            // where: {
-            //   activo: false
-            // }
-        })
+                    fechaVenta: {
+                        gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
+                        lte: fechaDesde !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+                    },
+                    activo: activoTotales
+                }
+            }),
+        ]);
+
+        let totalVentasPedidosYa = totalVentasPedidosYaTMP._sum.precioTotal;
+        let totalVentas = totalVentasTMP._sum.precioTotal;
+        let totalVentasFacturadas = totalVentasFacturadasTMP._sum.precioTotal;
 
         return {
             ventas,
-            totalItems,
+            totalItems: totalItems ? totalItems : 0,
+            totales: {
+                totalVentas: totalVentas ? totalVentas : 0,
+                totalVentasFacturadas: totalVentasFacturadas ? totalVentasFacturadas : 0,
+                totalVentasPedidosYa: totalVentasPedidosYa ? totalVentasPedidosYa : 0,
+            }
         };
 
     }

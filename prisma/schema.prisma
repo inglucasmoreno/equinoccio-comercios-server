@@ -33,6 +33,12 @@ model Usuarios {
   ventasProductos   VentasProductos[]
   ventasFormasPago  VentasFormasPago[]
   ventasFacturacion VentasFacturacion[]
+  tiposIngresos     TiposIngresos[]
+  tiposGastos       TiposGastos[]
+  cajas             Cajas[]
+  ingresosCajas     IngresosCajas[]
+  gastosCajas       GastosCajas[]
+  cajasVentas       CajasVentas[]
 }
 
 model UnidadesMedida {
@@ -43,7 +49,7 @@ model UnidadesMedida {
   updatedAt     DateTime    @updatedAt
   creatorUserId Int
   creatorUser   Usuarios    @relation(fields: [creatorUserId], references: [id])
-  Productos     Productos[]
+  productos     Productos[]
 }
 
 model Marcas {
@@ -132,6 +138,7 @@ model Ventas {
   ventasProductos   VentasProductos[]
   ventasFormasPago  VentasFormasPago[]
   ventasFacturacion VentasFacturacion[]
+  cajasVentas       CajasVentas[]
 }
 
 model VentasProductos {
@@ -176,4 +183,98 @@ model VentasFacturacion {
   ventaId         Int
   venta           Ventas   @relation(fields: [ventaId], references: [id])
   creatorUser     Usuarios @relation(fields: [creatorUserId], references: [id])
+}
+
+model TiposIngresos {
+  id            Int             @id @default(autoincrement())
+  descripcion   String          @unique @db.VarChar(150)
+  activo        Boolean?        @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  creatorUserId Int
+  creatorUser   Usuarios        @relation(fields: [creatorUserId], references: [id])
+  ingresosCajas IngresosCajas[]
+}
+
+model TiposGastos {
+  id            Int           @id @default(autoincrement())
+  descripcion   String        @unique @db.VarChar(150)
+  activo        Boolean?      @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  creatorUserId Int
+  creatorUser   Usuarios      @relation(fields: [creatorUserId], references: [id])
+  gastosCajas   GastosCajas[]
+}
+
+model Cajas {
+  id                      Int             @id @default(autoincrement())
+  saldoInicial            Float
+  saldoProximaCaja        Float
+  totalVentas             Float
+  totalFacturado          Float
+  totalBalanza            Float
+  totalNoBalanza          Float
+  totalOtrosIngresos      Float
+  totalOtrosGastos        Float
+  totalCredito            Float
+  totalEfectivo           Float
+  totalDebito             Float
+  totalAdicionalCredito   Float
+  totalPedidosYa          Float
+  diferencia              Float
+  tesoreria               Float
+  totalEfectivoEnCaja     Float
+  totalEfectivoEnCajaReal Float
+  activo                  Boolean?        @default(true)
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+  creatorUserId           Int
+  creatorUser             Usuarios        @relation(fields: [creatorUserId], references: [id])
+  ingresosCajas           IngresosCajas[]
+  gastosCajas             GastosCajas[]
+  cajasVentas             CajasVentas[]
+}
+
+model IngresosCajas {
+  id            Int           @id @default(autoincrement())
+  descripcion   String        @db.VarChar(150)
+  monto         Float
+  activo        Boolean?      @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  cajaId        Int
+  tipoIngresoId Int
+  creatorUserId Int
+  tipoIngreso   TiposIngresos @relation(fields: [tipoIngresoId], references: [id])
+  caja          Cajas         @relation(fields: [cajaId], references: [id])
+  creatorUser   Usuarios      @relation(fields: [creatorUserId], references: [id])
+}
+
+model GastosCajas {
+  id            Int         @id @default(autoincrement())
+  descripcion   String      @db.VarChar(150)
+  monto         Float
+  activo        Boolean?    @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  cajaId        Int
+  creatorUserId Int
+  tipoGastoId   Int
+  tipoGasto     TiposGastos @relation(fields: [tipoGastoId], references: [id])
+  caja          Cajas       @relation(fields: [cajaId], references: [id])
+  creatorUser   Usuarios    @relation(fields: [creatorUserId], references: [id])
+}
+
+model CajasVentas {
+  id            Int      @id @default(autoincrement())
+  activo        Boolean? @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  cajaId        Int
+  ventaId       Int
+  creatorUserId Int
+  venta         Ventas   @relation(fields: [ventaId], references: [id])
+  caja          Cajas    @relation(fields: [cajaId], references: [id])
+  creatorUser   Usuarios @relation(fields: [creatorUserId], references: [id])
 }

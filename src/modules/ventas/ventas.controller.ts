@@ -26,13 +26,14 @@ export class VentasController {
     @Get()
     async getAll(@Res() res, @Query() query): Promise<any> {
 
-        const { ventas, totalItems } = await this.ventasService.getAll(query);
+        const { ventas, totales, totalItems } = await this.ventasService.getAll(query);
 
         return res.status(HttpStatus.OK).json({
             success: true,
             message: 'Ventas obtenidas correctamente',
             ventas,
-            totalItems
+            totalItems,
+            totales
         })
 
     }
