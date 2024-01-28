@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { IngresosCajasService } from './ingresos-cajas.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Prisma } from '@prisma/client';
@@ -64,5 +64,20 @@ export class IngresosCajasController {
       })
   
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    async delete(@Res() res, @Param('id') id: number){
+      
+      const ingreso = await this.ingresosService.delete(id);
+  
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: 'Ingreso eliminado correctamente',
+        ingreso
+      })
+  
+    }
+    
 
 }

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Ingresos, Prisma } from '@prisma/client';
+import { add } from 'date-fns';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -22,6 +23,7 @@ export class IngresosService {
             }
           }
         },
+        usuarioCompletado: true,
         creatorUser: true,
       }
     })
@@ -38,6 +40,9 @@ export class IngresosService {
     activo = '',
     parametro = '',
     pagina = 1,
+    fechaDesde = '',
+    fechaHasta = '',
+    estado = '',
     itemsPorPagina = 10000
   }: any): Promise<any> {
 
@@ -49,11 +54,19 @@ export class IngresosService {
 
     if (activo) where = { activo: activo === 'true' ? true : false };
 
-    // where.OR.push({
-    //   descripcion: {
-    //     contains: parametro.toUpperCase()
-    //   }
-    // })
+    if(estado) where = { ...where, estado };
+
+    // Busqueda por parametro
+    if (parametro !== '') {
+      where = {
+        ...where,
+        OR: [
+          { id: { equals: Number(parametro) } },
+          { nroFactura: { contains: parametro } },
+          { comentario: { contains: parametro } },
+        ]
+      }
+    }
 
     // Total de ingresos
     const totalItems = await this.prisma.ingresos.count({ where });
@@ -62,11 +75,18 @@ export class IngresosService {
     const ingresos = await this.prisma.ingresos.findMany({
       take: Number(itemsPorPagina),
       include: {
+        usuarioCompletado: true,
         creatorUser: true,
       },
-      // skip: (pagina - 1) * itemsPorPagina,
+      skip: (pagina - 1) * itemsPorPagina,
       orderBy,
-      where
+      where: {
+        ...where,
+        fechaIngreso: {
+          gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
+          lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+        }
+      }
     })
 
     return {
@@ -99,6 +119,7 @@ export class IngresosService {
             }
           }
         },
+        usuarioCompletado: true,
         creatorUser: true,
       }
     });
@@ -106,7 +127,9 @@ export class IngresosService {
   }
 
   // Completar ingreso
-  async completar(id: number): Promise<any> {
+  async completar(id: number, data: any): Promise<any> {
+
+    const { usuarioCompletadoId } = data;
 
     const relaciones = await this.prisma.ingresosProductos.findMany({
       where: { ingresoId: id }
@@ -140,18 +163,23 @@ export class IngresosService {
       // Se deshabilita la relacion
       await this.prisma.ingresosProductos.update({
         where: { id: relacion.id },
-        data: { activo: false }
+        data: { 
+          activo: false 
+        }
       });
 
     }
 
     // El ingreso se coloca en estado de completado
-    await this.prisma.ingresos.update({
+    const ingresoDB = await this.prisma.ingresos.update({
       where: { id },
-      data: { estado: 'Completado' }
+      data: { 
+        usuarioCompletadoId,
+        estado: 'Completado' 
+      }
     });
 
-    return 'Ingreso completado'
+    return ingresoDB;
 
   }
 
@@ -175,6 +203,7 @@ export class IngresosService {
       where: { id },
       data: updateData,
       include: {
+        usuarioCompletado: true,
         creatorUser: true
       }
     })

@@ -12,33 +12,34 @@ datasource db {
 
 // Models list
 model Usuarios {
-  id                Int                 @id @default(autoincrement())
-  usuario           String              @unique @db.VarChar(30)
-  apellido          String              @db.VarChar(50)
-  nombre            String              @db.VarChar(50)
-  dni               String              @db.VarChar(30)
-  password          String
-  email             String              @db.VarChar(50)
-  role              String?             @default("ADMIN_ROLE")
-  activo            Boolean?            @default(true)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  unidadesMedida    UnidadesMedida[]
+  id                  Int                 @id @default(autoincrement())
+  usuario             String              @unique @db.VarChar(30)
+  apellido            String              @db.VarChar(50)
+  nombre              String              @db.VarChar(50)
+  dni                 String              @db.VarChar(30)
+  password            String
+  email               String              @db.VarChar(50)
+  role                String?             @default("ADMIN_ROLE")
+  activo              Boolean?            @default(true)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  unidadesMedida      UnidadesMedida[]
   // Productos      Productos[]
-  marcas            Marcas[]
-  productos         Productos[]
-  ingresos          Ingresos[]
-  ingresosProductos IngresosProductos[]
-  ventas            Ventas[]
-  ventasProductos   VentasProductos[]
-  ventasFormasPago  VentasFormasPago[]
-  ventasFacturacion VentasFacturacion[]
-  tiposIngresos     TiposIngresos[]
-  tiposGastos       TiposGastos[]
-  cajas             Cajas[]
-  ingresosCajas     IngresosCajas[]
-  gastosCajas       GastosCajas[]
-  cajasVentas       CajasVentas[]
+  marcas              Marcas[]
+  productos           Productos[]
+  ingresosCreados     Ingresos[]          @relation("usuarioCreador")
+  ingresosCompletados Ingresos[]          @relation("usuarioCompletar")
+  ingresosProductos   IngresosProductos[]
+  ventas              Ventas[]
+  ventasProductos     VentasProductos[]
+  ventasFormasPago    VentasFormasPago[]
+  ventasFacturacion   VentasFacturacion[]
+  tiposIngresos       TiposIngresos[]
+  tiposGastos         TiposGastos[]
+  cajas               Cajas[]
+  ingresosCajas       IngresosCajas[]
+  gastosCajas         GastosCajas[]
+  cajasVentas         CajasVentas[]
 }
 
 model UnidadesMedida {
@@ -89,17 +90,19 @@ model Productos {
 }
 
 model Ingresos {
-  id                Int                 @id @default(autoincrement())
-  fechaIngreso      DateTime?           @default(now())
-  nroFactura        String?             @db.VarChar(150)
-  comentario        String?             @default("") @db.VarChar(150)
-  estado            String?             @default("Pendiente") @db.VarChar(150)
-  activo            Boolean?            @default(true)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  creatorUserId     Int
-  creatorUser       Usuarios            @relation(fields: [creatorUserId], references: [id])
-  ingresosProductos IngresosProductos[]
+  id                 Int                 @id @default(autoincrement())
+  fechaIngreso       DateTime?           @default(now())
+  nroFactura         String?             @db.VarChar(150)
+  comentario         String?             @default("") @db.VarChar(150)
+  estado             String?             @default("Pendiente") @db.VarChar(150)
+  activo             Boolean?            @default(true)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  creatorUserId      Int
+  usuarioCompletadoId Int
+  usuarioCompletado   Usuarios?           @relation(fields: [usuarioCompletadoId], references: [id], name: "usuarioCompletar")
+  creatorUser        Usuarios            @relation(fields: [creatorUserId], references: [id], name: "usuarioCreador")
+  ingresosProductos  IngresosProductos[]
 }
 
 model IngresosProductos {
@@ -133,8 +136,10 @@ model Ventas {
   activo            Boolean?            @default(true)
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
+  cajaId            Int
   creatorUserId     Int
   creatorUser       Usuarios            @relation(fields: [creatorUserId], references: [id])
+  caja              Cajas               @relation(fields: [cajaId], references: [id])
   ventasProductos   VentasProductos[]
   ventasFormasPago  VentasFormasPago[]
   ventasFacturacion VentasFacturacion[]
@@ -209,23 +214,28 @@ model TiposGastos {
 
 model Cajas {
   id                      Int             @id @default(autoincrement())
-  saldoInicial            Float
-  saldoProximaCaja        Float
-  totalVentas             Float
-  totalFacturado          Float
-  totalBalanza            Float
-  totalNoBalanza          Float
-  totalOtrosIngresos      Float
-  totalOtrosGastos        Float
-  totalCredito            Float
-  totalEfectivo           Float
-  totalDebito             Float
-  totalAdicionalCredito   Float
-  totalPedidosYa          Float
-  diferencia              Float
-  tesoreria               Float
-  totalEfectivoEnCaja     Float
-  totalEfectivoEnCajaReal Float
+  fechaCaja               DateTime?       @default(now())
+  saldoInicial            Float?          @default(0)
+  saldoProximaCaja        Float?          @default(0)
+  cantidadVentas          Int?            @default(0)
+  totalVentas             Float?          @default(0)
+  totalFacturado          Float?          @default(0)
+  totalBalanza            Float?          @default(0)
+  totalNoBalanza          Float?          @default(0)
+  totalOtrosIngresos      Float?          @default(0)
+  totalOtrosGastos        Float?          @default(0)
+  totalCredito            Float?          @default(0)
+  totalEfectivo           Float?          @default(0)
+  totalDebito             Float?          @default(0)
+  totalMercadoPago        Float?          @default(0)
+  totalAdicionalCredito   Float?          @default(0)
+  totalPostnet            Float?          @default(0)
+  totalPedidosYa          Float?          @default(0)
+  totalPedidosYaOnline    Float?          @default(0)
+  diferencia              Float?          @default(0)
+  tesoreria               Float?          @default(0)
+  totalEfectivoEnCaja     Float?          @default(0)
+  totalEfectivoEnCajaReal Float?          @default(0)
   activo                  Boolean?        @default(true)
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt
@@ -234,6 +244,7 @@ model Cajas {
   ingresosCajas           IngresosCajas[]
   gastosCajas             GastosCajas[]
   cajasVentas             CajasVentas[]
+  ventas                  Ventas[]
 }
 
 model IngresosCajas {

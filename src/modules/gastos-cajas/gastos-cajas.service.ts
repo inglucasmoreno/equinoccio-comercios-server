@@ -79,6 +79,10 @@ export class GastosCajasService {
 
     // Crear gasto
     async insert(createData: Prisma.GastosCajasCreateInput): Promise<GastosCajas> {
+
+        // Uppercase
+        createData.descripcion = createData.descripcion?.toLocaleUpperCase().trim();
+
         return await this.prisma.gastosCajas.create({
             data: createData, include: {
                 caja: true,
@@ -90,6 +94,9 @@ export class GastosCajasService {
 
     // Actualizar gasto
     async update(id: number, updateData: Prisma.GastosCajasUpdateInput): Promise<GastosCajas> {
+
+        // Uppercase
+        updateData.descripcion = updateData.descripcion?.toString().toLocaleUpperCase().trim();
 
         const gastoDB = await this.prisma.gastosCajas.findFirst({ where: { id } });
 
@@ -105,6 +112,27 @@ export class GastosCajasService {
                 creatorUser: true
             }
         })
+
+    }
+
+    // Eliminar gasto
+    async delete(id: number): Promise<GastosCajas> {
+
+        const gastoDB = await this.prisma.gastosCajas.findFirst({ where: { id } });
+
+        // Verificacion: El gasto no existe
+        if (!gastoDB) throw new NotFoundException('El gasto no existe');
+
+        return await this.prisma.gastosCajas.delete(
+            {
+                where: { id },
+                include: {
+                    caja: true,
+                    tipoGasto: true,
+                    creatorUser: true
+                }
+            }
+        )
 
     }
 

@@ -79,6 +79,12 @@ export class IngresosCajasService {
 
     // Crear ingreso
     async insert(createData: Prisma.IngresosCajasCreateInput): Promise<IngresosCajas> {
+
+        // Uppercase
+        createData.descripcion = createData.descripcion?.toLocaleUpperCase().trim();
+
+        console.log(createData);
+
         return await this.prisma.ingresosCajas.create({
             data: createData,
             include: {
@@ -91,6 +97,9 @@ export class IngresosCajasService {
 
     // Actualizar ingreso
     async update(id: number, updateData: Prisma.IngresosCajasUpdateInput): Promise<IngresosCajas> {
+
+        // Uppercase
+        updateData.descripcion = updateData.descripcion?.toString().toLocaleUpperCase().trim();
 
         const ingresoDB = await this.prisma.ingresosCajas.findFirst({ where: { id } });
 
@@ -109,4 +118,27 @@ export class IngresosCajasService {
 
     }
 
+    // Eliminar ingreso
+    async delete(id: number): Promise<IngresosCajas> {
+
+        const ingresoDB = await this.prisma.ingresosCajas.findFirst({ where: { id } });
+
+        // Verificacion: El ingreso no existe
+        if (!ingresoDB) throw new NotFoundException('El ingreso no existe');
+
+        return await this.prisma.ingresosCajas.delete(
+            {
+                where: { id },
+                include: {
+                    caja: true,
+                    tipoIngreso: true,
+                    creatorUser: true
+                }
+            }
+        )
+
+    }
+
 }
+
+

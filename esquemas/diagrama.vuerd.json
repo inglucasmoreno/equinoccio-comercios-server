@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 3000,
     "height": 3000,
-    "scrollTop": -845,
-    "scrollLeft": -1520,
+    "scrollTop": -946,
+    "scrollLeft": -1544,
     "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
@@ -1578,6 +1578,29 @@
             }
           },
           {
+            "id": "4426629a-fe1e-4e92-9d74-66d7d8da26c3",
+            "name": "cajaId",
+            "comment": "",
+            "dataType": "int",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "b6884d28-48dc-410a-b450-1140003c0f14",
             "name": "fechaVenta",
             "comment": "",
@@ -1835,7 +1858,7 @@
           "active": false,
           "left": 1523.945,
           "top": 31.2223,
-          "zIndex": 10,
+          "zIndex": 13,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00F6"
@@ -2080,9 +2103,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 1553.5838,
-          "top": 458.0267,
-          "zIndex": 7,
+          "left": 1548.5838,
+          "top": 471.7767,
+          "zIndex": 15,
           "widthName": 100.287109375,
           "widthComment": 60,
           "color": "#F600FF"
@@ -2306,7 +2329,7 @@
           "active": false,
           "left": 2052.7514,
           "top": 32.8063,
-          "zIndex": 9,
+          "zIndex": 8,
           "widthName": 116.17529296875,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -2530,7 +2553,7 @@
           "active": false,
           "left": 2052,
           "top": 297.5,
-          "zIndex": 8,
+          "zIndex": 7,
           "widthName": 109.67529296875,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -2560,6 +2583,29 @@
               "fk": false,
               "pfk": false,
               "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "4c578ad7-257f-4170-814c-f042610afba5",
+            "name": "fechaCaja",
+            "comment": "",
+            "dataType": "date",
+            "default": "Now()",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60.5380859375,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
@@ -2612,16 +2658,39 @@
             }
           },
           {
-            "id": "3edd280e-b692-4ef3-93eb-b83d1f22890a",
-            "name": "totalVentas",
+            "id": "36d9f4b1-768c-4961-a294-3193caf44e19",
+            "name": "cantidadVentas",
             "comment": "",
-            "dataType": "float",
+            "dataType": "int",
             "default": "",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 90.9052734375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "3edd280e-b692-4ef3-93eb-b83d1f22890a",
+            "name": "totalVentas",
+            "comment": "",
+            "dataType": "float",
+            "default": "0",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2639,12 +2708,12 @@
             "name": "totalFacturado",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2662,12 +2731,12 @@
             "name": "totalBalanza",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2685,12 +2754,12 @@
             "name": "totalNoBalanza",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2708,12 +2777,12 @@
             "name": "totalOtrosIngresos",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2731,12 +2800,12 @@
             "name": "totalOtrosGastos",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2754,12 +2823,12 @@
             "name": "totalCredito",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2773,16 +2842,39 @@
             }
           },
           {
-            "id": "eb969dbd-97eb-4d3f-9621-e3ec4b3d49a4",
-            "name": "totalEfectivo",
+            "id": "2164e09c-5d10-47ec-8141-bdc2e2985aa7",
+            "name": "totalPostnet",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 70.65625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "eb969dbd-97eb-4d3f-9621-e3ec4b3d49a4",
+            "name": "totalEfectivo",
+            "comment": "",
+            "dataType": "float",
+            "default": "0",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2800,12 +2892,12 @@
             "name": "totalDebito",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2819,16 +2911,39 @@
             }
           },
           {
-            "id": "b4777097-0606-4606-8562-3295500c2fdf",
-            "name": "totalAdicionalCredito",
+            "id": "d2f6a809-d710-4b59-a036-1cce1befb3f8",
+            "name": "totalMercadoPago",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 107.5107421875,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "b4777097-0606-4606-8562-3295500c2fdf",
+            "name": "totalAdicionalCredito",
+            "comment": "",
+            "dataType": "float",
+            "default": "0",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2846,12 +2961,12 @@
             "name": "totalPedidosYa",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2869,12 +2984,12 @@
             "name": "diferencia",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2892,12 +3007,12 @@
             "name": "tesoreria",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2915,12 +3030,12 @@
             "name": "totalEfectivoEnCaja",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -2938,12 +3053,12 @@
             "name": "totalEfectivoEnCajaReal",
             "comment": "",
             "dataType": "float",
-            "default": "",
+            "default": "0",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -3050,10 +3165,10 @@
           }
         ],
         "ui": {
-          "active": false,
-          "left": 2011.0554,
-          "top": 891.805,
-          "zIndex": 12,
+          "active": true,
+          "left": 2017.3054,
+          "top": 895.555,
+          "zIndex": 35,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF9800"
@@ -3229,9 +3344,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 2052.5557,
-          "top": 578.0002,
-          "zIndex": 11,
+          "left": 1565.0557,
+          "top": 803.0002,
+          "zIndex": 14,
           "widthName": 72.103515625,
           "widthComment": 60,
           "color": "#FF9800"
@@ -3430,12 +3545,12 @@
         ],
         "ui": {
           "active": false,
-          "left": 2598.7777,
-          "top": 1098.2777,
-          "zIndex": 41,
+          "left": 2598.3374,
+          "top": 1100.7777,
+          "zIndex": 11,
           "widthName": 84.37353515625,
           "widthComment": 60,
-          "color": "#00FF09"
+          "color": "#00FF09B7"
         },
         "visible": true
       },
@@ -3631,9 +3746,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 2598.6666,
-          "top": 602.0278,
-          "zIndex": 31,
+          "left": 2599.9166,
+          "top": 600.7778,
+          "zIndex": 9,
           "widthName": 73.5380859375,
           "widthComment": 60,
           "color": "#FF1300"
@@ -3763,9 +3878,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 2602.9946,
-          "top": 1388.1389,
-          "zIndex": 16,
+          "left": 2603.4387,
+          "top": 1425.2223,
+          "zIndex": 12,
           "widthName": 79.32080078125,
           "widthComment": 60,
           "color": "#00FF09"
@@ -3897,7 +4012,7 @@
           "active": false,
           "left": 2599.2446,
           "top": 890,
-          "zIndex": 13,
+          "zIndex": 10,
           "widthName": 70.6435546875,
           "widthComment": 60,
           "color": "#FF0000"
@@ -3932,7 +4047,7 @@
             "a3f642d5-b5eb-4d90-b200-bb06306a73f6"
           ],
           "x": 1031.2778,
-          "y": 355.0419,
+          "y": 146.2919,
           "direction": "left"
         },
         "constraintName": "fk_unidadesmedida_to_productos",
@@ -3958,7 +4073,7 @@
             "147e670e-9445-42af-86cc-121730dbc8fd"
           ],
           "x": 1031.2778,
-          "y": 146.2919,
+          "y": 355.0419,
           "direction": "left"
         },
         "constraintName": "fk_marcas_to_productos",
@@ -4026,8 +4141,8 @@
           "columnIds": [
             "4f86b16a-f3ab-4fcd-a9aa-05fda1a7bc38"
           ],
-          "x": 1621.4856494140624,
-          "y": 346.2223,
+          "x": 1588.972099609375,
+          "y": 366.7223,
           "direction": "bottom"
         },
         "end": {
@@ -4035,8 +4150,8 @@
           "columnIds": [
             "4c62818d-f36f-48f7-a047-816b6364a2a6"
           ],
-          "x": 1738.185118359375,
-          "y": 458.0267,
+          "x": 1733.185118359375,
+          "y": 471.7767,
           "direction": "top"
         },
         "constraintName": "fk_ventas_to_ventasproductos",
@@ -4053,7 +4168,7 @@
             "4f86b16a-f3ab-4fcd-a9aa-05fda1a7bc38"
           ],
           "x": 1914.10759765625,
-          "y": 109.9723,
+          "y": 115.0973,
           "direction": "right"
         },
         "end": {
@@ -4087,8 +4202,8 @@
           "columnIds": [
             "dcad73dd-7d5f-46a9-83e7-e419935b5008"
           ],
-          "x": 1553.5838,
-          "y": 595.0267,
+          "x": 1548.5838,
+          "y": 608.7767,
           "direction": "left"
         },
         "constraintName": "fk_productos_to_ventasproductos",
@@ -4105,7 +4220,7 @@
             "4f86b16a-f3ab-4fcd-a9aa-05fda1a7bc38"
           ],
           "x": 1914.10759765625,
-          "y": 267.4723,
+          "y": 282.8473,
           "direction": "right"
         },
         "end": {
@@ -4130,8 +4245,8 @@
           "columnIds": [
             "4f86b16a-f3ab-4fcd-a9aa-05fda1a7bc38"
           ],
-          "x": 1816.5669482421874,
-          "y": 346.2223,
+          "x": 1719.026298828125,
+          "y": 366.7223,
           "direction": "bottom"
         },
         "end": {
@@ -4139,9 +4254,9 @@
           "columnIds": [
             "7692fe09-c355-4456-9c80-dfafc8749e2d"
           ],
-          "x": 2052.5557,
-          "y": 684.2502,
-          "direction": "left"
+          "x": 1743.50931328125,
+          "y": 803.0002,
+          "direction": "top"
         },
         "constraintName": "fk_ventas_to_cajasventas",
         "visible": true
@@ -4156,72 +4271,20 @@
           "columnIds": [
             "fade10a8-5fe0-4392-b48d-33bcabadfe61"
           ],
-          "x": 2118.3523970703127,
-          "y": 891.805,
-          "direction": "top"
+          "x": 2017.3054,
+          "y": 1196.5549999999998,
+          "direction": "left"
         },
         "end": {
           "tableId": "fccf8cd9-1702-4276-a7fd-912e2ac731fb",
           "columnIds": [
             "21bc537b-27b7-421b-bf91-f9d6249e5f65"
           ],
-          "x": 2231.00931328125,
-          "y": 790.5002,
-          "direction": "bottom"
-        },
-        "constraintName": "fk_cajas_to_cajasventas",
-        "visible": true
-      },
-      {
-        "id": "f6513a94-b5d1-4e5f-9e2a-1dc9748423d1",
-        "identification": false,
-        "relationshipType": "OneN",
-        "startRelationshipType": "Dash",
-        "start": {
-          "tableId": "41eb06cd-9a05-47db-a643-78144b7358e9",
-          "columnIds": [
-            "fade10a8-5fe0-4392-b48d-33bcabadfe61"
-          ],
-          "x": 2440.24338828125,
-          "y": 1151.8049999999998,
+          "x": 1921.9629265625,
+          "y": 909.2502,
           "direction": "right"
         },
-        "end": {
-          "tableId": "d6db74e7-cc58-442a-a152-f810ee626eec",
-          "columnIds": [
-            "9399d9fc-089c-4d54-9f83-41ed7c4a32d6"
-          ],
-          "x": 2598.7777,
-          "y": 1214.7777,
-          "direction": "left"
-        },
-        "constraintName": "fk_cajas_to_ingresos",
-        "visible": true
-      },
-      {
-        "id": "7126fafc-db14-4133-985e-b065ff3724b5",
-        "identification": false,
-        "relationshipType": "OneN",
-        "startRelationshipType": "Dash",
-        "start": {
-          "tableId": "41eb06cd-9a05-47db-a643-78144b7358e9",
-          "columnIds": [
-            "fade10a8-5fe0-4392-b48d-33bcabadfe61"
-          ],
-          "x": 2332.9463912109377,
-          "y": 891.805,
-          "direction": "top"
-        },
-        "end": {
-          "tableId": "24712dbd-d131-402a-b802-2e44a1abd7b2",
-          "columnIds": [
-            "410fc771-13d6-4100-83fe-f4d69e88188d"
-          ],
-          "x": 2598.6666,
-          "y": 718.5278,
-          "direction": "left"
-        },
-        "constraintName": "fk_cajas_to_gastos",
+        "constraintName": "fk_cajas_to_cajasventas",
         "visible": true
       },
       {
@@ -4234,8 +4297,8 @@
           "columnIds": [
             "29b1f0a8-d59a-496a-9d4a-8ab6b2b9cb45"
           ],
-          "x": 2780.372285546875,
-          "y": 1388.1389,
+          "x": 2780.816385546875,
+          "y": 1425.2223,
           "direction": "top"
         },
         "end": {
@@ -4243,8 +4306,8 @@
           "columnIds": [
             "17475e4e-6f91-4101-8945-4026b78d547d"
           ],
-          "x": 2780.858998828125,
-          "y": 1331.2777,
+          "x": 2780.418698828125,
+          "y": 1333.7777,
           "direction": "bottom"
         },
         "constraintName": "fk_tiposingresos_to_ingresos",
@@ -4269,11 +4332,89 @@
           "columnIds": [
             "89ff3262-7057-43cd-9b3d-bc3566b5a824"
           ],
-          "x": 2776.40927578125,
-          "y": 835.0278,
+          "x": 2777.65927578125,
+          "y": 833.7778,
           "direction": "bottom"
         },
         "constraintName": "fk_tiposgastos_to_gastos",
+        "visible": true
+      },
+      {
+        "id": "f6513a94-b5d1-4e5f-9e2a-1dc9748423d1",
+        "identification": false,
+        "relationshipType": "OneN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "41eb06cd-9a05-47db-a643-78144b7358e9",
+          "columnIds": [
+            "fade10a8-5fe0-4392-b48d-33bcabadfe61"
+          ],
+          "x": 2446.49338828125,
+          "y": 1196.5549999999998,
+          "direction": "right"
+        },
+        "end": {
+          "tableId": "d6db74e7-cc58-442a-a152-f810ee626eec",
+          "columnIds": [
+            "9399d9fc-089c-4d54-9f83-41ed7c4a32d6"
+          ],
+          "x": 2598.3374,
+          "y": 1217.2777,
+          "direction": "left"
+        },
+        "constraintName": "fk_cajas_to_ingresos",
+        "visible": true
+      },
+      {
+        "id": "7126fafc-db14-4133-985e-b065ff3724b5",
+        "identification": false,
+        "relationshipType": "OneN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "41eb06cd-9a05-47db-a643-78144b7358e9",
+          "columnIds": [
+            "fade10a8-5fe0-4392-b48d-33bcabadfe61"
+          ],
+          "x": 2339.1963912109377,
+          "y": 895.555,
+          "direction": "top"
+        },
+        "end": {
+          "tableId": "24712dbd-d131-402a-b802-2e44a1abd7b2",
+          "columnIds": [
+            "410fc771-13d6-4100-83fe-f4d69e88188d"
+          ],
+          "x": 2599.9166,
+          "y": 717.2778,
+          "direction": "left"
+        },
+        "constraintName": "fk_cajas_to_gastos",
+        "visible": true
+      },
+      {
+        "id": "c3e16aa6-9a19-4370-91b1-574085d47fda",
+        "identification": false,
+        "relationshipType": "OneN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "41eb06cd-9a05-47db-a643-78144b7358e9",
+          "columnIds": [
+            "fade10a8-5fe0-4392-b48d-33bcabadfe61"
+          ],
+          "x": 2124.6023970703127,
+          "y": 895.555,
+          "direction": "top"
+        },
+        "end": {
+          "tableId": "a7488d58-c521-4d96-bda2-6ce2eac06f75",
+          "columnIds": [
+            "4426629a-fe1e-4e92-9d74-66d7d8da26c3"
+          ],
+          "x": 1849.080498046875,
+          "y": 366.7223,
+          "direction": "bottom"
+        },
+        "constraintName": "fk_cajas_to_ventas",
         "visible": true
       }
     ]

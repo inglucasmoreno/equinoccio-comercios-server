@@ -54,14 +54,15 @@ export class IngresosController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('completar/:id')
-  async completar(@Res() res, @Param('id') id: number): Promise<any> {
+  @Patch('completar/:id')
+  async completar(@Res() res, @Body() updateData: any, @Param('id') id: number): Promise<any> {
 
-    await this.ingresosService.completar(id);
+    const ingreso = await this.ingresosService.completar(id, updateData);
     
     return res.status(HttpStatus.OK).json({
       success: true,
       message: 'Ingreso obtenido correctamente',
+      ingreso
     })
 
   }

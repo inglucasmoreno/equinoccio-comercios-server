@@ -44,11 +44,6 @@ export class VentasService {
         orderBy[columna] = direccion;
 
         let where: any = {}
-
-        let whereTotales: any = {
-
-        }
-
         let activoTotales: any = {}
 
         if (activo !== '') {
@@ -106,7 +101,7 @@ export class VentasService {
                     ...where,
                     fechaVenta: {
                         gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
-                        lte: fechaDesde !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+                        lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
                     },
                 }
             }),
@@ -132,7 +127,7 @@ export class VentasService {
                     ...where,
                     fechaVenta: {
                         gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
-                        lte: fechaDesde !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+                        lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
                     },
                 }
             }),
@@ -144,7 +139,7 @@ export class VentasService {
                 where: {
                     fechaVenta: {
                         gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
-                        lte: fechaDesde !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+                        lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
                     },
                     activo: activoTotales
                 }
@@ -158,7 +153,7 @@ export class VentasService {
                     comprobante: 'Facturacion',
                     fechaVenta: {
                         gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
-                        lte: fechaDesde !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+                        lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
                     },
                     activo: activoTotales
                 }
@@ -179,7 +174,7 @@ export class VentasService {
                     },
                     fechaVenta: {
                         gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
-                        lte: fechaDesde !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+                        lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
                     },
                     activo: activoTotales
                 }
@@ -213,9 +208,21 @@ export class VentasService {
             dataOtros
         } = createData;
 
+        // Verificacion: Caja activa
+        const cajaDB = await this.prisma.cajas.findFirst({
+            where: { activo: true }
+        });
+
+        if(!cajaDB) throw new NotFoundException('Primero debes activar una caja');
+
+        const data = {
+            ...dataVenta,
+            cajaId: cajaDB.id,
+        }
+
         // Generacion de venta
         const ventaDB = await this.prisma.ventas.create({
-            data: dataVenta,
+            data,
             include: {
                 creatorUser: true
             }

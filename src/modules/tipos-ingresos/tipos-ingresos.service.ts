@@ -35,10 +35,15 @@ export class TiposIngresosService {
       // Ordenando datos
       let orderBy = {};
       orderBy[columna] = direccion;
-  
-      let where: any = {
-        activo: activo === 'true' ? true : false
-      };
+      
+      let where = {};
+
+      if (activo !== '') {
+        where = {
+          ...where,
+          activo: activo === 'true' ? true : false
+        };
+      }
   
       // where.OR.push({
       //   descripcion: {
@@ -57,9 +62,7 @@ export class TiposIngresosService {
         },
         // skip: (pagina - 1) * itemsPorPagina,
         orderBy,
-        // where: {
-        //   activo: false
-        // }
+        where
       })
   
       return {

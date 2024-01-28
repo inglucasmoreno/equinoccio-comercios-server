@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { GastosCajasService } from './gastos-cajas.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Prisma } from '@prisma/client';
@@ -60,6 +60,20 @@ export class GastosCajasController {
         res.status(HttpStatus.OK).json({
             success: true,
             message: 'Gasto actualizado correctamente',
+            gasto
+        })
+
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    async delete(@Res() res, @Param('id') id: number) {
+
+        const gasto = await this.gastosService.delete(id);
+
+        res.status(HttpStatus.OK).json({
+            success: true,
+            message: 'Gasto eliminado correctamente',
             gasto
         })
 
