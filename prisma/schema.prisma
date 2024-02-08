@@ -40,6 +40,8 @@ model Usuarios {
   ingresosCajas       IngresosCajas[]
   gastosCajas         GastosCajas[]
   cajasVentas         CajasVentas[]
+  Clientes            Clientes[]
+  Proveedores         Proveedores[]
 }
 
 model UnidadesMedida {
@@ -90,19 +92,19 @@ model Productos {
 }
 
 model Ingresos {
-  id                 Int                 @id @default(autoincrement())
-  fechaIngreso       DateTime?           @default(now())
-  nroFactura         String?             @db.VarChar(150)
-  comentario         String?             @default("") @db.VarChar(150)
-  estado             String?             @default("Pendiente") @db.VarChar(150)
-  activo             Boolean?            @default(true)
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  creatorUserId      Int
+  id                  Int                 @id @default(autoincrement())
+  fechaIngreso        DateTime?           @default(now())
+  nroFactura          String?             @db.VarChar(150)
+  comentario          String?             @default("") @db.VarChar(150)
+  estado              String?             @default("Pendiente") @db.VarChar(150)
+  activo              Boolean?            @default(true)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  creatorUserId       Int
   usuarioCompletadoId Int
   usuarioCompletado   Usuarios?           @relation(fields: [usuarioCompletadoId], references: [id], name: "usuarioCompletar")
-  creatorUser        Usuarios            @relation(fields: [creatorUserId], references: [id], name: "usuarioCreador")
-  ingresosProductos  IngresosProductos[]
+  creatorUser         Usuarios            @relation(fields: [creatorUserId], references: [id], name: "usuarioCreador")
+  ingresosProductos   IngresosProductos[]
 }
 
 model IngresosProductos {
@@ -288,4 +290,28 @@ model CajasVentas {
   venta         Ventas   @relation(fields: [ventaId], references: [id])
   caja          Cajas    @relation(fields: [cajaId], references: [id])
   creatorUser   Usuarios @relation(fields: [creatorUserId], references: [id])
+}
+
+model Clientes {
+  id                  Int      @id @default(autoincrement())
+  descripcion         String   @unique @db.VarChar(150)
+  tipo_identificacion String   @db.VarChar(100)
+  identificacion      String   @db.VarChar(100)
+  activo              Boolean? @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  creatorUserId       Int
+  creatorUser         Usuarios @relation(fields: [creatorUserId], references: [id])
+}
+
+model Proveedores {
+  id                  Int      @id @default(autoincrement())
+  descripcion         String   @unique @db.VarChar(150)
+  tipo_identificacion String   @db.VarChar(100)
+  identificacion      String   @db.VarChar(100)
+  activo              Boolean? @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  creatorUserId       Int
+  creatorUser         Usuarios @relation(fields: [creatorUserId], references: [id])
 }

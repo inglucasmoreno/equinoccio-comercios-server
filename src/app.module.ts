@@ -24,6 +24,8 @@ import { CajasModule } from './modules/cajas/cajas.module';
 import { IngresosCajasModule } from './modules/ingresos-cajas/ingresos-cajas.module';
 import { GastosCajasModule } from './modules/gastos-cajas/gastos-cajas.module';
 import { CajasVentasModule } from './modules/cajas-ventas/cajas-ventas.module';
+import { ClientesModule } from './modules/clientes/clientes.module';
+import { ProveedoresModule } from './modules/proveedores/proveedores.module';
 
 @Module({
   imports: [
@@ -66,6 +68,8 @@ import { CajasVentasModule } from './modules/cajas-ventas/cajas-ventas.module';
     IngresosCajasModule,
     GastosCajasModule,
     CajasVentasModule,
+    ClientesModule,
+    ProveedoresModule,
 
   ],
   controllers: [AppController],
