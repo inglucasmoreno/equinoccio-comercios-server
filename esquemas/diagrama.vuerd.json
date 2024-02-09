@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 3000,
     "height": 3000,
-    "scrollTop": -574,
-    "scrollLeft": -569,
+    "scrollTop": -794,
+    "scrollLeft": -571,
     "zoomLevel": 1,
     "show": {
       "tableComment": true,
@@ -1858,7 +1858,7 @@
           "active": false,
           "left": 1523.945,
           "top": 31.2223,
-          "zIndex": 13,
+          "zIndex": 9,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00F6"
@@ -2105,7 +2105,7 @@
           "active": false,
           "left": 1548.5838,
           "top": 471.7767,
-          "zIndex": 15,
+          "zIndex": 10,
           "widthName": 100.287109375,
           "widthComment": 60,
           "color": "#F600FF"
@@ -3168,7 +3168,7 @@
           "active": false,
           "left": 2017.3054,
           "top": 895.555,
-          "zIndex": 135,
+          "zIndex": 11,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF9800"
@@ -3346,7 +3346,7 @@
           "active": false,
           "left": 1565.0557,
           "top": 803.0002,
-          "zIndex": 137,
+          "zIndex": 12,
           "widthName": 74.99169921875,
           "widthComment": 60,
           "color": "#FF9800"
@@ -3547,7 +3547,7 @@
           "active": false,
           "left": 2598.3374,
           "top": 1100.7777,
-          "zIndex": 143,
+          "zIndex": 14,
           "widthName": 85.09716796875,
           "widthComment": 60,
           "color": "#00FF09B7"
@@ -3748,7 +3748,7 @@
           "active": false,
           "left": 2599.9166,
           "top": 600.7778,
-          "zIndex": 147,
+          "zIndex": 16,
           "widthName": 76.419921875,
           "widthComment": 60,
           "color": "#FF1300"
@@ -3880,7 +3880,7 @@
           "active": false,
           "left": 2603.4387,
           "top": 1425.2223,
-          "zIndex": 145,
+          "zIndex": 15,
           "widthName": 83.16748046875,
           "widthComment": 60,
           "color": "#00FF09"
@@ -4012,7 +4012,7 @@
           "active": false,
           "left": 2598.2446,
           "top": 890,
-          "zIndex": 140,
+          "zIndex": 13,
           "widthName": 74.490234375,
           "widthComment": 60,
           "color": "#FF0000"
@@ -4117,6 +4117,52 @@
             }
           },
           {
+            "id": "08060e81-3f33-4f96-a28b-b129c85a8221",
+            "name": "telefono",
+            "comment": "",
+            "dataType": "string",
+            "default": "\"\"",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "cf01a220-0fb6-4a11-aa06-b105953dacc2",
+            "name": "domicilio",
+            "comment": "",
+            "dataType": "string",
+            "default": "\"\"",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "18ad03dd-2ad0-4f4e-a129-cee9a75b6924",
             "name": "activo",
             "comment": "",
@@ -4213,7 +4259,7 @@
           "active": false,
           "left": 711.69,
           "top": 965.306,
-          "zIndex": 238,
+          "zIndex": 46,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00F6"
@@ -4318,6 +4364,52 @@
             }
           },
           {
+            "id": "09a566b8-568d-462a-8728-0938479c1def",
+            "name": "telefono",
+            "comment": "",
+            "dataType": "string",
+            "default": "\"\"",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "7eb1cb0d-c346-4019-b3d2-f17299c7d5a2",
+            "name": "domicilio",
+            "comment": "",
+            "dataType": "string",
+            "default": "\"\"",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "7cedc8dd-3ee2-4d65-90b9-6a5a1853c6d0",
             "name": "activo",
             "comment": "",
@@ -4412,9 +4504,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 1119.6729,
+          "left": 1118.6729,
           "top": 963.208,
-          "zIndex": 240,
+          "zIndex": 60,
           "widthName": 75.708984375,
           "widthComment": 60,
           "color": "#0900FF"
