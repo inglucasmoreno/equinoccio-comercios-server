@@ -100,10 +100,12 @@ model Ingresos {
   activo              Boolean?            @default(true)
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
+  proveedorId         Int
   creatorUserId       Int
   usuarioCompletadoId Int
   usuarioCompletado   Usuarios?           @relation(fields: [usuarioCompletadoId], references: [id], name: "usuarioCompletar")
   creatorUser         Usuarios            @relation(fields: [creatorUserId], references: [id], name: "usuarioCreador")
+  proveedor           Proveedores         @relation(fields: [proveedorId], references: [id])
   ingresosProductos   IngresosProductos[]
 }
 
@@ -307,15 +309,16 @@ model Clientes {
 }
 
 model Proveedores {
-  id                  Int      @id @default(autoincrement())
-  descripcion         String   @unique @db.VarChar(150)
-  tipo_identificacion String   @db.VarChar(100)
-  identificacion      String   @db.VarChar(100)
-  telefono            String?  @default("") @db.VarChar(100)
-  domicilio           String?  @default("") @db.VarChar(150)
-  activo              Boolean? @default(true)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                  Int        @id @default(autoincrement())
+  descripcion         String     @unique @db.VarChar(150)
+  tipo_identificacion String     @db.VarChar(100)
+  identificacion      String     @db.VarChar(100)
+  telefono            String?    @default("") @db.VarChar(100)
+  domicilio           String?    @default("") @db.VarChar(150)
+  activo              Boolean?   @default(true)
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  ingresos            Ingresos[]
   creatorUserId       Int
-  creatorUser         Usuarios @relation(fields: [creatorUserId], references: [id])
+  creatorUser         Usuarios   @relation(fields: [creatorUserId], references: [id])
 }

@@ -23,6 +23,7 @@ export class IngresosService {
             }
           }
         },
+        proveedor: true,
         usuarioCompletado: true,
         creatorUser: true,
       }
@@ -75,6 +76,7 @@ export class IngresosService {
     const ingresos = await this.prisma.ingresos.findMany({
       take: Number(itemsPorPagina),
       include: {
+        proveedor: true,
         usuarioCompletado: true,
         creatorUser: true,
       },
@@ -119,6 +121,7 @@ export class IngresosService {
             }
           }
         },
+        proveedor: true,
         usuarioCompletado: true,
         creatorUser: true,
       }

@@ -79,7 +79,6 @@ export class ClientesService {
     const clienteDB = await this.prisma.clientes.findFirst({
       where: {
         OR: [
-          { descripcion: createData.descripcion },
           { identificacion: createData.identificacion }
         ]
       }
@@ -103,12 +102,6 @@ export class ClientesService {
 
     // Verificacion: El cliente no existe
     if (!clienteDB) throw new NotFoundException('El cliente no existe');
-
-    // Verificacion: cliente repetido
-    if (descripcion) {
-      const clienteRepetido = await this.prisma.clientes.findFirst({ where: { descripcion: descripcion.toString() } })
-      if (clienteRepetido && clienteRepetido.id !== id) throw new NotFoundException('El cliente ya se encuentra cargado');
-    }
 
     // Verificacion: identificacion repetida
     if (identificacion) {

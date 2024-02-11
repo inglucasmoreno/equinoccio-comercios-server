@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 3000,
     "height": 3000,
-    "scrollTop": -794,
-    "scrollLeft": -571,
+    "scrollTop": -361.9997000000001,
+    "scrollLeft": -315.8571999999999,
     "zoomLevel": 1,
     "show": {
       "tableComment": true,
@@ -1038,6 +1038,29 @@
             }
           },
           {
+            "id": "aabc0fa0-9cb1-45af-b97d-1afe7d5c7c91",
+            "name": "proveedorId",
+            "comment": "",
+            "dataType": "int",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 71.3798828125,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "cd66a04d-cfb0-4485-9b15-4bd7e9d01b7c",
             "name": "nroFactura",
             "comment": "",
@@ -1226,7 +1249,7 @@
           "active": false,
           "left": 464.8572,
           "top": 456.9997,
-          "zIndex": 4,
+          "zIndex": 42,
           "widthName": 60,
           "widthComment": 60,
           "color": "#3411FF"
@@ -4257,9 +4280,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 711.69,
-          "top": 965.306,
-          "zIndex": 46,
+          "left": 1036.69,
+          "top": 949.306,
+          "zIndex": 43,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00F6"
@@ -4504,9 +4527,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 1118.6729,
-          "top": 963.208,
-          "zIndex": 60,
+          "left": 450.6729,
+          "top": 809.208,
+          "zIndex": 44,
           "widthName": 75.708984375,
           "widthComment": 60,
           "color": "#0900FF"
@@ -4584,7 +4607,7 @@
             "7c9f92c3-6518-4304-be38-e4ef9c2eafd0"
           ],
           "x": 829.5705789062499,
-          "y": 583.7497000000001,
+          "y": 593.9997000000001,
           "direction": "right"
         },
         "end": {
@@ -4909,6 +4932,32 @@
           "direction": "bottom"
         },
         "constraintName": "fk_cajas_to_ventas",
+        "visible": true
+      },
+      {
+        "id": "86e343f4-023c-47d0-af70-a062c5637976",
+        "identification": false,
+        "relationshipType": "OneN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "284e5df9-0435-450b-95d5-542827b55f67",
+          "columnIds": [
+            "f7155cfa-76ed-437e-90ac-005d61ce84c2"
+          ],
+          "x": 646.845995703125,
+          "y": 809.208,
+          "direction": "top"
+        },
+        "end": {
+          "tableId": "4c13834e-a146-4d65-9dbd-f40056b9b5d6",
+          "columnIds": [
+            "aabc0fa0-9cb1-45af-b97d-1afe7d5c7c91"
+          ],
+          "x": 647.2138894531249,
+          "y": 730.9997000000001,
+          "direction": "bottom"
+        },
+        "constraintName": "fk_proveedores_to_ingresos",
         "visible": true
       }
     ]

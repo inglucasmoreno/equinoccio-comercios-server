@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Ventas } from '@prisma/client';
 import { add } from 'date-fns';
 import { PrismaService } from 'src/prisma.service';
+import PdfPrinter from 'pdfmake';
 
 @Injectable()
 export class VentasService {
@@ -36,6 +37,7 @@ export class VentasService {
         pagina = 1,
         fechaDesde = '',
         fechaHasta = '',
+        cajaId = '',
         itemsPorPagina = 1000
     }: any): Promise<any> {
 
@@ -44,6 +46,7 @@ export class VentasService {
         orderBy[columna] = direccion;
 
         let where: any = {}
+
         let activoTotales: any = {}
 
         if (activo !== '') {
@@ -52,6 +55,38 @@ export class VentasService {
                 activo: activo === 'true' ? true : false
             },
                 activoTotales = activo === 'true' ? true : false
+        }
+
+        let whereVentasTMP: any = {
+            fechaVenta: {
+                gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
+                lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+            },
+            activo: activoTotales
+        }
+
+        let whereTotalFacturadas: any = {
+            comprobante: 'Facturacion',
+            fechaVenta: {
+                gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
+                lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+            },
+            activo: activoTotales
+        }
+
+        let whereTotalPedidosYa: any = {
+            ventasFormasPago: {
+                some: {
+                    descripcion: {
+                        in: ['PedidosYa - Efectivo', 'PedidosYa - Online']
+                    }
+                }
+            },
+            fechaVenta: {
+                gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
+                lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+            },
+            activo: activoTotales
         }
 
         if (formaPago !== '') {
@@ -95,7 +130,37 @@ export class VentasService {
             }
         }
 
+        // Filtrado por cajaId
+        if (cajaId !== '') {
+            where = {
+                ...where,
+                cajaId: {
+                    equals: Number(cajaId)
+                }
+            },
+                whereTotalFacturadas = {
+                    ...whereTotalFacturadas,
+                    cajaId: {
+                        equals: Number(cajaId)
+                    }
+                },
+                whereVentasTMP = {
+                    ...whereVentasTMP,
+                    cajaId: {
+                        equals: Number(cajaId)
+                    }
+                },
+                whereTotalPedidosYa = {
+                    ...whereTotalPedidosYa,
+                    cajaId: {
+                        equals: Number(cajaId)
+                    }
+                }
+        }
+
         const [totalItems, ventas, totalVentasTMP, totalVentasFacturadasTMP, totalVentasPedidosYaTMP] = await Promise.all([
+
+            // Total de items
             await this.prisma.ventas.count({
                 where: {
                     ...where,
@@ -105,6 +170,8 @@ export class VentasService {
                     },
                 }
             }),
+
+            // Listado de ventas
             await this.prisma.ventas.findMany({
                 take: Number(itemsPorPagina),
                 include: {
@@ -132,31 +199,20 @@ export class VentasService {
                 }
             }),
 
+            // Total de ventas TMP para calculos
             await this.prisma.ventas.aggregate({
                 _sum: {
                     precioTotal: true,
                 },
-                where: {
-                    fechaVenta: {
-                        gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
-                        lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
-                    },
-                    activo: activoTotales
-                }
+                where: whereVentasTMP
             }),
 
+            // Total ventas facturadas - TMP
             await this.prisma.ventas.aggregate({
                 _sum: {
                     precioTotal: true,
                 },
-                where: {
-                    comprobante: 'Facturacion',
-                    fechaVenta: {
-                        gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
-                        lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
-                    },
-                    activo: activoTotales
-                }
+                where: whereTotalFacturadas
             }),
 
             // Calcular precioTotal acumulado de las ventas pedidosYa
@@ -164,20 +220,7 @@ export class VentasService {
                 _sum: {
                     precioTotal: true,
                 },
-                where: {
-                    ventasFormasPago: {
-                        some: {
-                            descripcion: {
-                                in: ['PedidosYa - Efectivo', 'PedidosYa - Online']
-                            }
-                        }
-                    },
-                    fechaVenta: {
-                        gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
-                        lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
-                    },
-                    activo: activoTotales
-                }
+                where: whereTotalPedidosYa
             }),
         ]);
 
@@ -213,7 +256,7 @@ export class VentasService {
             where: { activo: true }
         });
 
-        if(!cajaDB) throw new NotFoundException('Primero debes activar una caja');
+        if (!cajaDB) throw new NotFoundException('Primero debes activar una caja');
 
         const data = {
             ...dataVenta,
@@ -286,5 +329,75 @@ export class VentasService {
         })
 
     }
+
+    // Comprobante - Venta
+    async generarComprobante(id: number): Promise<any> {
+
+        const ventaDB = await this.prisma.ventas.findFirst({
+            where: { id },
+            include: {
+                ventasProductos: {
+                    include: {
+                        producto: {
+                            include: {
+                                unidadMedida: true
+                            }
+                        }
+                    }
+                },
+                ventasFacturacion: true,
+                ventasFormasPago: true,
+                creatorUser: true,
+            }
+        });
+
+        // Verificacion: La venta no existe
+        if (!ventaDB) throw new NotFoundException('La venta no existe');
+
+        const pdfBuffer: Buffer = await new Promise(resolve => {
+
+            let fonts = {
+                Helvetica: {
+                    normal: 'Helvetica',
+                    bold: 'Helvetica-Bold',
+                    italics: 'Helvetica-Oblique',
+                    bolditalics: 'Helvetica-BoldOblique'
+                },
+            }
+
+            const printer = new PdfPrinter(fonts);
+
+            const docDefinition = {
+                defaultStyle: { font: 'Helvetica' },
+                content: [
+                    {
+                        text: 'Probando PDFMake'
+                    }
+                ],
+                styles: {}
+            }
+
+            const pdfDoc = printer.createPdfKitDocument(docDefinition);
+
+            const chunks = [];
+
+            pdfDoc.on("data", (chunk) => {
+                chunks.push(chunk);
+            });
+
+            pdfDoc.end();
+
+            pdfDoc.on("end", () => {
+                const result = Buffer.concat(chunks);
+                resolve(result)
+            })
+
+        })
+
+        return pdfBuffer;
+
+    }
+
+
 
 }
