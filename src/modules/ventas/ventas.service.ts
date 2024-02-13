@@ -1,13 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Ventas } from '@prisma/client';
-import { add } from 'date-fns';
+import { add, format } from 'date-fns';
 import { PrismaService } from 'src/prisma.service';
 import PdfPrinter from 'pdfmake';
+import { TDocumentDefinitions } from 'pdfmake/interfaces';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class VentasService {
 
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private readonly configService: ConfigService,
+        private prisma: PrismaService
+    ) { }
 
     // Venta por ID
     async getId(id: number): Promise<Ventas> {
@@ -333,7 +338,7 @@ export class VentasService {
     // Comprobante - Venta
     async generarComprobante(id: number): Promise<any> {
 
-        const ventaDB = await this.prisma.ventas.findFirst({
+        const ventaDB: any = await this.prisma.ventas.findFirst({
             where: { id },
             include: {
                 ventasProductos: {
@@ -354,6 +359,11 @@ export class VentasService {
         // Verificacion: La venta no existe
         if (!ventaDB) throw new NotFoundException('La venta no existe');
 
+        console.log(ventaDB);
+
+        // Adaptando -> Fecha de Venta
+        const fechaVenta = add(ventaDB.fechaVenta, { hours: -3 });
+
         const pdfBuffer: Buffer = await new Promise(resolve => {
 
             let fonts = {
@@ -367,18 +377,115 @@ export class VentasService {
 
             const printer = new PdfPrinter(fonts);
 
-            const docDefinition = {
+            const docDefinition: TDocumentDefinitions = {
                 defaultStyle: { font: 'Helvetica' },
+                pageMargins: 10,
+                pageSize: { width: 226.772, height: 841.89105 }, // 1 milimetro = 2.83465
                 content: [
                     {
-                        text: 'Probando PDFMake'
-                    }
+                        columns: [
+                            {
+                                image: this.configService.get('NODE_ENV') === 'production' ? `../assets/Logo.png` : './assets/Logo.png',
+                                width: 70,
+                            },
+                            [
+                                {text: `Fecha y hora`, fontSize: 9, marginLeft: 30, marginTop: 10},
+                                {text: `${format(fechaVenta, 'dd-MM-yyyy')} ${format(fechaVenta, 'HH:mm')}`, fontSize: 9, marginLeft: 20, marginTop: 4},
+                            ],
+                        ],
+                    },
+                    {
+                        text: 'EQUINOCCIO TECHNOLOGY',
+                        marginTop: 10,
+                        fontSize: 10,
+                        bold: true,
+                    },
+                    {
+                        text: [
+                            {
+                                text: 'Domicilio:',
+                                bold: true,
+                            }, ` 9 DE JULIO 811`,
+                        ],
+                        marginTop: 5,
+                        fontSize: 9
+                    },
+                    {
+                        text: [
+                            {
+                                text: 'Telefono:',
+                                bold: true,
+                            }, ` 2664869642`,
+                        ],
+                        marginTop: 7,
+                        fontSize: 9
+                    },
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+                    {
+                        text: 'A consumidor final',
+                        fontSize: 9,
+                        marginTop: 5,
+                    },
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+
+                    {
+                        text: 'Listado de productos',
+                        bold: true,
+                        fontSize: 11,
+                        marginTop: 5,
+                        marginBottom: 2,
+                    },
+
+                    ventaDB.ventasProductos.map((producto: any) => {
+                        return [
+                            {
+                                text: `${producto.producto.descripcion} x ${producto.cantidad}`,
+                                marginTop: 7,
+                                fontSize: 9,
+                            },
+                            {
+                                text: `$${parseFloat(producto.precioTotal).toFixed(2)}`,
+                                marginTop: 3,
+                                fontSize: 9,
+                            }
+                        ]
+                    }),
+
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+                    {
+                        text: [
+                            {
+                                text: 'TOTAL:',
+                                bold: true,
+                            }, ` $${parseFloat(ventaDB.precioTotal).toFixed(2)}`,
+                        ],
+                        marginTop: 7,
+                        fontSize: 9
+                    },
+                    {
+                        text: [
+                            {
+                                text: 'Forma de pago:',
+                                bold: true,
+                            }, ` ${ventaDB.ventasFormasPago.map(forma => forma.descripcion).join(', ')}`,
+                        ],
+                        marginTop: 7,
+                        fontSize: 9
+                    },
                 ],
                 styles: {}
             }
 
             const pdfDoc = printer.createPdfKitDocument(docDefinition);
-
             const chunks = [];
 
             pdfDoc.on("data", (chunk) => {
