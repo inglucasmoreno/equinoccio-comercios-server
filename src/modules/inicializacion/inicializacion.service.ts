@@ -31,6 +31,9 @@ export class InicializacionService {
     // Se crea y se almacena en la base de datos al usuario administrador    
     return await this.prisma.usuarios.create({ data })
 
+    // Inicializacion de unidades especiales - Unidad - Kilogramo
+
+
   }
 
 }

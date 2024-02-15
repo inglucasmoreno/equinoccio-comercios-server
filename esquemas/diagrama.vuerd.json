@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 3000,
     "height": 3000,
-    "scrollTop": -909.8769,
-    "scrollLeft": -708.7574750830565,
+    "scrollTop": -943.8769,
+    "scrollLeft": -177,
     "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
@@ -4282,7 +4282,7 @@
           "active": false,
           "left": 1036.69,
           "top": 949.306,
-          "zIndex": 42,
+          "zIndex": 18,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00F6"
@@ -4529,10 +4529,257 @@
           "active": false,
           "left": 450.6729,
           "top": 809.208,
-          "zIndex": 18,
+          "zIndex": 17,
           "widthName": 75.708984375,
           "widthComment": 60,
           "color": "#0900FF"
+        },
+        "visible": true
+      },
+      {
+        "id": "cf18c452-3595-49f5-a482-76cbb64aacdc",
+        "name": "ConfigBalanza",
+        "comment": "",
+        "columns": [
+          {
+            "id": "8deb9f98-80ed-48e3-a968-88b9ac5df241",
+            "name": "id",
+            "comment": "",
+            "dataType": "int",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "b58d4159-689f-4d59-aca8-4d5b2d7e51e1",
+            "name": "digitosTotales",
+            "comment": "",
+            "dataType": "",
+            "default": "13",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 80.76806640625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "2791dd83-b38d-4f40-9dd4-e67c9efc7ae1",
+            "name": "digitosInicio",
+            "comment": "",
+            "dataType": "",
+            "default": "2",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 69.92626953125,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "4b00b3fd-15e5-43a3-a697-62939d065905",
+            "name": "digitosProducto",
+            "comment": "",
+            "dataType": "",
+            "default": "5",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 91.60986328125,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "6bfbd9b6-6af4-489a-8cd2-ed3190f32f80",
+            "name": "digitosPeso",
+            "comment": "",
+            "dataType": "",
+            "default": "5",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 69.208984375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "9841acf9-d429-488b-a82d-bb0040cd2e95",
+            "name": "digitosFinal",
+            "comment": "",
+            "dataType": "",
+            "default": "1",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 67.75537109375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "7ceb0fff-c340-401d-a88f-bd61e9166fee",
+            "name": "activo",
+            "comment": "",
+            "dataType": "boolean",
+            "default": "true",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "2aea09f3-6c05-4503-9a65-5f60a67c36b1",
+            "name": "creatorUser",
+            "comment": "",
+            "dataType": "int",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 69.9072265625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "e1f3e477-059f-4500-9988-71b09d6b1d5b",
+            "name": "createdAt",
+            "comment": "",
+            "dataType": "date",
+            "default": "Now()",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "415e2564-5841-4b8a-a99d-6cc407972938",
+            "name": "updateAt",
+            "comment": "",
+            "dataType": "date",
+            "default": "Now()",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          }
+        ],
+        "ui": {
+          "active": true,
+          "left": 104,
+          "top": 1137.1269,
+          "zIndex": 163,
+          "widthName": 86.55712890625,
+          "widthComment": 60,
+          "color": "#D1CFD1"
         },
         "visible": true
       }
