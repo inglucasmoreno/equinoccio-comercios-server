@@ -325,14 +325,10 @@ model Proveedores {
 }
 
 model ConfigBalanza {
-  id              Int      @id @default(autoincrement())
-  digitosTotales  Int      @default(13)
-  digitosInicio   Int      @default(2)
-  digitosProducto Int      @default(5)
-  digitosPeso     Int      @default(5)
-  digitosFinal    Int      @default(1)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  creatorUserId   Int
-  creatorUser     Usuarios @relation(fields: [creatorUserId], references: [id])
+  id            Int      @id @default(autoincrement())
+  formato       String?  @default("iipppppeeeeef")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  creatorUserId Int
+  creatorUser   Usuarios @relation(fields: [creatorUserId], references: [id])
 }

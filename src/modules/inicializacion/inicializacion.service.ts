@@ -5,7 +5,7 @@ import * as bcryptjs from 'bcryptjs';
 @Injectable()
 export class InicializacionService {
 
-  constructor(private prisma: PrismaService){}
+  constructor(private prisma: PrismaService) { }
 
   async inicializacion(): Promise<any> {
 
@@ -29,10 +29,34 @@ export class InicializacionService {
     data.password = bcryptjs.hashSync('admin', salt);
 
     // Se crea y se almacena en la base de datos al usuario administrador    
-    return await this.prisma.usuarios.create({ data })
+    const usuarioDB = await this.prisma.usuarios.create({ data })
 
-    // Inicializacion de unidades especiales - Unidad - Kilogramo
+    // Inicializacion de unidades especiales - UNIDAD y KILOGRAMO
+    await this.prisma.unidadesMedida.create({
+      data: {
+        id: 1,
+        descripcion: 'UNIDAD',
+        creatorUserId: usuarioDB.id
+      }
+    });
 
+    await this.prisma.unidadesMedida.create({
+      data: {
+        id: 2,
+        descripcion: 'KILOGRAMO',
+        creatorUserId: usuarioDB.id
+      }
+    });
+
+    // Inicializacion de configuracion de balanza
+    await this.prisma.configBalanza.create({
+      data: {
+        formato: 'iipppppeeeeef',
+        creatorUserId: usuarioDB.id
+      }
+    });
+
+    return 'Inicializacion correcta';
 
   }
 

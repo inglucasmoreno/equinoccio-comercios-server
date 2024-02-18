@@ -26,12 +26,18 @@ export class ProductosController {
   @Get('buscar/codigo/:codigo')
   async getPorCodigo(@Res() res, @Param('codigo') codigo: string): Promise<any> {
 
-    const producto = await this.productosService.getPorCodigo(codigo);
+    const {
+      producto,
+      cantidad,
+      precio
+    } = await this.productosService.getPorCodigo(codigo);
 
     return res.status(HttpStatus.OK).json({
       success: true,
       message: 'Producto obtenido correctamente',
-      producto
+      producto,
+      cantidad,
+      precio
     })
 
   }

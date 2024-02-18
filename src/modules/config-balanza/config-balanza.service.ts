@@ -37,7 +37,7 @@ export class ConfigBalanzaService {
     orderBy[columna] = direccion;
 
     // Listado de configuraciones
-    const configBalanzas = await this.prisma.configBalanza.findMany({
+    const configBalanza = await this.prisma.configBalanza.findMany({
       take: Number(itemsPorPagina),
       include: {
         creatorUser: true,
@@ -46,7 +46,7 @@ export class ConfigBalanzaService {
     })
 
     return {
-      configBalanzas,
+      configBalanza,
     };
 
   }
@@ -54,13 +54,14 @@ export class ConfigBalanzaService {
   // Crear configuracion - Inicializacion
   async insert(createData: any): Promise<ConfigBalanza> {
 
-    const { creatorUserId } = createData;
+    const { formato, creatorUserId } = createData;
 
     // Verificacion: La configuracion ya fue inicializada
     const configBalanzaDB = await this.prisma.configBalanza.findMany({});
     if (configBalanzaDB[0]) throw new NotFoundException('La configuracion ya se encuentra inicializada');
 
     const data = {
+      formato,
       creatorUserId,
     };
 

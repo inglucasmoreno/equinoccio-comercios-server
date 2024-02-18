@@ -26,12 +26,12 @@ export class ConfigBalanzaController {
   @Get()
   async getAll(@Res() res, @Query() query): Promise<any> {
     
-    const {configBalanzas} = await this.configBalanzaService.getAll(query);
+    const {configBalanza} = await this.configBalanzaService.getAll(query);
 
     return res.status(HttpStatus.OK).json({
       success: true,
       message: 'ConfigBalanza obtenidas correctamente',
-      configBalanzas
+      configBalanza
     })
 
   }

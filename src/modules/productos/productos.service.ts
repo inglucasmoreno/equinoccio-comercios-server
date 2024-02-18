@@ -26,19 +26,59 @@ export class ProductosService {
   }
 
   // Codigo por ID
-  async getPorCodigo(codigo: string): Promise<Productos> {
+  async getPorCodigo(codigo: string): Promise<any> {
 
-    const producto = await this.prisma.productos.findFirst({
-      where: { codigo },
+    let producto = null;
+    let pesoBalanza = null;
+
+    // Se busca sobre los productos que no son de balanza
+    producto = await this.prisma.productos.findFirst({
+      where: {
+        codigo,
+        balanza: false
+      },
       include: {
         // marca: true,
         unidadMedida: true,
         creatorUser: true,
       }
-    })
+    });
+
+    // Se busca sobre los productos que son de balanza
+    if (!producto) {
+
+      let codigoProductoBalanza = '';
+      let cantidadTMP = '';
+
+      const configBalanza = await this.prisma.configBalanza.findFirst({});
+
+      for (let i = 0; i < configBalanza.formato.length; i++) {
+        if (configBalanza.formato[i] === 'p') codigoProductoBalanza += codigo[i];
+        if (configBalanza.formato[i] === 'e') cantidadTMP += codigo[i];
+      }
+
+      pesoBalanza = Number(cantidadTMP)/1000;
+      
+      producto = await this.prisma.productos.findFirst({
+        where: {
+          codigo: codigoProductoBalanza,
+          balanza: true
+        },
+        include: {
+          // marca: true,
+          unidadMedida: true,
+          creatorUser: true,
+        }
+      });
+
+    }
 
     if (!producto) throw new NotFoundException('El producto no esta cargado');
-    return producto;
+    return {
+      producto,
+      cantidad: !producto.balanza ? 1 : pesoBalanza,
+      precio: !producto.balanza ? producto.precioVenta : pesoBalanza * producto.precioVenta
+    };
 
   }
 
