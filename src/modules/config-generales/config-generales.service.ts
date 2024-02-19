@@ -1,24 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ConfigBalanza, Prisma } from '@prisma/client';
+import { ConfigGenerales, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
-export class ConfigBalanzaService {
+export class ConfigGeneralesService {
 
   constructor(private prisma: PrismaService) { }
 
-  // ConfiBalanza por ID
-  async getId(id: number): Promise<ConfigBalanza> {
+  // ConfigGenerales por ID
+  async getId(id: number): Promise<ConfigGenerales> {
 
-    const configBalanza = await this.prisma.configBalanza.findFirst({
+    const configGeneral = await this.prisma.configGenerales.findFirst({
       where: { id },
       include: {
         creatorUser: true,
       }
     })
 
-    if (!configBalanza) throw new NotFoundException('La configuracion no existe');
-    return configBalanza;
+    if (!configGeneral) throw new NotFoundException('La configuracion no existe');
+    return configGeneral;
 
   }
 
@@ -37,7 +37,7 @@ export class ConfigBalanzaService {
     orderBy[columna] = direccion;
 
     // Listado de configuraciones
-    const configBalanza = await this.prisma.configBalanza.findMany({
+    const configGeneral = await this.prisma.configGenerales.findMany({
       take: Number(itemsPorPagina),
       include: {
         creatorUser: true,
@@ -46,32 +46,32 @@ export class ConfigBalanzaService {
     })
 
     return {
-      configBalanza,
+      configGeneral,
     };
 
   }
 
   // Crear configuracion - Inicializacion
-  async insert(createData: any): Promise<ConfigBalanza> {
+  async insert(createData: any): Promise<ConfigGenerales> {
 
     const { formato, creatorUserId } = createData;
 
     // Verificacion: La configuracion ya fue inicializada
-    const configBalanzaDB = await this.prisma.configBalanza.findMany({});
-    if (configBalanzaDB[0]) throw new NotFoundException('La configuracion ya se encuentra inicializada');
+    const configGeneralDB = await this.prisma.configGenerales.findMany({});
+    if (configGeneralDB[0]) throw new NotFoundException('La configuracion ya se encuentra inicializada');
 
     const data = {
       formato,
       creatorUserId,
     };
 
-    return await this.prisma.configBalanza.create({ data, include: { creatorUser: true } });
+    return await this.prisma.configGenerales.create({ data, include: { creatorUser: true } });
   
   }
 
-  // Actualizar configBalanza
-  async update(id: number, updateData: Prisma.ConfigBalanzaUpdateInput): Promise<ConfigBalanza> {
-    return await this.prisma.configBalanza.update({
+  // Actualizar configGeneral
+  async update(id: number, updateData: Prisma.ConfigGeneralesUpdateInput): Promise<ConfigGenerales> {
+    return await this.prisma.configGenerales.update({
       where: { id },
       data: updateData,
       include: {

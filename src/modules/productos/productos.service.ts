@@ -50,11 +50,11 @@ export class ProductosService {
       let codigoProductoBalanza = '';
       let cantidadTMP = '';
 
-      const configBalanza = await this.prisma.configBalanza.findFirst({});
+      const configBalanza = await this.prisma.configGenerales.findFirst({});
 
-      for (let i = 0; i < configBalanza.formato.length; i++) {
-        if (configBalanza.formato[i] === 'p') codigoProductoBalanza += codigo[i];
-        if (configBalanza.formato[i] === 'e') cantidadTMP += codigo[i];
+      for (let i = 0; i < configBalanza.formatoBalanza.length; i++) {
+        if (configBalanza.formatoBalanza[i] === 'p') codigoProductoBalanza += codigo[i];
+        if (configBalanza.formatoBalanza[i] === 'e') cantidadTMP += codigo[i];
       }
 
       pesoBalanza = Number(cantidadTMP)/1000;

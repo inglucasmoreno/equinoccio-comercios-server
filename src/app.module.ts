@@ -26,7 +26,7 @@ import { GastosCajasModule } from './modules/gastos-cajas/gastos-cajas.module';
 import { CajasVentasModule } from './modules/cajas-ventas/cajas-ventas.module';
 import { ClientesModule } from './modules/clientes/clientes.module';
 import { ProveedoresModule } from './modules/proveedores/proveedores.module';
-import { ConfigBalanzaModule } from './modules/config-balanza/config-balanza.module';
+import { ConfigGeneralesModule } from './modules/config-generales/config-generales.module';
 
 @Module({
   imports: [
@@ -71,7 +71,7 @@ import { ConfigBalanzaModule } from './modules/config-balanza/config-balanza.mod
     CajasVentasModule,
     ClientesModule,
     ProveedoresModule,
-    ConfigBalanzaModule,
+    ConfigGeneralesModule,
 
   ],
   controllers: [AppController],

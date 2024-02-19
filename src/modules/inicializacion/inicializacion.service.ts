@@ -48,10 +48,10 @@ export class InicializacionService {
       }
     });
 
-    // Inicializacion de configuracion de balanza
-    await this.prisma.configBalanza.create({
+    // Inicializacion de configuraciones generales
+    await this.prisma.configGenerales.create({
       data: {
-        formato: 'iipppppeeeeef',
+        formatoBalanza: 'iipppppeeeeef',
         creatorUserId: usuarioDB.id
       }
     });

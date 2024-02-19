@@ -42,7 +42,7 @@ model Usuarios {
   cajasVentas         CajasVentas[]
   clientes            Clientes[]
   proveedores         Proveedores[]
-  configBalanza       ConfigBalanza[]
+  configGenerales     ConfigGenerales[]
 }
 
 model UnidadesMedida {
@@ -324,11 +324,11 @@ model Proveedores {
   creatorUser         Usuarios   @relation(fields: [creatorUserId], references: [id])
 }
 
-model ConfigBalanza {
-  id            Int      @id @default(autoincrement())
-  formato       String?  @default("iipppppeeeeef")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  creatorUserId Int
-  creatorUser   Usuarios @relation(fields: [creatorUserId], references: [id])
+model ConfigGenerales {
+  id             Int      @id @default(autoincrement())
+  formatoBalanza String?  @default("iipppppeeeeef")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  creatorUserId  Int
+  creatorUser    Usuarios @relation(fields: [creatorUserId], references: [id])
 }
