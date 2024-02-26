@@ -12,37 +12,41 @@ datasource db {
 
 // Models list
 model Usuarios {
-  id                  Int                 @id @default(autoincrement())
-  usuario             String              @unique @db.VarChar(30)
-  apellido            String              @db.VarChar(50)
-  nombre              String              @db.VarChar(50)
-  dni                 String              @db.VarChar(30)
-  password            String
-  email               String              @db.VarChar(50)
-  role                String?             @default("ADMIN_ROLE")
-  activo              Boolean?            @default(true)
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
-  unidadesMedida      UnidadesMedida[]
+  id                         Int                          @id @default(autoincrement())
+  usuario                    String                       @unique @db.VarChar(30)
+  apellido                   String                       @db.VarChar(50)
+  nombre                     String                       @db.VarChar(50)
+  dni                        String                       @db.VarChar(30)
+  password                   String
+  email                      String                       @db.VarChar(50)
+  role                       String?                      @default("ADMIN_ROLE")
+  activo                     Boolean?                     @default(true)
+  createdAt                  DateTime                     @default(now())
+  updatedAt                  DateTime                     @updatedAt
+  unidadesMedida             UnidadesMedida[]
   // Productos      Productos[]
-  marcas              Marcas[]
-  productos           Productos[]
-  ingresosCreados     Ingresos[]          @relation("usuarioCreador")
-  ingresosCompletados Ingresos[]          @relation("usuarioCompletar")
-  ingresosProductos   IngresosProductos[]
-  ventas              Ventas[]
-  ventasProductos     VentasProductos[]
-  ventasFormasPago    VentasFormasPago[]
-  ventasFacturacion   VentasFacturacion[]
-  tiposIngresos       TiposIngresos[]
-  tiposGastos         TiposGastos[]
-  cajas               Cajas[]
-  ingresosCajas       IngresosCajas[]
-  gastosCajas         GastosCajas[]
-  cajasVentas         CajasVentas[]
-  clientes            Clientes[]
-  proveedores         Proveedores[]
-  configGenerales     ConfigGenerales[]
+  marcas                     Marcas[]
+  productos                  Productos[]
+  ingresosCreados            Ingresos[]                   @relation("usuarioCreador")
+  ingresosCompletados        Ingresos[]                   @relation("usuarioCompletar")
+  ingresosProductos          IngresosProductos[]
+  ventas                     Ventas[]
+  ventasProductos            VentasProductos[]
+  ventasFormasPago           VentasFormasPago[]
+  ventasFacturacion          VentasFacturacion[]
+  tiposIngresos              TiposIngresos[]
+  tiposGastos                TiposGastos[]
+  cajas                      Cajas[]
+  ingresosCajas              IngresosCajas[]
+  gastosCajas                GastosCajas[]
+  cajasVentas                CajasVentas[]
+  clientes                   Clientes[]
+  proveedores                Proveedores[]
+  configGenerales            ConfigGenerales[]
+  reservas                   Reservas[]
+  reservasObervacionesTortas ReservasObservacionesTortas[]
+  reservasProductos          ReservasProductos[]
+  ventasReservas             VentasReservas[]
 }
 
 model UnidadesMedida {
@@ -90,6 +94,7 @@ model Productos {
   // marca              Marcas         @relation(fields: [marcaId], references: [id])
   ingresosProductos  IngresosProductos[]
   ventasProductos    VentasProductos[]
+  reservasProductos  ReservasProductos[]
 }
 
 model Ingresos {
@@ -149,6 +154,7 @@ model Ventas {
   ventasFormasPago  VentasFormasPago[]
   ventasFacturacion VentasFacturacion[]
   cajasVentas       CajasVentas[]
+  ventasReservas    VentasReservas[]
 }
 
 model VentasProductos {
@@ -296,17 +302,18 @@ model CajasVentas {
 }
 
 model Clientes {
-  id                  Int      @id @default(autoincrement())
-  descripcion         String   @unique @db.VarChar(150)
-  tipo_identificacion String   @db.VarChar(100)
-  identificacion      String   @db.VarChar(100)
-  telefono            String?  @default("") @db.VarChar(100)
-  domicilio           String?  @default("") @db.VarChar(150)
-  activo              Boolean? @default(true)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                  Int        @id @default(autoincrement())
+  descripcion         String     @unique @db.VarChar(150)
+  tipo_identificacion String     @db.VarChar(100)
+  identificacion      String     @db.VarChar(100)
+  telefono            String?    @default("") @db.VarChar(100)
+  domicilio           String?    @default("") @db.VarChar(150)
+  activo              Boolean?   @default(true)
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
   creatorUserId       Int
-  creatorUser         Usuarios @relation(fields: [creatorUserId], references: [id])
+  creatorUser         Usuarios   @relation(fields: [creatorUserId], references: [id])
+  reservas            Reservas[]
 }
 
 model Proveedores {
@@ -324,6 +331,8 @@ model Proveedores {
   creatorUser         Usuarios   @relation(fields: [creatorUserId], references: [id])
 }
 
+// Configuraciones generales
+
 model ConfigGenerales {
   id             Int      @id @default(autoincrement())
   formatoBalanza String?  @default("iipppppeeeeef")
@@ -331,4 +340,75 @@ model ConfigGenerales {
   updatedAt      DateTime @updatedAt
   creatorUserId  Int
   creatorUser    Usuarios @relation(fields: [creatorUserId], references: [id])
+}
+
+// Reservas
+
+model Reservas {
+  id                         Int                          @id @default(autoincrement())
+  clienteId                  Int
+  cliente                    Clientes                     @relation(fields: [clienteId], references: [id])
+  usuarioCreador             String
+  fechaReserva               DateTime
+  fechaEntrega               DateTime
+  horaEntrega                String                       @db.VarChar(10)
+  fechaFinalizacion          DateTime?                    @default(now())
+  adelanto                   Float
+  precioTotal                Float
+  observaciones              String?                      @default("") @db.VarChar(150)
+  estado                     String?                      @default("Pendiente") @db.VarChar(150)
+  activo                     Boolean?                     @default(true)
+  createdAt                  DateTime                     @default(now())
+  updatedAt                  DateTime                     @updatedAt
+  creatorUserId              Int
+  creatorUser                Usuarios                     @relation(fields: [creatorUserId], references: [id])
+  ventasReservas             VentasReservas[]
+  reservasProductos          ReservasProductos[]
+  reservasObervacionesTortas ReservasObservacionesTortas[]
+}
+
+model ReservasObservacionesTortas {
+  id            Int      @id @default(autoincrement())
+  reservaId     Int
+  reserva       Reservas @relation(fields: [reservaId], references: [id])
+  relleno1      String?  @default("") @db.VarChar(100)
+  relleno2      String?  @default("") @db.VarChar(100)
+  relleno3      String?  @default("") @db.VarChar(100)
+  forma         String?  @default("") @db.VarChar(100)
+  peso          String?  @default("") @db.VarChar(100)
+  cobertura     String?  @default("") @db.VarChar(100)
+  activo        Boolean? @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  creatorUserId Int
+  creatorUser   Usuarios @relation(fields: [creatorUserId], references: [id])
+}
+
+model ReservasProductos {
+  id             Int       @id @default(autoincrement())
+  productoId     Int
+  producto       Productos @relation(fields: [productoId], references: [id])
+  reservaId      Int
+  reserva        Reservas  @relation(fields: [reservaId], references: [id])
+  cantidad       Float
+  precioTotal    Float
+  precioUnitario Float
+  activo         Boolean?  @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  creatorUserId  Int
+  creatorUser    Usuarios  @relation(fields: [creatorUserId], references: [id])
+}
+
+model VentasReservas {
+  id            Int      @id @default(autoincrement())
+  ventaId       Int
+  venta         Ventas   @relation(fields: [ventaId], references: [id])
+  reservaId     Int
+  reserva       Reservas @relation(fields: [reservaId], references: [id])
+  activo        Boolean? @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  creatorUserId Int
+  creatorUser   Usuarios @relation(fields: [creatorUserId], references: [id])
 }

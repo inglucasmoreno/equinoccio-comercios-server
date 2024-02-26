@@ -36,15 +36,21 @@ export class ClientesService {
     let orderBy = {};
     orderBy[columna] = direccion;
 
-    let where: any = {
-      activo: activo === 'true' ? true : false
-    };
+    let where: any = {};
 
-    // where.OR.push({
-    //   descripcion: {
-    //     contains: parametro.toUpperCase()
-    //   }
-    // })
+    if(activo.trim() !== ''){
+      where = { ...where, activo: activo === 'true' ? true : false }
+    }
+
+    if(parametro.trim() !== ''){
+      where = {
+        ...where,
+        OR: [
+          { descripcion: { contains: parametro.toUpperCase() } },
+          { identificacion: { contains: parametro.toUpperCase() } }
+        ]
+      }
+    }
 
     // Total de clientes
     const totalItems = await this.prisma.clientes.count({ where });
@@ -57,9 +63,7 @@ export class ClientesService {
       },
       // skip: (pagina - 1) * itemsPorPagina,
       orderBy,
-      // where: {
-      //   activo: false
-      // }
+      where
     })
 
     return {

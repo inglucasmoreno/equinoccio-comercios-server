@@ -38,7 +38,6 @@ export class IngresosService {
   async getAll({
     columna = 'id',
     direccion = 'desc',
-    activo = '',
     parametro = '',
     pagina = 1,
     fechaDesde = '',
@@ -53,18 +52,19 @@ export class IngresosService {
 
     let where = {};
 
-    if (activo) where = { activo: activo === 'true' ? true : false };
-
     if(estado) where = { ...where, estado };
+
+    console.log(Number(parametro));
 
     // Busqueda por parametro
     if (parametro !== '') {
       where = {
         ...where,
         OR: [
-          { id: { equals: Number(parametro) } },
+          { id: Number(parametro) ? Number(parametro) : -1 },
           { nroFactura: { contains: parametro } },
           { comentario: { contains: parametro } },
+          { proveedor: { descripcion: { contains: parametro } }, },
         ]
       }
     }

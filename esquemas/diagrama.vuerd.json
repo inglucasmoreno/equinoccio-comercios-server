@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 3000,
     "height": 3000,
-    "scrollTop": -1070.4920304777615,
-    "scrollLeft": -704.75,
-    "zoomLevel": 0.5,
+    "scrollTop": -1209.4930304777615,
+    "scrollLeft": -711.5669870431893,
+    "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -1002,7 +1002,7 @@
           "active": false,
           "left": 1031.2778,
           "top": 41.9169,
-          "zIndex": 244,
+          "zIndex": 18,
           "widthName": 60.53173828125,
           "widthComment": 60,
           "color": "#00F6FF"
@@ -1249,7 +1249,7 @@
           "active": false,
           "left": 464.8572,
           "top": 456.9997,
-          "zIndex": 16,
+          "zIndex": 14,
           "widthName": 60,
           "widthComment": 60,
           "color": "#3411FF"
@@ -1881,7 +1881,7 @@
           "active": false,
           "left": 1523.945,
           "top": 31.2223,
-          "zIndex": 422,
+          "zIndex": 19,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00F6"
@@ -2128,7 +2128,7 @@
           "active": false,
           "left": 1548.5838,
           "top": 471.7767,
-          "zIndex": 9,
+          "zIndex": 7,
           "widthName": 100.287109375,
           "widthComment": 60,
           "color": "#F600FF"
@@ -2352,7 +2352,7 @@
           "active": false,
           "left": 2052.7514,
           "top": 32.8063,
-          "zIndex": 7,
+          "zIndex": 6,
           "widthName": 116.17529296875,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -2576,7 +2576,7 @@
           "active": false,
           "left": 2052,
           "top": 297.5,
-          "zIndex": 6,
+          "zIndex": 5,
           "widthName": 109.67529296875,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -3191,7 +3191,7 @@
           "active": false,
           "left": 2017.3054,
           "top": 895.555,
-          "zIndex": 10,
+          "zIndex": 8,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF9800"
@@ -3369,7 +3369,7 @@
           "active": false,
           "left": 1565.0557,
           "top": 803.0002,
-          "zIndex": 11,
+          "zIndex": 9,
           "widthName": 74.99169921875,
           "widthComment": 60,
           "color": "#FF9800"
@@ -3570,7 +3570,7 @@
           "active": false,
           "left": 2598.3374,
           "top": 1100.7777,
-          "zIndex": 13,
+          "zIndex": 11,
           "widthName": 85.09716796875,
           "widthComment": 60,
           "color": "#00FF09B7"
@@ -3771,7 +3771,7 @@
           "active": false,
           "left": 2599.9166,
           "top": 600.7778,
-          "zIndex": 15,
+          "zIndex": 13,
           "widthName": 76.419921875,
           "widthComment": 60,
           "color": "#FF1300"
@@ -3903,7 +3903,7 @@
           "active": false,
           "left": 2603.4387,
           "top": 1425.2223,
-          "zIndex": 14,
+          "zIndex": 12,
           "widthName": 83.16748046875,
           "widthComment": 60,
           "color": "#00FF09"
@@ -4035,7 +4035,7 @@
           "active": false,
           "left": 2598.2446,
           "top": 890,
-          "zIndex": 12,
+          "zIndex": 10,
           "widthName": 74.490234375,
           "widthComment": 60,
           "color": "#FF0000"
@@ -4282,7 +4282,7 @@
           "active": false,
           "left": 1036.69,
           "top": 949.306,
-          "zIndex": 50,
+          "zIndex": 17,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00F6"
@@ -4529,7 +4529,7 @@
           "active": false,
           "left": 450.6729,
           "top": 809.208,
-          "zIndex": 17,
+          "zIndex": 15,
           "widthName": 75.708984375,
           "widthComment": 60,
           "color": "#0900FF"
@@ -4684,7 +4684,7 @@
           "active": false,
           "left": 20,
           "top": 458.4906,
-          "zIndex": 23,
+          "zIndex": 16,
           "widthName": 99.55712890625,
           "widthComment": 60,
           "color": "#C9C9C9"
@@ -5046,7 +5046,7 @@
           "active": false,
           "left": 453.75,
           "top": 1108.1467,
-          "zIndex": 641,
+          "zIndex": 21,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -5131,7 +5131,7 @@
             "id": "37e99fbc-fbe9-4644-9779-37164798bd24",
             "name": "cantidad",
             "comment": "",
-            "dataType": "int",
+            "dataType": "float",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -5154,7 +5154,7 @@
             "id": "a5351061-9d26-44ac-afe4-85dd387e3068",
             "name": "precioTotal",
             "comment": "",
-            "dataType": "int",
+            "dataType": "float",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -5177,7 +5177,7 @@
             "id": "29406c44-a9d7-44eb-a2b8-8eceede8a080",
             "name": "precioUnitario",
             "comment": "",
-            "dataType": "int",
+            "dataType": "float",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -5191,29 +5191,6 @@
               "fk": false,
               "pfk": false,
               "widthName": 82.20263671875,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
-            "id": "cd4901a0-d88d-4992-97cb-6570322341f4",
-            "name": "unidadMedidaDescripcion",
-            "comment": "",
-            "dataType": "string",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 151.5888671875,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
@@ -5314,9 +5291,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 1035.75,
-          "top": 1270.6467,
-          "zIndex": 421,
+          "left": 1040.75,
+          "top": 1353.6467,
+          "zIndex": 26,
           "widthName": 115.43896484375,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -5494,7 +5471,7 @@
           "active": false,
           "left": 1517,
           "top": 1132.8967,
-          "zIndex": 509,
+          "zIndex": 20,
           "widthName": 96.66259765625,
           "widthComment": 60,
           "color": "#FD19DB"
@@ -5741,7 +5718,7 @@
           "active": false,
           "left": 473,
           "top": 1585.8814,
-          "zIndex": 646,
+          "zIndex": 23,
           "widthName": 179.01708984375,
           "widthComment": 60,
           "color": "#FF00D9"
@@ -5844,7 +5821,7 @@
           "columnIds": [
             "1f5bb56d-4317-4844-88e2-35969b503602"
           ],
-          "x": 1098.837614453125,
+          "x": 1233.957243359375,
           "y": 459.4169,
           "direction": "bottom"
         },
@@ -6208,7 +6185,7 @@
           "columnIds": [
             "1f5bb56d-4317-4844-88e2-35969b503602"
           ],
-          "x": 1233.957243359375,
+          "x": 1098.837614453125,
           "y": 459.4169,
           "direction": "bottom"
         },
@@ -6217,8 +6194,8 @@
           "columnIds": [
             "b80622f3-01f8-41ab-b3ba-727c4cc1549e"
           ],
-          "x": 1255.04443359375,
-          "y": 1270.6467,
+          "x": 1225.351318359375,
+          "y": 1353.6467,
           "direction": "top"
         },
         "constraintName": "fk_productos_to_reservasproductos",
@@ -6243,8 +6220,8 @@
           "columnIds": [
             "ec010823-6f6b-4bb2-8fed-057ed8a84e06"
           ],
-          "x": 1035.75,
-          "y": 1417.8967,
+          "x": 1040.75,
+          "y": 1490.6467,
           "direction": "left"
         },
         "constraintName": "fk_reservas_to_reservasproductos",

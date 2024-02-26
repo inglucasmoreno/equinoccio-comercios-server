@@ -27,6 +27,10 @@ import { CajasVentasModule } from './modules/cajas-ventas/cajas-ventas.module';
 import { ClientesModule } from './modules/clientes/clientes.module';
 import { ProveedoresModule } from './modules/proveedores/proveedores.module';
 import { ConfigGeneralesModule } from './modules/config-generales/config-generales.module';
+import { ReservasModule } from './modules/reservas/reservas.module';
+import { ReservasObservacionesTortasModule } from './modules/reservas-observaciones-tortas/reservas-observaciones-tortas.module';
+import { ReservasProductosModule } from './modules/reservas-productos/reservas-productos.module';
+import { VentasReservasModule } from './modules/ventas-reservas/ventas-reservas.module';
 
 @Module({
   imports: [
@@ -72,6 +76,10 @@ import { ConfigGeneralesModule } from './modules/config-generales/config-general
     ClientesModule,
     ProveedoresModule,
     ConfigGeneralesModule,
+    ReservasModule,
+    ReservasObservacionesTortasModule,
+    ReservasProductosModule,
+    VentasReservasModule,
 
   ],
   controllers: [AppController],
