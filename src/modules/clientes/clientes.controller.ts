@@ -23,6 +23,20 @@ export class ClientesController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/identificacion/:identificacion')
+  async getIdentificacion(@Res() res, @Param('identificacion') identificacion: string): Promise<any> {
+
+    const cliente = await this.clientesService.getIdentificacion(identificacion);
+    
+    return res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'Cliente obtenido correctamente',
+      cliente      
+    })
+
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getAll(@Res() res, @Query() query): Promise<any> {
     

@@ -22,6 +22,21 @@ export class ClientesService {
 
   }
 
+  // Cliente por identificacion
+  async getIdentificacion(identificacion: string): Promise<Clientes> {
+
+    const cliente = await this.prisma.clientes.findFirst({
+      where: { identificacion },
+      include: {
+        creatorUser: true,
+      }
+    })
+
+    if (!cliente) throw new NotFoundException('El cliente no existe');
+    return cliente;
+
+  }
+
   // Listar clientes
   async getAll({
     columna = 'descripcion',
@@ -38,11 +53,11 @@ export class ClientesService {
 
     let where: any = {};
 
-    if(activo.trim() !== ''){
+    if (activo.trim() !== '') {
       where = { ...where, activo: activo === 'true' ? true : false }
     }
 
-    if(parametro.trim() !== ''){
+    if (parametro.trim() !== '') {
       where = {
         ...where,
         OR: [
