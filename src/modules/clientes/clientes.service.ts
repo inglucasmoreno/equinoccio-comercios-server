@@ -32,7 +32,6 @@ export class ClientesService {
       }
     })
 
-    if (!cliente) throw new NotFoundException('El cliente no existe');
     return cliente;
 
   }

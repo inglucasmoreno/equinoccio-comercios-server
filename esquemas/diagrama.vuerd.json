@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 3000,
     "height": 3000,
-    "scrollTop": -1209.4930304777615,
-    "scrollLeft": -711.5669870431893,
+    "scrollTop": -1100.4930304777615,
+    "scrollLeft": -480,
     "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
@@ -4835,6 +4835,75 @@
             }
           },
           {
+            "id": "29e815b2-e6c3-47d1-a9b4-e58faa160d3f",
+            "name": "fechaAlerta",
+            "comment": "",
+            "dataType": "date",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 67.76171875,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "e62281b0-dc6e-481f-bdcd-4b224a47953e",
+            "name": "horaAntes",
+            "comment": "",
+            "dataType": "string",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 61.26171875,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "6bc0016f-6edf-433b-b0ba-b057114b46b3",
+            "name": "tipoObservacion",
+            "comment": "",
+            "dataType": "string",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 95.93896484375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "574d8123-c0e9-48d0-9d9c-2fff3af7bf32",
             "name": "fechaFinalizacion",
             "comment": "",
@@ -5046,7 +5115,7 @@
           "active": false,
           "left": 453.75,
           "top": 1108.1467,
-          "zIndex": 21,
+          "zIndex": 92,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -5293,7 +5362,7 @@
           "active": false,
           "left": 1040.75,
           "top": 1353.6467,
-          "zIndex": 26,
+          "zIndex": 23,
           "widthName": 115.43896484375,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -5718,7 +5787,7 @@
           "active": false,
           "left": 473,
           "top": 1585.8814,
-          "zIndex": 23,
+          "zIndex": 22,
           "widthName": 179.01708984375,
           "widthComment": 60,
           "color": "#FF00D9"
@@ -6169,7 +6238,7 @@
             "91e4206f-ee31-4eeb-83d0-0c73dbfb9695"
           ],
           "x": 843.1953125,
-          "y": 1170.8967,
+          "y": 1181.1467,
           "direction": "right"
         },
         "constraintName": "fk_clientes_to_reservas",
@@ -6212,7 +6281,7 @@
             "3bc22375-c931-49e6-92da-ac7ada420353"
           ],
           "x": 843.1953125,
-          "y": 1421.8967,
+          "y": 1473.1467,
           "direction": "right"
         },
         "end": {
@@ -6264,7 +6333,7 @@
             "3bc22375-c931-49e6-92da-ac7ada420353"
           ],
           "x": 843.1953125,
-          "y": 1296.3967,
+          "y": 1327.1467,
           "direction": "right"
         },
         "end": {
@@ -6290,7 +6359,7 @@
             "3bc22375-c931-49e6-92da-ac7ada420353"
           ],
           "x": 648.47265625,
-          "y": 1484.6467,
+          "y": 1546.1467,
           "direction": "bottom"
         },
         "end": {

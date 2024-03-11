@@ -70,14 +70,14 @@ export class UnidadesMedidaService {
   // Crear unidad
   async insert(createData: Prisma.UnidadesMedidaCreateInput): Promise<UnidadesMedida> {
 
-    console.log(createData);
-
     // Uppercase
     createData.descripcion = createData.descripcion?.toLocaleUpperCase().trim();
 
     // Verificacion: Descripcion repetida
     let unidadDB = await this.prisma.unidadesMedida.findFirst({ where: { descripcion: createData.descripcion } });
     if (unidadDB) throw new NotFoundException('La unidad de medida ya se encuentra cargada');
+
+    console.log(createData);
 
     return await this.prisma.unidadesMedida.create({ data: createData, include: { creatorUser: true } });
 
