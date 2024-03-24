@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Reservas } from '@prisma/client';
 import { add } from 'date-fns';
+import { create } from 'domain';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -15,6 +16,15 @@ export class ReservasService {
       where: { id },
       include: {
         cliente: true,
+        reservasProductos: {
+          include: {
+            producto: {
+              include: {
+                unidadMedida: true
+              }
+            }
+          }
+        },
         creatorUser: true,
       }
     })
@@ -52,7 +62,7 @@ export class ReservasService {
       }
     }
 
-    if(estado.trim() !== '') where = { ...where, estado }
+    if (estado.trim() !== '') where = { ...where, estado }
 
 
     // Total de reservas
@@ -84,22 +94,53 @@ export class ReservasService {
   }
 
   // Crear reserva
-  async insert(createData: Prisma.ReservasCreateInput): Promise<Reservas> {
-
-    // Adaptando fechas    
-    createData.fechaReserva = new Date("2024/02/24");
-    createData.fechaEntrega = new Date("2024/02/24");
+  async insert(createData: any): Promise<Reservas> {
 
     // Uppercase
     createData.usuarioCreador = createData.usuarioCreador?.toLocaleUpperCase().trim();
     createData.observaciones = createData.observaciones?.toLocaleUpperCase().trim();
 
-    return await this.prisma.reservas.create({
-      data: createData, include: {
+    // Adaptando fechas
+    createData.fechaReserva = new Date(createData.fechaReserva);
+    createData.fechaReserva.setHours(createData.fechaReserva.getHours() + 3);
+    createData.fechaEntrega = new Date(createData.fechaEntrega);
+    createData.fechaEntrega.setHours(createData.fechaEntrega.getHours() + 3);
+
+    // createData sin productos
+    let dataReserva = { ...createData };
+    delete dataReserva.productos;
+
+    // Se crear la reserva
+    const reservaDB = await this.prisma.reservas.create({
+      data: dataReserva, include: {
         cliente: true,
         creatorUser: true
       }
     });
+
+    // Productos -> Reserva
+    if (createData.productos) {
+
+      let productosAdt: any[] = []
+
+      createData.productos.map(item => {
+        productosAdt.push({
+          cantidad: item.cantidad,
+          productoId: item.productoId,
+          precioTotal: item.precioTotal,
+          precioUnitario: item.precioUnitario,
+          reservaId: reservaDB.id,
+          creatorUserId: createData.creatorUserId
+        })
+      })
+
+      await this.prisma.reservasProductos.createMany({
+        data: productosAdt
+      });
+    }
+
+    return reservaDB;
+
   }
 
   // Actualizar reserva

@@ -39,7 +39,7 @@ export class ReservasController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async insert(@Res() res, @Body() createData: Prisma.ReservasCreateInput): Promise<any> {
+  async insert(@Res() res, @Body() createData: any): Promise<any> {
 
     const reserva = await this.reservasService.insert(createData);
 

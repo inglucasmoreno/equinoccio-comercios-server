@@ -54,8 +54,6 @@ export class IngresosService {
 
     if(estado) where = { ...where, estado };
 
-    console.log(Number(parametro));
-
     // Busqueda por parametro
     if (parametro !== '') {
       where = {

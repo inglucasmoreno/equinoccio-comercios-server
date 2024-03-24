@@ -12,23 +12,23 @@ datasource db {
 
 // Models list
 model Usuarios {
-  id                         Int                          @id @default(autoincrement())
-  usuario                    String                       @unique @db.VarChar(30)
-  apellido                   String                       @db.VarChar(50)
-  nombre                     String                       @db.VarChar(50)
-  dni                        String                       @db.VarChar(30)
+  id                         Int                           @id @default(autoincrement())
+  usuario                    String                        @unique @db.VarChar(30)
+  apellido                   String                        @db.VarChar(50)
+  nombre                     String                        @db.VarChar(50)
+  dni                        String                        @db.VarChar(30)
   password                   String
-  email                      String                       @db.VarChar(50)
-  role                       String?                      @default("ADMIN_ROLE")
-  activo                     Boolean?                     @default(true)
-  createdAt                  DateTime                     @default(now())
-  updatedAt                  DateTime                     @updatedAt
+  email                      String                        @db.VarChar(50)
+  role                       String?                       @default("ADMIN_ROLE")
+  activo                     Boolean?                      @default(true)
+  createdAt                  DateTime                      @default(now())
+  updatedAt                  DateTime                      @updatedAt
   unidadesMedida             UnidadesMedida[]
   // Productos      Productos[]
   marcas                     Marcas[]
   productos                  Productos[]
-  ingresosCreados            Ingresos[]                   @relation("usuarioCreador")
-  ingresosCompletados        Ingresos[]                   @relation("usuarioCompletar")
+  ingresosCreados            Ingresos[]                    @relation("usuarioCreador")
+  ingresosCompletados        Ingresos[]                    @relation("usuarioCompletar")
   ingresosProductos          IngresosProductos[]
   ventas                     Ventas[]
   ventasProductos            VentasProductos[]
@@ -345,26 +345,29 @@ model ConfigGenerales {
 // Reservas
 
 model Reservas {
-  id                         Int                          @id @default(autoincrement())
+  id                         Int                           @id @default(autoincrement())
   clienteId                  Int
-  cliente                    Clientes                     @relation(fields: [clienteId], references: [id])
   usuarioCreador             String
   fechaReserva               DateTime
   fechaEntrega               DateTime
-  horaEntrega                String                       @db.VarChar(10)
-  fechaFinalizacion          DateTime?                    @default(now())
+  fechaAlerta                String                        
+  horasAntes                 String
+  horaEntrega                String                        @db.VarChar(10)
+  fechaFinalizacion          DateTime?                     @default(now())
   adelanto                   Float
   precioTotal                Float
-  observaciones              String?                      @default("") @db.VarChar(150)
-  estado                     String?                      @default("Pendiente") @db.VarChar(150)
-  activo                     Boolean?                     @default(true)
-  createdAt                  DateTime                     @default(now())
-  updatedAt                  DateTime                     @updatedAt
+  tipoObservacion            String?                       @default("General") @db.VarChar(150)
+  observaciones              String?                       @default("") @db.VarChar(150)
+  estado                     String?                       @default("Pendiente") @db.VarChar(150)
+  activo                     Boolean?                      @default(true)
+  createdAt                  DateTime                      @default(now())
+  updatedAt                  DateTime                      @updatedAt
   creatorUserId              Int
-  creatorUser                Usuarios                     @relation(fields: [creatorUserId], references: [id])
   ventasReservas             VentasReservas[]
   reservasProductos          ReservasProductos[]
   reservasObervacionesTortas ReservasObservacionesTortas[]
+  creatorUser                Usuarios                      @relation(fields: [creatorUserId], references: [id])
+  cliente                    Clientes                      @relation(fields: [clienteId], references: [id])
 }
 
 model ReservasObservacionesTortas {
