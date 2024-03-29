@@ -146,13 +146,23 @@ export class ReservasService {
   // Actualizar reserva
   async update(id: number, updateData: Prisma.ReservasUpdateInput): Promise<Reservas> {
 
+    const { 
+      fechaReserva, 
+      fechaEntrega,
+    }: any = updateData;
+
+    if(fechaReserva){
+      updateData.fechaReserva = new Date(fechaReserva);
+      updateData.fechaReserva.setHours(updateData.fechaReserva.getHours() + 3);
+    }
+
     // Uppercase
     updateData.usuarioCreador = updateData.usuarioCreador?.toString().toLocaleUpperCase().trim();
     updateData.observaciones = updateData.observaciones?.toString().toLocaleUpperCase().trim();
 
     // Adaptando fechas    
-    updateData.fechaReserva ? updateData.fechaReserva = new Date("2024/02/24") : null;
-    updateData.fechaEntrega ? updateData.fechaEntrega = new Date("2024/02/24") : null;
+    // updateData.fechaReserva ? updateData.fechaReserva = new Date("2024/02/24") : null;
+    // updateData.fechaEntrega ? updateData.fechaEntrega = new Date("2024/02/24") : null;
 
     const reservaDB = await this.prisma.reservas.findFirst({ where: { id } });
 
