@@ -12,41 +12,40 @@ datasource db {
 
 // Models list
 model Usuarios {
-  id                         Int                           @id @default(autoincrement())
-  usuario                    String                        @unique @db.VarChar(30)
-  apellido                   String                        @db.VarChar(50)
-  nombre                     String                        @db.VarChar(50)
-  dni                        String                        @db.VarChar(30)
-  password                   String
-  email                      String                        @db.VarChar(50)
-  role                       String?                       @default("ADMIN_ROLE")
-  activo                     Boolean?                      @default(true)
-  createdAt                  DateTime                      @default(now())
-  updatedAt                  DateTime                      @updatedAt
-  unidadesMedida             UnidadesMedida[]
+  id                  Int                 @id @default(autoincrement())
+  usuario             String              @unique @db.VarChar(30)
+  apellido            String              @db.VarChar(50)
+  nombre              String              @db.VarChar(50)
+  dni                 String              @db.VarChar(30)
+  password            String
+  email               String              @db.VarChar(50)
+  role                String?             @default("ADMIN_ROLE")
+  activo              Boolean?            @default(true)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  unidadesMedida      UnidadesMedida[]
   // Productos      Productos[]
-  marcas                     Marcas[]
-  productos                  Productos[]
-  ingresosCreados            Ingresos[]                    @relation("usuarioCreador")
-  ingresosCompletados        Ingresos[]                    @relation("usuarioCompletar")
-  ingresosProductos          IngresosProductos[]
-  ventas                     Ventas[]
-  ventasProductos            VentasProductos[]
-  ventasFormasPago           VentasFormasPago[]
-  ventasFacturacion          VentasFacturacion[]
-  tiposIngresos              TiposIngresos[]
-  tiposGastos                TiposGastos[]
-  cajas                      Cajas[]
-  ingresosCajas              IngresosCajas[]
-  gastosCajas                GastosCajas[]
-  cajasVentas                CajasVentas[]
-  clientes                   Clientes[]
-  proveedores                Proveedores[]
-  configGenerales            ConfigGenerales[]
-  reservas                   Reservas[]
-  reservasObervacionesTortas ReservasObservacionesTortas[]
-  reservasProductos          ReservasProductos[]
-  ventasReservas             VentasReservas[]
+  marcas              Marcas[]
+  productos           Productos[]
+  ingresosCreados     Ingresos[]          @relation("usuarioCreador")
+  ingresosCompletados Ingresos[]          @relation("usuarioCompletar")
+  ingresosProductos   IngresosProductos[]
+  ventas              Ventas[]
+  ventasProductos     VentasProductos[]
+  ventasFormasPago    VentasFormasPago[]
+  ventasFacturacion   VentasFacturacion[]
+  tiposIngresos       TiposIngresos[]
+  tiposGastos         TiposGastos[]
+  cajas               Cajas[]
+  ingresosCajas       IngresosCajas[]
+  gastosCajas         GastosCajas[]
+  cajasVentas         CajasVentas[]
+  clientes            Clientes[]
+  proveedores         Proveedores[]
+  configGenerales     ConfigGenerales[]
+  reservas            Reservas[]
+  reservasProductos   ReservasProductos[]
+  ventasReservas      VentasReservas[]
 }
 
 model UnidadesMedida {
@@ -345,46 +344,35 @@ model ConfigGenerales {
 // Reservas
 
 model Reservas {
-  id                         Int                           @id @default(autoincrement())
-  clienteId                  Int
-  usuarioCreador             String
-  fechaReserva               DateTime
-  fechaEntrega               DateTime
-  fechaAlerta                String                        
-  horasAntes                 String
-  horaEntrega                String                        @db.VarChar(10)
-  fechaFinalizacion          DateTime?                     @default(now())
-  adelanto                   Float
-  precioTotal                Float
-  tipoObservacion            String?                       @default("General") @db.VarChar(150)
-  observaciones              String?                       @default("") @db.VarChar(150)
-  estado                     String?                       @default("Pendiente") @db.VarChar(150)
-  activo                     Boolean?                      @default(true)
-  createdAt                  DateTime                      @default(now())
-  updatedAt                  DateTime                      @updatedAt
-  creatorUserId              Int
-  ventasReservas             VentasReservas[]
-  reservasProductos          ReservasProductos[]
-  reservasObervacionesTortas ReservasObservacionesTortas[]
-  creatorUser                Usuarios                      @relation(fields: [creatorUserId], references: [id])
-  cliente                    Clientes                      @relation(fields: [clienteId], references: [id])
-}
-
-model ReservasObservacionesTortas {
-  id            Int      @id @default(autoincrement())
-  reservaId     Int
-  reserva       Reservas @relation(fields: [reservaId], references: [id])
-  relleno1      String?  @default("") @db.VarChar(100)
-  relleno2      String?  @default("") @db.VarChar(100)
-  relleno3      String?  @default("") @db.VarChar(100)
-  forma         String?  @default("") @db.VarChar(100)
-  peso          String?  @default("") @db.VarChar(100)
-  cobertura     String?  @default("") @db.VarChar(100)
-  activo        Boolean? @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  creatorUserId Int
-  creatorUser   Usuarios @relation(fields: [creatorUserId], references: [id])
+  id                Int                 @id @default(autoincrement())
+  clienteId         Int
+  usuarioCreador    String
+  fechaReserva      DateTime
+  fechaEntrega      DateTime
+  fechaAlerta       String
+  horasAntes        String
+  horaEntrega       String              @db.VarChar(10)
+  fechaFinalizacion DateTime?           @default(now())
+  adelanto          Float
+  precioTotal       Float
+  tipoObservacion   String?             @default("General") @db.VarChar(150)
+  observaciones     String?             @default("") @db.VarChar(150)
+  tortaRelleno1     String
+  tortaRelleno2     String?             @default("") @db.VarChar(150)
+  tortaRelleno3     String?             @default("") @db.VarChar(150)
+  tortaCobertura    String?             @default("") @db.VarChar(150)
+  tortaPeso         Float             
+  tortaForma        String?             @default("") @db.VarChar(150)
+  tortaDetalles     String?             @default("") @db.VarChar(150)
+  estado            String?             @default("Pendiente") @db.VarChar(150)
+  activo            Boolean?            @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  creatorUserId     Int
+  ventasReservas    VentasReservas[]
+  reservasProductos ReservasProductos[]
+  creatorUser       Usuarios            @relation(fields: [creatorUserId], references: [id])
+  cliente           Clientes            @relation(fields: [clienteId], references: [id])
 }
 
 model ReservasProductos {

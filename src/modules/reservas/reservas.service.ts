@@ -99,6 +99,12 @@ export class ReservasService {
     // Uppercase
     createData.usuarioCreador = createData.usuarioCreador?.toLocaleUpperCase().trim();
     createData.observaciones = createData.observaciones?.toLocaleUpperCase().trim();
+    createData.tortaRelleno1 = createData.tortaRelleno1?.toLocaleUpperCase().trim();
+    createData.tortaRelleno2 = createData.tortaRelleno2?.toLocaleUpperCase().trim();
+    createData.tortaRelleno3 = createData.tortaRelleno3?.toLocaleUpperCase().trim();
+    createData.tortaForma = createData.tortaForma?.toLocaleUpperCase().trim();
+    createData.tortaCobertura = createData.tortaCobertura?.toLocaleUpperCase().trim();
+    createData.tortaDetalles = createData.tortaDetalles?.toLocaleUpperCase().trim();
 
     // Adaptando fechas
     createData.fechaReserva = new Date(createData.fechaReserva);
@@ -110,9 +116,12 @@ export class ReservasService {
     let dataReserva = { ...createData };
     delete dataReserva.productos;
 
+    console.log(dataReserva);
+
     // Se crear la reserva
     const reservaDB = await this.prisma.reservas.create({
-      data: dataReserva, include: {
+      data: dataReserva, 
+      include: {
         cliente: true,
         creatorUser: true
       }
@@ -148,7 +157,6 @@ export class ReservasService {
 
     const { 
       fechaReserva, 
-      fechaEntrega,
     }: any = updateData;
 
     if(fechaReserva){
@@ -159,6 +167,12 @@ export class ReservasService {
     // Uppercase
     updateData.usuarioCreador = updateData.usuarioCreador?.toString().toLocaleUpperCase().trim();
     updateData.observaciones = updateData.observaciones?.toString().toLocaleUpperCase().trim();
+    updateData.tortaRelleno1 = updateData.tortaRelleno1?.toString().toLocaleUpperCase().trim();
+    updateData.tortaRelleno2 = updateData.tortaRelleno2?.toString().toLocaleUpperCase().trim();
+    updateData.tortaRelleno3 = updateData.tortaRelleno3?.toString().toLocaleUpperCase().trim();
+    updateData.tortaForma = updateData.tortaForma?.toString().toLocaleUpperCase().trim();
+    updateData.tortaCobertura = updateData.tortaCobertura?.toString().toLocaleUpperCase().trim();
+    updateData.tortaDetalles = updateData.tortaDetalles?.toString().toLocaleUpperCase().trim();
 
     // Adaptando fechas    
     // updateData.fechaReserva ? updateData.fechaReserva = new Date("2024/02/24") : null;

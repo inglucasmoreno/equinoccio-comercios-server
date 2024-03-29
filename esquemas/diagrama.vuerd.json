@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 3000,
     "height": 3000,
-    "scrollTop": -1101.4930304777615,
-    "scrollLeft": -538,
+    "scrollTop": -1120,
+    "scrollLeft": -345.5,
     "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
@@ -284,7 +284,7 @@
           "active": false,
           "left": 89.445,
           "top": 39.1116,
-          "zIndex": 15,
+          "zIndex": 14,
           "widthName": 60,
           "widthComment": 60,
           "color": "#00FF13"
@@ -439,7 +439,7 @@
           "active": false,
           "left": 470.556,
           "top": 40.4443,
-          "zIndex": 16,
+          "zIndex": 15,
           "widthName": 99.5634765625,
           "widthComment": 60,
           "color": "#00F6FF"
@@ -594,7 +594,7 @@
           "active": false,
           "left": 470.0001,
           "top": 250.9996,
-          "zIndex": 17,
+          "zIndex": 16,
           "widthName": 60,
           "widthComment": 60,
           "color": "#00ECFF"
@@ -1002,7 +1002,7 @@
           "active": false,
           "left": 1031.2778,
           "top": 41.9169,
-          "zIndex": 18,
+          "zIndex": 17,
           "widthName": 60.53173828125,
           "widthComment": 60,
           "color": "#00F6FF"
@@ -1249,7 +1249,7 @@
           "active": false,
           "left": 464.8572,
           "top": 456.9997,
-          "zIndex": 22,
+          "zIndex": 21,
           "widthName": 60,
           "widthComment": 60,
           "color": "#3411FF"
@@ -1565,7 +1565,7 @@
           "active": false,
           "left": 1029.9989,
           "top": 593.0002,
-          "zIndex": 21,
+          "zIndex": 20,
           "widthName": 110.392578125,
           "widthComment": 60,
           "color": "#2600FF"
@@ -1881,7 +1881,7 @@
           "active": false,
           "left": 1523.945,
           "top": 31.2223,
-          "zIndex": 19,
+          "zIndex": 18,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00F6"
@@ -2128,7 +2128,7 @@
           "active": false,
           "left": 1548.5838,
           "top": 471.7767,
-          "zIndex": 20,
+          "zIndex": 19,
           "widthName": 100.287109375,
           "widthComment": 60,
           "color": "#F600FF"
@@ -4684,7 +4684,7 @@
           "active": false,
           "left": 20,
           "top": 458.4906,
-          "zIndex": 23,
+          "zIndex": 22,
           "widthName": 99.55712890625,
           "widthComment": 60,
           "color": "#C9C9C9"
@@ -4973,29 +4973,6 @@
             }
           },
           {
-            "id": "7e3ed8f2-79f0-4813-924b-2e97ec8314c3",
-            "name": "observaciones",
-            "comment": "",
-            "dataType": "string",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 85.8271484375,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
             "id": "0e0dae07-d493-44b9-b021-baeb92f5b2f4",
             "name": "estado",
             "comment": "",
@@ -5109,13 +5086,174 @@
               "widthDataType": 60,
               "widthDefault": 60
             }
+          },
+          {
+            "id": "e35fc474-7669-4d1a-8817-bdd979f4207f",
+            "name": "tortaRelleno1",
+            "comment": "",
+            "dataType": "string",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 79.3271484375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "75c0caff-c682-4d8c-bc74-c33e719c3c80",
+            "name": "tortaRelleno2",
+            "comment": "",
+            "dataType": "string",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 79.3271484375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "d34b5127-3433-4725-b08e-0113f7b84c2c",
+            "name": "tortaRelleno3",
+            "comment": "",
+            "dataType": "string",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 79.3271484375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "fc419ad3-201e-4bd0-9aac-cc62484ca4b8",
+            "name": "tortaForma",
+            "comment": "",
+            "dataType": "string",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 65.57177734375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "c4ebc674-7ed1-4f02-9010-31d9987decbc",
+            "name": "tortaCobertura",
+            "comment": "",
+            "dataType": "string",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 85.82080078125,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "b95461ec-35ae-47b3-aae5-df526e4e5804",
+            "name": "tortaPeso",
+            "comment": "",
+            "dataType": "float",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "c2cc7ecb-3162-4a10-a7e1-7312422f9d2e",
+            "name": "tortaDetalles",
+            "comment": "",
+            "dataType": "string",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 74.97900390625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
           }
         ],
         "ui": {
-          "active": false,
+          "active": true,
           "left": 453.75,
           "top": 1108.1467,
-          "zIndex": 14,
+          "zIndex": 103,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -5544,253 +5682,6 @@
           "widthName": 96.66259765625,
           "widthComment": 60,
           "color": "#FD19DB"
-        },
-        "visible": true
-      },
-      {
-        "id": "384e1a50-abff-409a-ace2-33a8a931c00e",
-        "name": "ReservasObservacionesTortas",
-        "comment": "",
-        "columns": [
-          {
-            "id": "f8a685db-8fa2-4d3f-a48f-8a68795a226a",
-            "name": "id",
-            "comment": "",
-            "dataType": "int",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": true,
-              "unique": false,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": true,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
-            "id": "03ccfe62-2afe-47b7-a9b4-3e3208a34207",
-            "name": "reservaId",
-            "comment": "",
-            "dataType": "int",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": true,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
-            "id": "5e123a89-1cc6-44da-bdce-896de05f077b",
-            "name": "relleno1",
-            "comment": "",
-            "dataType": "string",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
-            "id": "230a8d1f-2e32-4a6e-9642-faaf8a0ad78e",
-            "name": "relleno2",
-            "comment": "",
-            "dataType": "string",
-            "default": "''",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
-            "id": "49c25319-4572-4c74-a197-71c30ac17393",
-            "name": "relleno3",
-            "comment": "",
-            "dataType": "string",
-            "default": "''",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
-            "id": "6c8bab46-3609-4d2f-bc86-0426e6508b3b",
-            "name": "forma",
-            "comment": "",
-            "dataType": "string",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
-            "id": "5dbd00d0-3250-4f4e-9115-cf283e7b4a08",
-            "name": "peso",
-            "comment": "",
-            "dataType": "string",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
-            "id": "5b472175-012d-455a-976d-a922f1aa2441",
-            "name": "cobertura",
-            "comment": "",
-            "dataType": "string",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
-            "id": "9d42233c-4373-47a4-8b39-bafc0f0f568b",
-            "name": "createdAt",
-            "comment": "",
-            "dataType": "date",
-            "default": "Now()",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          },
-          {
-            "id": "bcc8c4a5-c0b0-42f5-8132-d6fcbee60dc6",
-            "name": "updatedAt",
-            "comment": "",
-            "dataType": "date",
-            "default": "Now()",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 61.2744140625,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          }
-        ],
-        "ui": {
-          "active": false,
-          "left": 473,
-          "top": 1585.8814,
-          "zIndex": 12,
-          "widthName": 179.01708984375,
-          "widthComment": 60,
-          "color": "#FF00D9"
         },
         "visible": true
       }
@@ -6238,7 +6129,7 @@
             "91e4206f-ee31-4eeb-83d0-0c73dbfb9695"
           ],
           "x": 843.1953125,
-          "y": 1181.1467,
+          "y": 1201.6467,
           "direction": "right"
         },
         "constraintName": "fk_clientes_to_reservas",
@@ -6281,7 +6172,7 @@
             "3bc22375-c931-49e6-92da-ac7ada420353"
           ],
           "x": 843.1953125,
-          "y": 1473.1467,
+          "y": 1575.6467,
           "direction": "right"
         },
         "end": {
@@ -6333,7 +6224,7 @@
             "3bc22375-c931-49e6-92da-ac7ada420353"
           ],
           "x": 843.1953125,
-          "y": 1327.1467,
+          "y": 1388.6467,
           "direction": "right"
         },
         "end": {
@@ -6346,32 +6237,6 @@
           "direction": "left"
         },
         "constraintName": "fk_reservas_to_ventasreservas",
-        "visible": true
-      },
-      {
-        "id": "ece4ef5e-785c-4da4-bb10-402e592aae12",
-        "identification": false,
-        "relationshipType": "OneN",
-        "startRelationshipType": "Dash",
-        "start": {
-          "tableId": "c4b5c971-0b96-407d-8160-988ac0f25e90",
-          "columnIds": [
-            "3bc22375-c931-49e6-92da-ac7ada420353"
-          ],
-          "x": 648.47265625,
-          "y": 1546.1467,
-          "direction": "bottom"
-        },
-        "end": {
-          "tableId": "384e1a50-abff-409a-ace2-33a8a931c00e",
-          "columnIds": [
-            "03ccfe62-2afe-47b7-a9b4-3e3208a34207"
-          ],
-          "x": 647.13720703125,
-          "y": 1585.8814,
-          "direction": "top"
-        },
-        "constraintName": "fk_reservas_to_reservasobservacionestortas",
         "visible": true
       }
     ]
