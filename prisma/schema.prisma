@@ -134,26 +134,28 @@ model IngresosProductos {
 }
 
 model Ventas {
-  id                Int                 @id @default(autoincrement())
-  fechaVenta        DateTime?           @default(now())
-  precioTotal       Float
-  precioTotalLimpio Float
-  adicionalCredito  Float
-  comprobante       String?             @default("Normal") @db.VarChar(100)
-  totalBalanza      Float
-  totalNoBalanza    Float
-  activo            Boolean?            @default(true)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  cajaId            Int
-  creatorUserId     Int
-  creatorUser       Usuarios            @relation(fields: [creatorUserId], references: [id])
-  caja              Cajas               @relation(fields: [cajaId], references: [id])
-  ventasProductos   VentasProductos[]
-  ventasFormasPago  VentasFormasPago[]
-  ventasFacturacion VentasFacturacion[]
-  cajasVentas       CajasVentas[]
-  ventasReservas    VentasReservas[]
+  id                    Int                 @id @default(autoincrement())
+  fechaVenta            DateTime?           @default(now())
+  precioTotal           Float
+  precioTotalLimpio     Float
+  adicionalCredito      Float
+  comprobante           String?             @default("Normal") @db.VarChar(100)
+  totalBalanza          Float
+  totalNoBalanza        Float
+  totalAdelantoReserva  Float               @default(0)
+  totalCompletarReserva Float               @default(0)
+  activo                Boolean?            @default(true)
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  cajaId                Int
+  creatorUserId         Int
+  creatorUser           Usuarios            @relation(fields: [creatorUserId], references: [id])
+  caja                  Cajas               @relation(fields: [cajaId], references: [id])
+  ventasProductos       VentasProductos[]
+  ventasFormasPago      VentasFormasPago[]
+  ventasFacturacion     VentasFacturacion[]
+  cajasVentas           CajasVentas[]
+  ventasReservas        VentasReservas[]
 }
 
 model VentasProductos {
@@ -361,7 +363,7 @@ model Reservas {
   tortaRelleno2     String?             @default("") @db.VarChar(150)
   tortaRelleno3     String?             @default("") @db.VarChar(150)
   tortaCobertura    String?             @default("") @db.VarChar(150)
-  tortaPeso         Float             
+  tortaPeso         Float
   tortaForma        String?             @default("") @db.VarChar(150)
   tortaDetalles     String?             @default("") @db.VarChar(150)
   estado            String?             @default("Pendiente") @db.VarChar(150)
@@ -397,6 +399,7 @@ model VentasReservas {
   venta         Ventas   @relation(fields: [ventaId], references: [id])
   reservaId     Int
   reserva       Reservas @relation(fields: [reservaId], references: [id])
+  tipo          String   @default("Adelanto") @db.VarChar(150)
   activo        Boolean? @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

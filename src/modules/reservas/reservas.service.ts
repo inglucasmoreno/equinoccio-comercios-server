@@ -25,6 +25,11 @@ export class ReservasService {
             }
           }
         },
+        ventasReservas: {
+          include: {
+            venta: true
+          }
+        },
         creatorUser: true,
       }
     })

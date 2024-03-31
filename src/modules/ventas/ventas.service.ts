@@ -23,6 +23,11 @@ export class VentasService {
                 ventasProductos: true,
                 ventasFacturacion: true,
                 ventasFormasPago: true,
+                ventasReservas: {
+                    include: {
+                        reserva: true,
+                    }                
+                },
                 creatorUser: true,
             }
         })
@@ -188,6 +193,11 @@ export class VentasService {
                                 }
                             }
                         },
+                    },
+                    ventasReservas: {
+                        include: {
+                            reserva: true,
+                        }
                     },
                     ventasFacturacion: true,
                     ventasFormasPago: true,

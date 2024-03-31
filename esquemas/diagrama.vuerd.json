@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 3000,
     "height": 3000,
-    "scrollTop": -1120,
-    "scrollLeft": -345.5,
+    "scrollTop": -267,
+    "scrollLeft": -827.5,
     "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
@@ -284,7 +284,7 @@
           "active": false,
           "left": 89.445,
           "top": 39.1116,
-          "zIndex": 14,
+          "zIndex": 13,
           "widthName": 60,
           "widthComment": 60,
           "color": "#00FF13"
@@ -439,7 +439,7 @@
           "active": false,
           "left": 470.556,
           "top": 40.4443,
-          "zIndex": 15,
+          "zIndex": 14,
           "widthName": 99.5634765625,
           "widthComment": 60,
           "color": "#00F6FF"
@@ -594,7 +594,7 @@
           "active": false,
           "left": 470.0001,
           "top": 250.9996,
-          "zIndex": 16,
+          "zIndex": 15,
           "widthName": 60,
           "widthComment": 60,
           "color": "#00ECFF"
@@ -1002,7 +1002,7 @@
           "active": false,
           "left": 1031.2778,
           "top": 41.9169,
-          "zIndex": 17,
+          "zIndex": 16,
           "widthName": 60.53173828125,
           "widthComment": 60,
           "color": "#00F6FF"
@@ -1249,7 +1249,7 @@
           "active": false,
           "left": 464.8572,
           "top": 456.9997,
-          "zIndex": 21,
+          "zIndex": 20,
           "widthName": 60,
           "widthComment": 60,
           "color": "#3411FF"
@@ -1565,7 +1565,7 @@
           "active": false,
           "left": 1029.9989,
           "top": 593.0002,
-          "zIndex": 20,
+          "zIndex": 19,
           "widthName": 110.392578125,
           "widthComment": 60,
           "color": "#2600FF"
@@ -1785,6 +1785,52 @@
             }
           },
           {
+            "id": "c1a67f72-c54c-4e1e-adcf-06fb1881b02d",
+            "name": "totalSenaReserva",
+            "comment": "",
+            "dataType": "float",
+            "default": "0",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 105.33984375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "e80f4706-5bb3-4b17-adcd-b207c3e9efa4",
+            "name": "totalCompletarReserva",
+            "comment": "",
+            "dataType": "float",
+            "default": "0",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 134.9453125,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "02f6405b-da00-4bd1-a981-b5eee5f34952",
             "name": "activo",
             "comment": "",
@@ -1878,10 +1924,10 @@
           }
         ],
         "ui": {
-          "active": false,
-          "left": 1523.945,
-          "top": 31.2223,
-          "zIndex": 18,
+          "active": true,
+          "left": 1505.195,
+          "top": 14.9723,
+          "zIndex": 41,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00F6"
@@ -2128,7 +2174,7 @@
           "active": false,
           "left": 1548.5838,
           "top": 471.7767,
-          "zIndex": 19,
+          "zIndex": 18,
           "widthName": 100.287109375,
           "widthComment": 60,
           "color": "#F600FF"
@@ -4684,7 +4730,7 @@
           "active": false,
           "left": 20,
           "top": 458.4906,
-          "zIndex": 22,
+          "zIndex": 21,
           "widthName": 99.55712890625,
           "widthComment": 60,
           "color": "#C9C9C9"
@@ -5250,10 +5296,10 @@
           }
         ],
         "ui": {
-          "active": true,
+          "active": false,
           "left": 453.75,
           "top": 1108.1467,
-          "zIndex": 103,
+          "zIndex": 22,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -5500,7 +5546,7 @@
           "active": false,
           "left": 1040.75,
           "top": 1353.6467,
-          "zIndex": 13,
+          "zIndex": 12,
           "widthName": 115.43896484375,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -5807,8 +5853,8 @@
           "columnIds": [
             "4f86b16a-f3ab-4fcd-a9aa-05fda1a7bc38"
           ],
-          "x": 1670.2559741210937,
-          "y": 366.7223,
+          "x": 1663.4244921875,
+          "y": 391.4723,
           "direction": "bottom"
         },
         "end": {
@@ -5833,8 +5879,8 @@
           "columnIds": [
             "4f86b16a-f3ab-4fcd-a9aa-05fda1a7bc38"
           ],
-          "x": 1914.10759765625,
-          "y": 115.0973,
+          "x": 1927.1403125,
+          "y": 109.0973,
           "direction": "right"
         },
         "end": {
@@ -5885,8 +5931,8 @@
           "columnIds": [
             "4f86b16a-f3ab-4fcd-a9aa-05fda1a7bc38"
           ],
-          "x": 1914.10759765625,
-          "y": 282.8473,
+          "x": 1927.1403125,
+          "y": 297.3473,
           "direction": "right"
         },
         "end": {
@@ -5911,8 +5957,8 @@
           "columnIds": [
             "4f86b16a-f3ab-4fcd-a9aa-05fda1a7bc38"
           ],
-          "x": 1767.7966235351562,
-          "y": 366.7223,
+          "x": 1768.9108203125,
+          "y": 391.4723,
           "direction": "bottom"
         },
         "end": {
@@ -6076,8 +6122,8 @@
           "columnIds": [
             "4426629a-fe1e-4e92-9d74-66d7d8da26c3"
           ],
-          "x": 1865.3372729492187,
-          "y": 366.7223,
+          "x": 1874.3971484375,
+          "y": 391.4723,
           "direction": "bottom"
         },
         "constraintName": "fk_cajas_to_ventas",
@@ -6197,8 +6243,8 @@
           "columnIds": [
             "4f86b16a-f3ab-4fcd-a9aa-05fda1a7bc38"
           ],
-          "x": 1572.7153247070312,
-          "y": 366.7223,
+          "x": 1557.9381640625,
+          "y": 391.4723,
           "direction": "bottom"
         },
         "end": {
