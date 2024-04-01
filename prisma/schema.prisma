@@ -351,7 +351,7 @@ model Reservas {
   usuarioCreador    String
   fechaReserva      DateTime
   fechaEntrega      DateTime
-  fechaAlerta       String
+  fechaAlerta       DateTime
   horasAntes        String
   horaEntrega       String              @db.VarChar(10)
   fechaFinalizacion DateTime?           @default(now())

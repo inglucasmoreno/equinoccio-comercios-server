@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, Reservas } from '@prisma/client';
+import { Reservas } from '@prisma/client';
 import { add } from 'date-fns';
-import { create } from 'domain';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -116,16 +115,16 @@ export class ReservasService {
     createData.fechaReserva.setHours(createData.fechaReserva.getHours() + 3);
     createData.fechaEntrega = new Date(createData.fechaEntrega);
     createData.fechaEntrega.setHours(createData.fechaEntrega.getHours() + 3);
+    createData.fechaAlerta = new Date(createData.fechaAlerta);
+    // createData.fechaAlerta.setHours(createData.fechaAlerta.getHours() + 3);
 
     // createData sin productos
     let dataReserva = { ...createData };
     delete dataReserva.productos;
 
-    console.log(dataReserva);
-
     // Se crear la reserva
     const reservaDB = await this.prisma.reservas.create({
-      data: dataReserva, 
+      data: dataReserva,
       include: {
         cliente: true,
         creatorUser: true
@@ -158,16 +157,7 @@ export class ReservasService {
   }
 
   // Actualizar reserva
-  async update(id: number, updateData: Prisma.ReservasUpdateInput): Promise<Reservas> {
-
-    const { 
-      fechaReserva, 
-    }: any = updateData;
-
-    if(fechaReserva){
-      updateData.fechaReserva = new Date(fechaReserva);
-      updateData.fechaReserva.setHours(updateData.fechaReserva.getHours() + 3);
-    }
+  async update(id: number, updateData: any): Promise<Reservas> {
 
     // Uppercase
     updateData.usuarioCreador = updateData.usuarioCreador?.toString().toLocaleUpperCase().trim();
@@ -179,10 +169,17 @@ export class ReservasService {
     updateData.tortaCobertura = updateData.tortaCobertura?.toString().toLocaleUpperCase().trim();
     updateData.tortaDetalles = updateData.tortaDetalles?.toString().toLocaleUpperCase().trim();
 
-    // Adaptando fechas    
-    // updateData.fechaReserva ? updateData.fechaReserva = new Date("2024/02/24") : null;
-    // updateData.fechaEntrega ? updateData.fechaEntrega = new Date("2024/02/24") : null;
-
+    // Adaptando fechas
+    if (updateData.fechaReserva) {
+      updateData.fechaReserva = new Date(updateData.fechaReserva);
+      updateData.fechaReserva.setHours(updateData.fechaReserva.getHours() + 3);
+    }
+    if (updateData.fechaEntrega) {
+      updateData.fechaEntrega = new Date(updateData.fechaEntrega);
+      updateData.fechaEntrega.setHours(updateData.fechaEntrega.getHours() + 3);
+    }
+    if (updateData.fechaAlerta) updateData.fechaAlerta = new Date(updateData.fechaAlerta);
+    
     const reservaDB = await this.prisma.reservas.findFirst({ where: { id } });
 
     // Verificacion: La reserva no existe
@@ -196,6 +193,28 @@ export class ReservasService {
         creatorUser: true
       }
     })
+
+  }
+
+  async reservasPorVencer(): Promise<Reservas[]> {
+
+    const fechaHoy = new Date();
+
+    // Listado de reservas por vencer
+    const reservas = await this.prisma.reservas.findMany({
+      where: {
+        estado: 'Pendiente',
+        fechaAlerta: {
+          lte: fechaHoy
+        }
+      },
+      include: {
+        cliente: true,
+        creatorUser: true
+      }
+    })
+
+    return reservas
 
   }
 

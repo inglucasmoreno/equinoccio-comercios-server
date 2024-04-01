@@ -38,6 +38,20 @@ export class ReservasController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/estado/por-vencer')
+  async getReservasPorVencer(@Res() res): Promise<any> {
+    
+    const reservas = await this.reservasService.reservasPorVencer();
+
+    return res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'Reservas por vencer obtenidas correctamente',
+      reservas,
+    })
+
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post()
   async insert(@Res() res, @Body() createData: any): Promise<any> {
     

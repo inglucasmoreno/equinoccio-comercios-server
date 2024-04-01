@@ -145,13 +145,18 @@ export class CajasService {
     let totalPedidosYa = 0;
     let totalPedidosYaOnline = 0;
     let totalFacturado = 0;
+    let totalAdelantoReserva = 0;
+    let totalCompletarReserva = 0;
 
-    ventas.map(venta => {
+    ventas.map((venta: any) => {
 
       cantidadVentas += 1;
       totalBalanza += venta.totalBalanza;
       totalNoBalanza += venta.totalNoBalanza;
       totalAdicionalCredito += venta.adicionalCredito;
+      totalAdelantoReserva += venta.totalAdelantoReserva;
+      totalCompletarReserva += venta.totalCompletarReserva;
+
       if (venta.comprobante === 'Facturacion') totalFacturado += venta.precioTotal;
 
       venta.ventasFormasPago.map(formaPago => {
@@ -165,7 +170,7 @@ export class CajasService {
 
     });
 
-    let totalVentas = totalBalanza + totalNoBalanza + totalAdicionalCredito;
+    let totalVentas = totalBalanza + totalNoBalanza + totalAdicionalCredito + totalAdelantoReserva + totalCompletarReserva;
     let totalPostnet = totalDebito + totalCredito + totalMercadoPago;
     console.log(totalPostnet);
     let totalEfectivoEnCaja = totalVentas + totalIngresos + caja.saldoInicial - totalPostnet - totalPedidosYaOnline - totalGastos;
@@ -189,6 +194,8 @@ export class CajasService {
         totalEfectivoEnCaja: Number(totalEfectivoEnCaja.toFixed(2)),
         totalIngresos: Number(totalIngresos.toFixed(2)),
         totalGastos: Number(totalGastos.toFixed(2)),
+        totalAdelantoReserva: Number(totalAdelantoReserva.toFixed(2)),
+        totalCompletarReserva: Number(totalCompletarReserva.toFixed(2)),
       },
       ingresos,
       gastos
