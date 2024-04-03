@@ -1,12 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Reservas } from '@prisma/client';
-import { add } from 'date-fns';
+import { add, format } from 'date-fns';
 import { PrismaService } from 'src/prisma.service';
+import PdfPrinter from 'pdfmake';
+import { TDocumentDefinitions } from 'pdfmake/interfaces';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ReservasService {
 
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private readonly configService: ConfigService,
+    private prisma: PrismaService
+  ) { }
 
   // Reserva por ID
   async getId(id: number): Promise<Reservas> {
@@ -44,10 +50,11 @@ export class ReservasService {
     direccion = 'desc',
     estado = '',
     fechaDesde = '',
-    fechaHasta = '',
+    fechaHasta = '', 
+    filtroPorVencer = 'false',
     parametro = '',
     pagina = 1,
-    itemsPorPagina = 10000
+    itemsPorPagina = 10000 
   }: any): Promise<any> {
 
     // Ordenando datos
@@ -66,8 +73,18 @@ export class ReservasService {
       }
     }
 
-    if (estado.trim() !== '') where = { ...where, estado }
+    // Solo las reservas por vencer
+    if (filtroPorVencer === 'true') {
+      const fechaHoy = new Date();
+      where = {
+        ...where,
+        fechaAlerta: {
+          lte: fechaHoy
+        }
+      }
+    }
 
+    if (estado.trim() !== '') where = { ...where, estado }
 
     // Total de reservas
     const totalItems = await this.prisma.reservas.count({ where });
@@ -179,7 +196,7 @@ export class ReservasService {
       updateData.fechaEntrega.setHours(updateData.fechaEntrega.getHours() + 3);
     }
     if (updateData.fechaAlerta) updateData.fechaAlerta = new Date(updateData.fechaAlerta);
-    
+
     const reservaDB = await this.prisma.reservas.findFirst({ where: { id } });
 
     // Verificacion: La reserva no existe
@@ -215,6 +232,585 @@ export class ReservasService {
     })
 
     return reservas
+
+  }
+
+  async generarComprobante(id: number): Promise<any> {
+
+    const reservaDB = await this.prisma.reservas.findFirst({
+      where: { id },
+      include: {
+        cliente: true,
+        reservasProductos: {
+          include: {
+            producto: {
+              include: {
+                unidadMedida: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!reservaDB) throw new NotFoundException('La reserva no existe');
+
+    const pdfBuffer: Buffer = await new Promise(resolve => {
+
+      let fonts = {
+        Helvetica: {
+          normal: 'Helvetica',
+          bold: 'Helvetica-Bold',
+          italics: 'Helvetica-Oblique',
+          bolditalics: 'Helvetica-BoldOblique'
+        },
+      }
+
+      const printer = new PdfPrinter(fonts);
+
+      const docDefinition: TDocumentDefinitions = {
+        defaultStyle: { font: 'Helvetica' },
+        pageMargins: 10,
+        pageSize: { width: 226.772, height: 841.89105 }, // 1 milimetro = 2.83465
+        content: [
+          {
+            columns: [
+              {
+                image: this.configService.get('NODE_ENV') === 'production' ? `../assets/Logo.png` : './assets/Logo.png',
+                width: 70,
+              },
+              [
+                { text: `Fecha de reserva`, fontSize: 9, marginLeft: 30, marginTop: 10 },
+                { text: `${format(reservaDB.fechaReserva, 'dd-MM-yyyy')}`, fontSize: 9, marginLeft: 43, marginTop: 4 },
+              ],
+            ],
+          },
+          {
+            text: 'EQUINOCCIO TECHNOLOGY',
+            marginTop: 10,
+            fontSize: 10,
+            bold: true,
+          },
+          {
+            text: [
+              {
+                text: 'Domicilio:',
+                bold: true,
+              }, ` 9 DE JULIO 811`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'Telefono:',
+                bold: true,
+              }, ` 2664869642`,
+            ],
+            marginTop: 7,
+            fontSize: 9
+          },
+          {
+            text: '------------------------------------------------',
+            marginTop: 5,
+          },
+          {
+            text: [
+              {
+                text: 'Nro de reserva:',
+                bold: true,
+              }, ` ${reservaDB.id}`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'Fecha de entrega:',
+                bold: true,
+              }, ` ${format(reservaDB.fechaEntrega, 'dd/MM/yyyy')} - ${reservaDB.horaEntrega}hs`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'Cliente:',
+                bold: true,
+              }, ` ${reservaDB.cliente.descripcion}`,
+            ],
+            marginTop: 5,
+            fontSize: 8
+          },
+          {
+            text: '------------------------------------------------',
+            marginTop: 5,
+          },
+
+          {
+            text: 'Listado de productos',
+            bold: true,
+            fontSize: 11,
+            marginTop: 5,
+            marginBottom: 2,
+          },
+
+          reservaDB.reservasProductos.map((producto: any) => {
+            return [
+              {
+                text: `${producto.producto.descripcion} x ${producto.cantidad}`,
+                marginTop: 7,
+                fontSize: 9,
+              },
+              {
+                text: `$${parseFloat(producto.precioTotal).toFixed(2)}`,
+                marginTop: 3,
+                fontSize: 9,
+              }
+            ]
+          }),
+
+          {
+            text: '------------------------------------------------',
+            marginTop: 5,
+          },
+
+          reservaDB.tipoObservacion === 'Torta' ?
+            {
+              text: 'Detalles - Torta',
+              bold: true,
+              fontSize: 11,
+              marginTop: 5,
+              marginBottom: 2,
+            } : { text: [] },
+
+          reservaDB.tipoObservacion === 'Torta' ?
+            {
+              text: [
+                {
+                  text: 'Relleno 1:',
+                  bold: true,
+                }, ` ${reservaDB.tortaRelleno1}`,
+              ],
+              marginTop: 5,
+              fontSize: 9
+            } : { text: [] },
+
+          (reservaDB.tipoObservacion === 'Torta' && reservaDB.tortaRelleno2) ?
+            {
+              text: [
+                {
+                  text: 'Relleno 2:',
+                  bold: true,
+                }, ` ${reservaDB.tortaRelleno2}`,
+              ],
+              marginTop: 5,
+              fontSize: 9
+            } : { text: [] },
+
+          (reservaDB.tipoObservacion === 'Torta' && reservaDB.tortaRelleno3) ?
+            {
+              text: [
+                {
+                  text: 'Relleno 3:',
+                  bold: true,
+                }, ` ${reservaDB.tortaRelleno3}`,
+              ],
+              marginTop: 5,
+              fontSize: 9
+            } : { text: [] },
+
+          reservaDB.tipoObservacion === 'Torta' ?
+            {
+              text: [
+                {
+                  text: 'Forma:',
+                  bold: true,
+                }, ` ${reservaDB.tortaForma}`,
+              ],
+              marginTop: 5,
+              fontSize: 9
+            } : { text: [] },
+
+          reservaDB.tipoObservacion === 'Torta' ?
+            {
+              text: [
+                {
+                  text: 'Cobertura:',
+                  bold: true,
+                }, ` ${reservaDB.tortaCobertura}`,
+              ],
+              marginTop: 5,
+              fontSize: 9
+            } : { text: [] },
+
+          (reservaDB.tipoObservacion === 'Torta' && reservaDB.tortaDetalles) ?
+            {
+              text: [
+                {
+                  text: 'Otros detalles:',
+                  bold: true,
+                }, ` ${reservaDB.tortaDetalles}`,
+              ],
+              marginTop: 5,
+              lineHeight: 1.5,
+              fontSize: 9
+            } : { text: [] },
+
+          reservaDB.tipoObservacion === 'Torta' ?
+            {
+              text: '------------------------------------------------',
+              marginTop: 5,
+            } : { text: [] },
+          {
+            text: [
+              {
+                text: 'Precio total:',
+                bold: true,
+              }, ` $${reservaDB.precioTotal.toFixed(2)}`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'Monto de seña:',
+                bold: true,
+              }, ` $${reservaDB.adelanto.toFixed(2)}`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'Falta abonar:',
+                bold: true,
+              }, ` $${(reservaDB.precioTotal - reservaDB.adelanto).toFixed(2)}`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: '------------------------------------------------',
+            marginTop: 5,
+          },
+          {
+            text: [
+              {
+                text: 'Firma de cliente:',
+              },
+            ],
+            marginTop: 10,
+            fontSize: 9
+          },
+          {
+            text: '------------------------------------------------',
+            marginTop: 10,
+          },
+          {
+            text: [
+              {
+                text: 'IMPORTANTE',
+                bold: true
+              },
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'En caso de que no se retire la mercaderia en la fecha y hora pactada se perdera la seña',
+              },
+            ],
+            marginTop: 5,
+            lineHeight: 1.5,
+            fontSize: 9
+          },
+          {
+            text: '------------------------------------------------',
+            marginTop: 5,
+            marginBottom: 5
+          },
+
+          // ----------------------------- DUPLICADO ----------------------------------
+
+          {
+            columns: [
+              {
+                image: this.configService.get('NODE_ENV') === 'production' ? `../assets/Logo.png` : './assets/Logo.png',
+                width: 70,
+              },
+              [
+                { text: `Fecha de reserva`, fontSize: 9, marginLeft: 30, marginTop: 10 },
+                { text: `${format(reservaDB.fechaReserva, 'dd-MM-yyyy')}`, fontSize: 9, marginLeft: 43, marginTop: 4 },
+              ],
+            ],
+          },
+          {
+            text: 'EQUINOCCIO TECHNOLOGY',
+            marginTop: 10,
+            fontSize: 10,
+            bold: true,
+          },
+          {
+            text: [
+              {
+                text: 'Domicilio:',
+                bold: true,
+              }, ` 9 DE JULIO 811`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'Telefono:',
+                bold: true,
+              }, ` 2664869642`,
+            ],
+            marginTop: 7,
+            fontSize: 9
+          },
+          {
+            text: '------------------------------------------------',
+            marginTop: 5,
+          },
+          {
+            text: [
+              {
+                text: 'Nro de reserva:',
+                bold: true,
+              }, ` ${reservaDB.id}`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'Fecha de entrega:',
+                bold: true,
+              }, ` ${format(reservaDB.fechaEntrega, 'dd/MM/yyyy')} - ${reservaDB.horaEntrega}hs`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'Cliente:',
+                bold: true,
+              }, ` ${reservaDB.cliente.descripcion}`,
+            ],
+            marginTop: 5,
+            fontSize: 8
+          },
+          {
+            text: '------------------------------------------------',
+            marginTop: 5,
+          },
+
+          {
+            text: 'Listado de productos',
+            bold: true,
+            fontSize: 11,
+            marginTop: 5,
+            marginBottom: 2,
+          },
+
+          reservaDB.reservasProductos.map((producto: any) => {
+            return [
+              {
+                text: `${producto.producto.descripcion} x ${producto.cantidad}`,
+                marginTop: 7,
+                fontSize: 9,
+              },
+              {
+                text: `$${parseFloat(producto.precioTotal).toFixed(2)}`,
+                marginTop: 3,
+                fontSize: 9,
+              }
+            ]
+          }),
+
+          {
+            text: '------------------------------------------------',
+            marginTop: 5,
+          },
+
+          reservaDB.tipoObservacion === 'Torta' ?
+            {
+              text: 'Detalles - Torta',
+              bold: true,
+              fontSize: 11,
+              marginTop: 5,
+              marginBottom: 2,
+            } : { text: [] },
+
+          reservaDB.tipoObservacion === 'Torta' ?
+            {
+              text: [
+                {
+                  text: 'Relleno 1:',
+                  bold: true,
+                }, ` ${reservaDB.tortaRelleno1}`,
+              ],
+              marginTop: 5,
+              fontSize: 9
+            } : { text: [] },
+
+          (reservaDB.tipoObservacion === 'Torta' && reservaDB.tortaRelleno2) ?
+            {
+              text: [
+                {
+                  text: 'Relleno 2:',
+                  bold: true,
+                }, ` ${reservaDB.tortaRelleno2}`,
+              ],
+              marginTop: 5,
+              fontSize: 9
+            } : { text: [] },
+
+          (reservaDB.tipoObservacion === 'Torta' && reservaDB.tortaRelleno3) ?
+            {
+              text: [
+                {
+                  text: 'Relleno 3:',
+                  bold: true,
+                }, ` ${reservaDB.tortaRelleno3}`,
+              ],
+              marginTop: 5,
+              fontSize: 9
+            } : { text: [] },
+
+          reservaDB.tipoObservacion === 'Torta' ?
+            {
+              text: [
+                {
+                  text: 'Forma:',
+                  bold: true,
+                }, ` ${reservaDB.tortaForma}`,
+              ],
+              marginTop: 5,
+              fontSize: 9
+            } : { text: [] },
+
+          reservaDB.tipoObservacion === 'Torta' ?
+            {
+              text: [
+                {
+                  text: 'Cobertura:',
+                  bold: true,
+                }, ` ${reservaDB.tortaCobertura}`,
+              ],
+              marginTop: 5,
+              fontSize: 9
+            } : { text: [] },
+
+          (reservaDB.tipoObservacion === 'Torta' && reservaDB.tortaDetalles) ?
+            {
+              text: [
+                {
+                  text: 'Otros detalles:',
+                  bold: true,
+                }, ` ${reservaDB.tortaDetalles}`,
+              ],
+              marginTop: 5,
+              lineHeight: 1.5,
+              fontSize: 9
+            } : { text: [] },
+
+          reservaDB.tipoObservacion === 'Torta' ?
+            {
+              text: '------------------------------------------------',
+              marginTop: 5,
+            } : { text: [] },
+          {
+            text: [
+              {
+                text: 'Precio total:',
+                bold: true,
+              }, ` $${reservaDB.precioTotal.toFixed(2)}`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'Monto de seña:',
+                bold: true,
+              }, ` $${reservaDB.adelanto.toFixed(2)}`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'Falta abonar:',
+                bold: true,
+              }, ` $${(reservaDB.precioTotal - reservaDB.adelanto).toFixed(2)}`,
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: '------------------------------------------------',
+            marginTop: 5,
+          },
+          {
+            text: [
+              {
+                text: 'IMPORTANTE',
+                bold: true
+              },
+            ],
+            marginTop: 5,
+            fontSize: 9
+          },
+          {
+            text: [
+              {
+                text: 'En caso de que no se retire la mercaderia en la fecha y hora pactada se perdera la seña',
+              },
+            ],
+            marginTop: 5,
+            lineHeight: 1.5,
+            fontSize: 9
+          },
+          {
+            text: '------------------------------------------------',
+            marginTop: 5,
+          },
+        ],
+        styles: {}
+      }
+
+      const pdfDoc = printer.createPdfKitDocument(docDefinition);
+      const chunks = [];
+
+      pdfDoc.on("data", (chunk) => {
+        chunks.push(chunk);
+      });
+
+      pdfDoc.end();
+
+      pdfDoc.on("end", () => {
+        const result = Buffer.concat(chunks);
+        resolve(result)
+      })
+
+    })
+
+    return pdfBuffer;
 
   }
 
