@@ -27,8 +27,8 @@ export class AuthService {
   async login(user: any) {
 
     // Se genera el arreglo de permisos
-    // let permisos: any = [];
-    // user.permisos.map( permiso => {permisos.push( permiso.permiso )});
+    let permisos: any = [];
+    user.usuariosPermisos.map( item => {permisos.push( item.permiso )});
 
     const payload = {
       userId: user.id,
@@ -37,10 +37,10 @@ export class AuthService {
       email: user.email,
       apellido: user.apellido,
       nombre: user.nombre,
-      // permisos: permisos,
+      permisos,
       role: user.role
     };
-
+    
     return {
       token: this.jwtService.sign(payload),
       usuario: payload

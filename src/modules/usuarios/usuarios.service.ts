@@ -11,7 +11,12 @@ export class UsuariosService {
 
   // Usuario por ID
   async getUsuario(id: number): Promise<Usuarios> {
-    const usuarioDB = await this.prisma.usuarios.findFirst({ where: { id } });
+    const usuarioDB = await this.prisma.usuarios.findFirst({ 
+      where: { id },
+      include: {
+        usuariosPermisos: true
+      }
+    });
     if (!usuarioDB) throw new NotFoundException('El usuario no existe');
     return usuarioDB;
   }
@@ -20,6 +25,9 @@ export class UsuariosService {
   async getUsuarioPorNombre(nombreUsuario: string): Promise<Usuarios | null> {
     return await this.prisma.usuarios.findFirst({
       where: { usuario: nombreUsuario, activo: true },
+      include: {
+        usuariosPermisos: true
+      }
     });
   }
 
@@ -27,6 +35,9 @@ export class UsuariosService {
   async getUsuarioPorDNI(dni: string): Promise<Usuarios | null> {
     return await this.prisma.usuarios.findFirst({
       where: { dni, activo: true },
+      include: {
+        usuariosPermisos: true
+      }
     });
   }
 
@@ -35,6 +46,9 @@ export class UsuariosService {
     email = email.toLocaleLowerCase();
     return await this.prisma.usuarios.findFirst({
       where: { email, activo: true },
+      include: {
+        usuariosPermisos: true
+      }
     });
   }
 
@@ -43,8 +57,6 @@ export class UsuariosService {
 
     let orderBy = {};
     orderBy[columna] = direccion == 1 ? 'asc' : 'desc';
-
-    console.log(orderBy);
 
     return await this.prisma.usuarios.findMany({
       orderBy
@@ -74,23 +86,90 @@ export class UsuariosService {
     usuarioDB = await this.getUsuarioPorEmail(email);
     if (usuarioDB) throw new NotFoundException('El email ya se encuentra registrado');
 
-    // Se adicionan los permisos al usuarios
-    // await Promise.all(
-    //   permisos.map(async ({ alcance, permiso, creatorUser, updatorUser }) => {
-    //     const dataPermiso = {
-    //       usuario: nuevoUsuarioDB.id,
-    //       alcance,
-    //       permiso,
-    //       creatorUser,
-    //       updatorUser,
-    //     };
-    //     await this.permisosRepository.save(dataPermiso);
-    //   })
-    // );
-
-    return await this.prisma.usuarios.create({
+    // Creacion de usuario
+    const nuevoUsuarioDB = await this.prisma.usuarios.create({
       data: usuariosDTO
     });
+
+    // Permisos iniciales
+    if(usuariosDTO.role !== 'ADMIN_ROLE'){
+
+      const permisos = [
+        
+        // Ventas
+        
+        { 
+          seccion: 'GENERAR_VENTA',
+          permiso: 'GENERAR_VENTA_ALL',
+          usuarioId: nuevoUsuarioDB.id
+        },
+        { 
+          seccion: 'VENTAS_ACTIVAS',
+          permiso: 'VENTAS_ACTIVAS_ALL',
+          usuarioId: nuevoUsuarioDB.id
+        },
+        { 
+          seccion: 'BUSQUEDA_VENTAS',
+          permiso: 'BUSQUEDA_VENTAS_ALL',
+          usuarioId: nuevoUsuarioDB.id
+        },
+        {
+          seccion: 'CLIENTES',
+          permiso: 'CLIENTES_ALL',
+          usuarioId: nuevoUsuarioDB.id
+        },
+        
+        // Productos
+        
+        { 
+          seccion: 'PRODUCTOS',
+          permiso: 'PRODUCTOS_READ',
+          usuarioId: nuevoUsuarioDB.id
+        },
+        { 
+          seccion: 'INGRESOS',
+          permiso: 'INGRESOS_ALL',
+          usuarioId: nuevoUsuarioDB.id
+
+        },
+        { 
+          seccion: 'PROVEEDORES',
+          permiso: 'PROVEEDORES_ALL',
+          usuarioId: nuevoUsuarioDB.id
+
+        },
+        
+        // Reservas
+        
+        { 
+          seccion: 'NUEVA_RESERVA',
+          permiso: 'NUEVA_RESERVA_READ',
+          usuarioId: nuevoUsuarioDB.id
+
+        },
+        { 
+          seccion: 'LISTADO_RESERVAS',
+          permiso: 'LISTADO_RESERVAS_ALL',
+          usuarioId: nuevoUsuarioDB.id
+
+        },
+        
+        // Cajas
+        
+        { 
+          seccion: 'CIERRE_CAJA',
+          permiso: 'CIERRE_CAJA_ALL',
+          usuarioId: nuevoUsuarioDB.id
+        },
+        
+      ];
+
+      // Creacion de permisos
+      await this.prisma.usuariosPermisos.createMany({ data: permisos });
+
+    }
+
+    return nuevoUsuarioDB;
 
   }
 

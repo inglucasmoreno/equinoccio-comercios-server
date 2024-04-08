@@ -30,6 +30,7 @@ import { ConfigGeneralesModule } from './modules/config-generales/config-general
 import { ReservasModule } from './modules/reservas/reservas.module';
 import { ReservasProductosModule } from './modules/reservas-productos/reservas-productos.module';
 import { VentasReservasModule } from './modules/ventas-reservas/ventas-reservas.module';
+import { UsuariosPermisosModule } from './modules/usuarios-permisos/usuarios-permisos.module';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { VentasReservasModule } from './modules/ventas-reservas/ventas-reservas.
     ReservasModule,
     ReservasProductosModule,
     VentasReservasModule,
+    UsuariosPermisosModule,
 
   ],
   controllers: [AppController],
