@@ -47,17 +47,18 @@ model Usuarios {
   reservasProductos   ReservasProductos[]
   ventasReservas      VentasReservas[]
   usuariosPermisos    UsuariosPermisos[]
+  afip                Afip[]
 }
 
 model UsuariosPermisos {
-  id            Int      @id @default(autoincrement())
-  usuarioId     Int
-  permiso       String   @db.VarChar(150)
-  seccion       String   @db.VarChar(150)
-  activo        Boolean? @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  usuario       Usuarios @relation(fields: [usuarioId], references: [id])
+  id        Int      @id @default(autoincrement())
+  usuarioId Int
+  permiso   String   @db.VarChar(150)
+  seccion   String   @db.VarChar(150)
+  activo    Boolean? @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  usuario   Usuarios @relation(fields: [usuarioId], references: [id])
 }
 
 model UnidadesMedida {
@@ -175,6 +176,7 @@ model VentasProductos {
   cantidad       Float
   precioTotal    Float
   precioUnitario Float
+  alicuota       Float
   activo         Boolean?  @default(true)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -201,17 +203,20 @@ model VentasFormasPago {
 }
 
 model VentasFacturacion {
-  id              Int      @id @default(autoincrement())
-  puntoVenta      Int
-  tipoComprobante Int
-  nroComprobante  Int
-  activo          Boolean? @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  creatorUserId   Int
-  ventaId         Int
-  venta           Ventas   @relation(fields: [ventaId], references: [id])
-  creatorUser     Usuarios @relation(fields: [creatorUserId], references: [id])
+  id                   Int      @id @default(autoincrement())
+  tipoComprobante      String   @db.VarChar(100)
+  nroComprobante       Int
+  codigoComprobante    Int
+  nroFormatComprobante String
+  cae                  String
+  caeFechaVencimiento  String
+  activo               Boolean? @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  creatorUserId        Int
+  ventaId              Int
+  venta                Ventas   @relation(fields: [ventaId], references: [id])
+  creatorUser          Usuarios @relation(fields: [creatorUserId], references: [id])
 }
 
 model TiposIngresos {
@@ -353,6 +358,21 @@ model ConfigGenerales {
   updatedAt      DateTime @updatedAt
   creatorUserId  Int
   creatorUser    Usuarios @relation(fields: [creatorUserId], references: [id])
+}
+
+// AFIP
+
+model Afip {
+  id            Int      @id @default(autoincrement())
+  cert          String   @db.Text
+  key           String   @db.Text
+  puntoVenta    String   @db.VarChar(50)
+  cuit          String   @db.VarChar(50)
+  activo        Boolean? @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  creatorUserId Int
+  creatorUser   Usuarios @relation(fields: [creatorUserId], references: [id])
 }
 
 // Reservas

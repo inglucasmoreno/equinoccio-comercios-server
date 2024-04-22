@@ -157,7 +157,7 @@ export class CajasService {
       totalAdelantoReserva += venta.totalAdelantoReserva;
       totalCompletarReserva += venta.totalCompletarReserva;
 
-      if (venta.comprobante === 'Facturacion') totalFacturado += venta.precioTotal;
+      if (venta.comprobante === 'Fiscal') totalFacturado += venta.precioTotal;
 
       venta.ventasFormasPago.map(formaPago => {
         if (formaPago.descripcion === 'Efectivo') totalEfectivo += formaPago.valor;

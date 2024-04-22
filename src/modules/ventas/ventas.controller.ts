@@ -22,12 +22,26 @@ export class VentasController {
 
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get('/afip/proximo-numero-factura/:tipoFactura')
+    async proximoNumeroFactura(@Res() res, @Param('tipoFactura') tipoFactura: string): Promise<any> {
+
+        const proximoNumeroFactura = await this.ventasService.proximoNumeroFactura(tipoFactura);
+
+        return res.status(HttpStatus.OK).json({
+            success: true,
+            message: 'Proximo numero de factura obtenido correctamente',
+            proximoNumeroFactura
+        })
+
+    }
+
     // @UseGuards(JwtAuthGuard)
     @Get('generar/comprobante/:id')
     async generarComprobante(@Res() res, @Param('id') id: number): Promise<any> {
 
         const buffer = await this.ventasService.generarComprobante(id);
-        
+
         // res.set({
         //     'Content-Type': 'application/pdf',
         //     'Content-Disposition': 'attachment; filename-example.pdf',
@@ -69,6 +83,20 @@ export class VentasController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Post('/facturacion-b')
+    async insertFacturacionB(@Res() res, @Body() createData: any): Promise<any> {
+
+        const venta = await this.ventasService.insertFacturacion(createData);
+
+        return res.status(HttpStatus.CREATED).json({
+            success: true,
+            message: 'Venta creada correctamente',
+            venta
+        })
+
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
     async update(@Res() res, @Param('id') id: number, @Body() dataUpdate: Prisma.VentasUpdateInput) {
 
@@ -77,6 +105,20 @@ export class VentasController {
         res.status(HttpStatus.OK).json({
             success: true,
             message: 'Venta actualizada correctamente',
+            venta
+        })
+
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('/facturacion-b/:id')
+    async updateFacturacionB(@Res() res, @Param('id') id: number, @Body() dataUpdate: Prisma.VentasUpdateInput) {
+
+        const venta = await this.ventasService.updateFacturacion(id, dataUpdate);
+
+        res.status(HttpStatus.OK).json({
+            success: true,
+            message: 'Venta facturada correctamente',
             venta
         })
 

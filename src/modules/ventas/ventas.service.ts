@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma.service';
 import PdfPrinter from 'pdfmake';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { ConfigService } from '@nestjs/config';
+import afip from '@afipsdk/afip.js';
 
 @Injectable()
 export class VentasService {
@@ -13,6 +14,57 @@ export class VentasService {
         private readonly configService: ConfigService,
         private prisma: PrismaService
     ) { }
+
+    public facturaA = 1;
+    public facturaB = 6;
+    public facturaC = 11;
+    public ptoVenta = 0;
+
+    // Funcion para redondeo
+    redondear(numero: number, decimales: number): number {
+
+        if (typeof numero != 'number' || typeof decimales != 'number') return null;
+
+        let signo = numero >= 0 ? 1 : -1;
+
+        return Number((Math.round((numero * Math.pow(10, decimales)) + (signo * 0.0001)) / Math.pow(10, decimales)).toFixed(decimales));
+
+    }
+
+    // Conexion con AFIP
+    public afipInstance: any = null;
+
+    async afipConnection(): Promise<any> {
+        const configuraciones = await this.prisma.afip.findFirst();
+        this.ptoVenta = Number(configuraciones.puntoVenta);
+        this.afipInstance = new afip({
+            CUIT: configuraciones.cuit,
+            cert: decodeURIComponent(configuraciones.cert),
+            key: decodeURIComponent(configuraciones.key),
+        });
+        return true;
+    }
+
+    // Obtenemos el ultimo numero de factura
+    async proximoNumeroFactura(tipoFactura = 'B'): Promise<any> {
+
+        await this.afipConnection();
+
+        let tipoFacturaNro = 0;
+        if (tipoFactura === 'A') tipoFacturaNro = this.facturaA;
+        else if (tipoFactura === 'B') tipoFacturaNro = this.facturaB;
+        else if (tipoFactura === 'C') tipoFacturaNro = this.facturaC;
+
+        const ultimoNumero = await this.afipInstance.ElectronicBilling.getLastVoucher(this.ptoVenta, tipoFacturaNro).catch(() => {
+            throw new NotFoundException('No hay conexión con el servidor de AFIP');
+        })
+
+        // Ajuste de formato
+        const ultimoNumeroFormat = `${this.ptoVenta.toString().padStart(5, '0')}-${(ultimoNumero + 1).toString().padStart(8, '0')}`;
+
+        return ultimoNumeroFormat;
+
+    }
 
     // Venta por ID
     async getId(id: number): Promise<Ventas> {
@@ -26,7 +78,7 @@ export class VentasService {
                 ventasReservas: {
                     include: {
                         reserva: true,
-                    }                
+                    }
                 },
                 creatorUser: true,
             }
@@ -76,7 +128,7 @@ export class VentasService {
         }
 
         let whereTotalFacturadas: any = {
-            comprobante: 'Facturacion',
+            comprobante: 'Fiscal',
             fechaVenta: {
                 gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
                 lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
@@ -260,7 +312,6 @@ export class VentasService {
 
         const {
             dataVenta,
-            dataFacturacion,
             dataFormasPago,
             dataProductos,
             dataOtros
@@ -319,9 +370,358 @@ export class VentasService {
             data: dataProductos
         });
 
-        // TODO: FACTURACION
+        return ventaDB;
+    }
+
+    // Crear venta - Facturacion
+    async insertFacturacion(createData: any): Promise<Ventas> {
+
+        const {
+            dataVenta,
+            dataFormasPago,
+            dataProductos,
+            dataOtros,
+            sena
+        } = createData;
+
+        // Verificacion: Caja activa
+        const cajaDB = await this.prisma.cajas.findFirst({
+            where: { activo: true }
+        });
+
+        if (!cajaDB) throw new NotFoundException('Primero debes activar una caja');
+
+        const data = {
+            ...dataVenta,
+            cajaId: cajaDB.id,
+        }
+
+        await this.afipConnection();
+
+        // FACTURACION - Conexion con AFIP
+
+        let impTotal = createData.dataVenta.precioTotal;
+
+        // Ultimo numero de comprobante
+        const ultimoNumeroFactura = await this.afipInstance.ElectronicBilling.getLastVoucher(this.ptoVenta, this.facturaB).catch(() => {
+            throw new NotFoundException('No hay conexión con el servidor de AFIP');
+        })
+
+        let cbteNro = ultimoNumeroFactura + 1;
+
+        const date = new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+        let impNeto = 0;
+        let impIVA = 0;
+        let alicuotas = [];
+
+
+        if (dataProductos.length !== 0 && !sena) {
+
+            // Importes totales
+            let impTotal21 = 0
+            let impTotal105 = 0
+
+            dataProductos.map((producto: any) => {
+
+                if (producto.alicuota === 10.5) {               // -> 10.5
+                    impTotal21 += producto.precioTotal
+                } else {                                        // -> 21
+                    impTotal105 += producto.precioTotal
+                }
+
+            })
+
+            // TODO: Revisar
+            // En caso de ser pago con credito se agrega el adicional
+            if (dataVenta.adicionalCredito !== 0 && impTotal21 !== 0) {
+                impTotal21 += dataVenta.adicionalCredito;
+            } else if (dataVenta.adicionalCredito !== 0 && impTotal105 !== 0) {
+                impTotal105 += dataVenta.adicionalCredito;
+            }
+
+            // Importes Netos
+            let impNeto21 = this.redondear((impTotal21 / 1.21), 2);
+            let impNeto105 = this.redondear((impTotal105 / 1.105), 2);
+            impNeto = this.redondear(impNeto21 + impNeto105, 2)
+
+            // Importe de IVA
+            let impIVA21 = this.redondear(impTotal21 - impNeto21, 2);
+            let impIVA105 = this.redondear(impTotal105 - impNeto105, 2);
+            impIVA = this.redondear(impIVA21 + impIVA105, 2);
+
+            // Arreglo de alicuotas
+
+            if (impTotal21 !== 0) {         // Alicuota -> 21
+                alicuotas.push({
+                    'Id': 5,
+                    'BaseImp': impNeto21,
+                    'Importe': impIVA21
+                })
+            }
+
+            if (impTotal105 !== 0) {        // Alicuota -> 10.5
+                alicuotas.push({
+                    'Id': 4,
+                    'BaseImp': impNeto105,
+                    'Importe': impIVA105
+                })
+            }
+
+        } else { // -> El importe total corresponde a una seña
+
+            impNeto = this.redondear((impTotal / 1.21), 2);
+            impIVA = this.redondear((impTotal - impNeto), 2);
+
+            alicuotas.push({
+                'Id': 5,
+                'BaseImp': impNeto,
+                'Importe': impIVA
+            })
+
+        }
+
+        let dataFactura = {
+            'CantReg': 1,                                   // Cantidad de comprobantes a registrar
+            'PtoVta': this.ptoVenta,                        // Punto de venta
+            'CbteTipo': this.facturaB,                      // Tipo de comprobante (Ej. 6 = B y 11 = C)
+            'Concepto': 1,                                  // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
+            'DocTipo': 99,                                  // Tipo de documento del comprador (99 consumidor final, ver tipos disponibles)
+            'DocNro': 0,                                    // Número de documento del comprador (0 consumidor final)
+            'CbteDesde': cbteNro,                           // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
+            'CbteHasta': cbteNro,                           // Número de comprobante o numero del último comprobante en caso de ser mas de uno
+            'CbteFch': parseInt(date.replace(/-/g, '')),    // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
+            'ImpTotal': impTotal,                           // Importe total del comprobante
+            'ImpTotConc': 0,                                // Importe neto no gravado
+            'ImpNeto': impNeto,                             // Importe neto gravado - Sin incluir IVA
+            'ImpOpEx': 0,                                   // Importe exento de IVA
+            'ImpIVA': impIVA,                               // Importe total de IVA
+            'ImpTrib': 0,                                   // Importe total de tributos
+            'MonId': 'PES',                                 // Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos)
+            'MonCotiz': 1,                                  // Cotización de la moneda usada (1 para pesos argentinos)
+            'Iva': alicuotas,
+        };
+
+        const facturacion = await this.afipInstance.ElectronicBilling.createVoucher(dataFactura).catch((error) => {
+            throw new NotFoundException(error.message);
+        })
+
+        // Generacion de venta
+        const ventaDB = await this.prisma.ventas.create({
+            data,
+            include: {
+                creatorUser: true
+            }
+        });
+
+        // Se agregar el idVenta a las formas de pago
+        dataFormasPago.forEach((formaPago: any) => {
+            formaPago.ventaId = ventaDB.id;
+        });
+
+        // Se agregar el idVenta a los productos
+        dataProductos.forEach((producto: any) => {
+            producto.ventaId = ventaDB.id;
+        });
+
+        // Se reduce el stock
+        dataProductos.forEach(async (producto: any) => {
+            const productoDB = await this.prisma.productos.findFirst({
+                where: { id: producto.productoId }
+            });
+            if (productoDB) {
+                await this.prisma.productos.update({
+                    where: { id: producto.productoId },
+                    data: { cantidad: productoDB.cantidad - producto.cantidad }
+                });
+            }
+        });
+
+        // Relacion -> Venta - Formas de pago
+        await this.prisma.ventasFormasPago.createMany({
+            data: dataFormasPago
+        });
+
+        // Relacion -> Venta - Productos
+        await this.prisma.ventasProductos.createMany({
+            data: dataProductos
+        });
+
+        // Relacion -> Venta - Facturacion
+        await this.prisma.ventasFacturacion.create({
+            data: {
+                ventaId: ventaDB.id,
+                nroComprobante: cbteNro,
+                tipoComprobante: 'Factura B',
+                codigoComprobante: this.facturaB,
+                nroFormatComprobante: `${this.ptoVenta.toString().padStart(5, '0')}-${(cbteNro).toString().padStart(8, '0')}`,
+                cae: facturacion.CAE,
+                caeFechaVencimiento: facturacion.CAEFchVto,
+                creatorUserId: ventaDB.creatorUserId
+            }
+        });
 
         return ventaDB;
+
+    }
+
+    // Actualizar a comprobante fiscal
+    async updateFacturacion(idVenta, data: any): Promise<any> {
+
+        const { creatorUserId, sena } = data;
+
+        await this.afipConnection();
+
+        // Se verifica si la venta existe
+        const ventaDB = await this.prisma.ventas.findFirst({
+            where: { id: idVenta },
+            include: {
+                ventasProductos: true
+            }
+        });
+
+        if (!ventaDB) throw new NotFoundException('La venta no existe');
+
+        await this.afipConnection();
+
+        // FACTURACION - Conexion con AFIP
+
+        let impTotal = ventaDB.precioTotal;
+
+        // Ultimo numero de comprobante
+        const ultimoNumeroFactura = await this.afipInstance.ElectronicBilling.getLastVoucher(this.ptoVenta, this.facturaB).catch(() => {
+            throw new NotFoundException('No hay conexión con el servidor de AFIP');
+        })
+
+        let cbteNro = ultimoNumeroFactura + 1;
+
+        const date = new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+        let impNeto = 0;
+        let impIVA = 0;
+        let alicuotas = [];
+
+
+        if (ventaDB.ventasProductos.length !== 0 && !sena) {
+
+            // Importes totales
+            let impTotal21 = 0
+            let impTotal105 = 0
+
+            ventaDB.ventasProductos.map((producto: any) => {
+
+                if (producto.alicuota === 10.5) {               // -> 10.5
+                    impTotal21 += producto.precioTotal
+                } else {                                        // -> 21
+                    impTotal105 += producto.precioTotal
+                }
+
+            })
+
+            // TODO: Revisar
+            // En caso de ser pago con credito se agrega el adicional
+            if (ventaDB.adicionalCredito !== 0 && impTotal21 !== 0) {
+                impTotal21 += ventaDB.adicionalCredito;
+            } else if (ventaDB.adicionalCredito !== 0 && impTotal105 !== 0) {
+                impTotal105 += ventaDB.adicionalCredito;
+            }
+
+            // Importes Netos
+            let impNeto21 = this.redondear((impTotal21 / 1.21), 2);
+            let impNeto105 = this.redondear((impTotal105 / 1.105), 2);
+            impNeto = this.redondear(impNeto21 + impNeto105, 2)
+
+            // Importe de IVA
+            let impIVA21 = this.redondear(impTotal21 - impNeto21, 2);
+            let impIVA105 = this.redondear(impTotal105 - impNeto105, 2);
+            impIVA = this.redondear(impIVA21 + impIVA105, 2);
+
+            // Arreglo de alicuotas
+
+            if (impTotal21 !== 0) {         // Alicuota -> 21
+                alicuotas.push({
+                    'Id': 5,
+                    'BaseImp': impNeto21,
+                    'Importe': impIVA21
+                })
+            }
+
+            if (impTotal105 !== 0) {        // Alicuota -> 10.5
+                alicuotas.push({
+                    'Id': 4,
+                    'BaseImp': impNeto105,
+                    'Importe': impIVA105
+                })
+            }
+
+        } else { // -> El importe total corresponde a una seña
+
+            impNeto = this.redondear((impTotal / 1.21), 2);
+            impIVA = this.redondear((impTotal - impNeto), 2);
+
+            alicuotas.push({
+                'Id': 5,
+                'BaseImp': impNeto,
+                'Importe': impIVA
+            })
+
+        }
+
+        let dataFactura = {
+            'CantReg': 1,                                   // Cantidad de comprobantes a registrar
+            'PtoVta': this.ptoVenta,                        // Punto de venta
+            'CbteTipo': this.facturaB,                      // Tipo de comprobante (Ej. 6 = B y 11 = C)
+            'Concepto': 1,                                  // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
+            'DocTipo': 99,                                  // Tipo de documento del comprador (99 consumidor final, ver tipos disponibles)
+            'DocNro': 0,                                    // Número de documento del comprador (0 consumidor final)
+            'CbteDesde': cbteNro,                           // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
+            'CbteHasta': cbteNro,                           // Número de comprobante o numero del último comprobante en caso de ser mas de uno
+            'CbteFch': parseInt(date.replace(/-/g, '')),    // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
+            'ImpTotal': impTotal,                           // Importe total del comprobante
+            'ImpTotConc': 0,                                // Importe neto no gravado
+            'ImpNeto': impNeto,                             // Importe neto gravado - Sin incluir IVA
+            'ImpOpEx': 0,                                   // Importe exento de IVA
+            'ImpIVA': impIVA,                               // Importe total de IVA
+            'ImpTrib': 0,                                   // Importe total de tributos
+            'MonId': 'PES',                                 // Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos)
+            'MonCotiz': 1,                                  // Cotización de la moneda usada (1 para pesos argentinos)
+            'Iva': alicuotas,
+        };
+
+        const facturacion = await this.afipInstance.ElectronicBilling.createVoucher(dataFactura).catch((error) => {
+            throw new NotFoundException(error.message);
+        })
+
+        // Relacion -> Venta - Facturacion
+        await this.prisma.ventasFacturacion.create({
+            data: {
+                ventaId: idVenta,
+                nroComprobante: cbteNro,
+                tipoComprobante: 'Factura B',
+                codigoComprobante: this.facturaB,
+                nroFormatComprobante: `${this.ptoVenta.toString().padStart(5, '0')}-${(cbteNro).toString().padStart(8, '0')}`,
+                cae: facturacion.CAE,
+                caeFechaVencimiento: facturacion.CAEFchVto,
+                creatorUserId: creatorUserId
+            }
+        });
+
+        const dataUpdate = { comprobante: 'Fiscal' }
+
+        // --> ACTUALIZACION DE VENTA -> Comprobante fiscal
+        const venta = await this.prisma.ventas.update({
+            where: { id: idVenta },
+            data: dataUpdate,
+            include: {
+                ventasProductos: true,
+                ventasReservas: true,
+                ventasFacturacion: true,
+                ventasFormasPago: true,
+                creatorUser: true,
+            }
+        })
+        return venta;
+
     }
 
     // Actualizar venta
@@ -399,8 +799,8 @@ export class VentasService {
                                 width: 70,
                             },
                             [
-                                {text: `Fecha y hora`, fontSize: 9, marginLeft: 30, marginTop: 10},
-                                {text: `${format(fechaVenta, 'dd-MM-yyyy')} ${format(fechaVenta, 'HH:mm')}`, fontSize: 9, marginLeft: 20, marginTop: 4},
+                                { text: `Fecha y hora`, fontSize: 9, marginLeft: 30, marginTop: 10 },
+                                { text: `${format(fechaVenta, 'dd-MM-yyyy')} ${format(fechaVenta, 'HH:mm')}`, fontSize: 9, marginLeft: 20, marginTop: 4 },
                             ],
                         ],
                     },

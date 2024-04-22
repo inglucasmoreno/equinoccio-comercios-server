@@ -31,6 +31,8 @@ import { ReservasModule } from './modules/reservas/reservas.module';
 import { ReservasProductosModule } from './modules/reservas-productos/reservas-productos.module';
 import { VentasReservasModule } from './modules/ventas-reservas/ventas-reservas.module';
 import { UsuariosPermisosModule } from './modules/usuarios-permisos/usuarios-permisos.module';
+import { AfipModule } from './modules/afip/afip.module';
+import { ConfigAfipModule } from './modules/config-afip/config-afip.module';
 
 @Module({
   imports: [
@@ -80,7 +82,8 @@ import { UsuariosPermisosModule } from './modules/usuarios-permisos/usuarios-per
     ReservasProductosModule,
     VentasReservasModule,
     UsuariosPermisosModule,
-
+    AfipModule,
+    ConfigAfipModule,
   ],
   controllers: [AppController],
   providers: [AppService ],
