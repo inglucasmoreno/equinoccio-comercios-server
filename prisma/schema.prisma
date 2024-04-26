@@ -363,16 +363,20 @@ model ConfigGenerales {
 // AFIP
 
 model Afip {
-  id            Int      @id @default(autoincrement())
-  cert          String   @db.Text
-  key           String   @db.Text
-  puntoVenta    String   @db.VarChar(50)
-  cuit          String   @db.VarChar(50)
-  activo        Boolean? @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  creatorUserId Int
-  creatorUser   Usuarios @relation(fields: [creatorUserId], references: [id])
+  id              Int       @id @default(autoincrement())
+  cert            String    @db.Text
+  key             String    @db.Text
+  cuit            String    @db.VarChar(50)
+  puntoVenta      String    @db.VarChar(100)
+  razonSocial     String?   @default("") @db.VarChar(200)
+  iibb            String?   @default("") @db.VarChar(50)
+  domicilio       String?   @default("") @db.VarChar(200)
+  inicioActividad DateTime? @default(now())
+  activo          Boolean?  @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  creatorUserId   Int
+  creatorUser     Usuarios  @relation(fields: [creatorUserId], references: [id])
 }
 
 // Reservas
