@@ -143,7 +143,7 @@ export class UsuariosService {
         
         { 
           seccion: 'NUEVA_RESERVA',
-          permiso: 'NUEVA_RESERVA_READ',
+          permiso: 'NUEVA_RESERVA_ALL',
           usuarioId: nuevoUsuarioDB.id
 
         },
