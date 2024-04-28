@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, Ventas } from '@prisma/client';
+import { Prisma, Ventas, VentasFacturacion } from '@prisma/client';
 import { add, format } from 'date-fns';
 import { PrismaService } from 'src/prisma.service';
 import PdfPrinter from 'pdfmake';
@@ -769,7 +769,8 @@ export class VentasService {
         // Verificacion: La venta no existe
         if (!ventaDB) throw new NotFoundException('La venta no existe');
 
-        console.log(ventaDB);
+        // Se obtienen los datos de sucursal
+        const sucursalDB = await this.prisma.configGenerales.findFirst();
 
         // Adaptando -> Fecha de Venta
         const fechaVenta = add(ventaDB.fechaVenta, { hours: -3 });
@@ -795,7 +796,7 @@ export class VentasService {
                     {
                         columns: [
                             {
-                                image: this.configService.get('NODE_ENV') === 'production' ? `../assets/Logo.png` : './assets/Logo.png',
+                                image: this.configService.get('NODE_ENV') === 'production' ? `../public/files/img/Logo.png` : './public/files/img/Logo.png',
                                 width: 70,
                             },
                             [
@@ -805,7 +806,7 @@ export class VentasService {
                         ],
                     },
                     {
-                        text: 'EQUINOCCIO TECHNOLOGY',
+                        text: `${sucursalDB.nombreEmpresa}`,
                         marginTop: 10,
                         fontSize: 10,
                         bold: true,
@@ -813,9 +814,9 @@ export class VentasService {
                     {
                         text: [
                             {
-                                text: 'Domicilio:',
+                                text: 'Domicilio: ',
                                 bold: true,
-                            }, ` 9 DE JULIO 811`,
+                            }, `${sucursalDB.domicilioSucursal}`,
                         ],
                         marginTop: 5,
                         fontSize: 9
@@ -823,9 +824,9 @@ export class VentasService {
                     {
                         text: [
                             {
-                                text: 'Telefono:',
+                                text: 'Telefono: ',
                                 bold: true,
-                            }, ` 2664869642`,
+                            }, `${sucursalDB.telefonoSucursal}`,
                         ],
                         marginTop: 7,
                         fontSize: 9
@@ -890,6 +891,212 @@ export class VentasService {
                         ],
                         marginTop: 7,
                         fontSize: 9
+                    },
+                ],
+                styles: {}
+            }
+
+            const pdfDoc = printer.createPdfKitDocument(docDefinition);
+            const chunks = [];
+
+            pdfDoc.on("data", (chunk) => {
+                chunks.push(chunk);
+            });
+
+            pdfDoc.end();
+
+            pdfDoc.on("end", () => {
+                const result = Buffer.concat(chunks);
+                resolve(result)
+            })
+
+        })
+
+        return pdfBuffer;
+
+    }
+
+    // Comprobante - Fiscal
+    async generarComprobanteFiscal(id: number): Promise<any> {
+
+        const ventaDB: any = await this.prisma.ventas.findFirst({
+            where: { id },
+            include: {
+                ventasProductos: {
+                    include: {
+                        producto: {
+                            include: {
+                                unidadMedida: true
+                            }
+                        }
+                    }
+                },
+                ventasFacturacion: true,
+                ventasFormasPago: true,
+                creatorUser: true,
+            }
+        });
+
+        // Verificacion: La venta no existe
+        if (!ventaDB) throw new NotFoundException('La venta no existe');
+
+        // Configuraciones - AFIP
+        const configAfip = await this.prisma.afip.findFirst();
+
+        // Adaptando -> Fecha de Venta
+        const fechaVenta = add(ventaDB.fechaVenta, { hours: -3 });
+        const fechaInicioActividad = format(configAfip.inicioActividad, 'dd-MM-yyyy');
+        const fechaCaeVencimiento = format(add(new Date(ventaDB.ventasFacturacion[0].caeFechaVencimiento), { hours: 3 }),'dd-MM-yyyy');
+
+        const pdfBuffer: Buffer = await new Promise(resolve => {
+
+            let fonts = {
+                Helvetica: {
+                    normal: 'Helvetica',
+                    bold: 'Helvetica-Bold',
+                    italics: 'Helvetica-Oblique',
+                    bolditalics: 'Helvetica-BoldOblique'
+                },
+            }
+
+            const printer = new PdfPrinter(fonts);
+
+            const docDefinition: TDocumentDefinitions = {
+                defaultStyle: { font: 'Helvetica' },
+                pageMargins: 10,
+                pageSize: { width: 226.772, height: 841.89105 }, // 1 milimetro = 2.83465
+                content: [
+                    {
+                        columns: [
+                            {
+                                image: this.configService.get('NODE_ENV') === 'production' ? `../public/files/img/Logo.png` : './public/files/img/Logo.png',
+                                width: 70,
+                            },
+                            [
+                                { text: `Fecha y hora`, fontSize: 9, marginLeft: 30, marginTop: 10 },
+                                { text: `${format(fechaVenta, 'dd-MM-yyyy')} ${format(fechaVenta, 'HH:mm')}`, fontSize: 9, marginLeft: 20, marginTop: 4 },
+                            ],
+                        ],
+                    },
+
+                    {
+                        text: `${configAfip.razonSocial}`,
+                        marginTop: 10,
+                        fontSize: 10,
+                        bold: true,
+                    },
+                    {
+                        text: [`CUIT:${configAfip.cuit}  IIBB:${configAfip.iibb}`],
+                        marginTop: 5,
+                        fontSize: 8
+                    },
+                    {
+                        text: [`${configAfip.domicilio}`],
+                        marginTop: 5,
+                        fontSize: 8
+                    },
+                    {
+                        text: [`SAN LUIS (5700) - SAN LUIS`],
+                        marginTop: 5,
+                        fontSize: 8
+                    },
+                    {
+                        text: [`INICIO DE ACTIVIDAD: ${fechaInicioActividad}`],
+                        marginTop: 5,
+                        fontSize: 8
+                    },
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+                    {
+                        text: 'FACTURA B',
+                        fontSize: 9,
+                        bold: true,
+                        alignment: 'center',
+                        marginTop: 5,
+                    },
+                    {
+                        text: 'ORIGINAL (Cod. 006) - A CONSUMIDO FINAL',
+                        fontSize: 9,
+                        alignment: 'center',
+                        marginTop: 5,
+                    },
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+
+                    {
+                        text: 'Listado de productos',
+                        bold: true,
+                        fontSize: 11,
+                        marginTop: 5,
+                        marginBottom: 2,
+                    },
+
+                    ventaDB.ventasProductos.map((producto: any) => {
+                        return [
+                            {
+                                text: `${producto.producto.descripcion} x ${producto.cantidad}`,
+                                marginTop: 7,
+                                fontSize: 9,
+                            },
+                            {
+                                text: `$${parseFloat(producto.precioTotal).toFixed(2)}`,
+                                marginTop: 3,
+                                fontSize: 9,
+                            }
+                        ]
+                    }),
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+                    {
+                        text: [
+                            {
+                                text: 'TOTAL:',
+                                bold: true,
+                            }, ` $${parseFloat(ventaDB.precioTotal).toFixed(2)}`,
+                        ],
+                        marginTop: 7,
+                        fontSize: 9
+                    },
+                    {
+                        text: [
+                            {
+                                text: 'Forma de pago:',
+                                bold: true,
+                            }, ` ${ventaDB.ventasFormasPago.map(forma => forma.descripcion).join(', ')}`,
+                        ],
+                        marginTop: 7,
+                        fontSize: 9
+                    },
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+                    {
+                        text: [`REFERENCIA ELECTRONICA DEL COMPROBANTE`],
+                        marginTop: 5,
+                        fontSize: 8
+                    },
+                    {
+                        text: [`CAE                                 Fecha Vto.`],
+                        marginTop: 5,
+                        marginLeft: 30,
+                        fontSize: 8
+                    },
+                    {
+                        text: [`${ventaDB.ventasFacturacion[0].cae}            ${fechaCaeVencimiento}`],
+                        marginTop: 5,
+                        marginLeft: 30,
+                        fontSize: 8
+                    },
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
                     },
                 ],
                 styles: {}

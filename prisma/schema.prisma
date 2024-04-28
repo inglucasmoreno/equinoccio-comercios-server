@@ -352,12 +352,16 @@ model Proveedores {
 // Configuraciones generales
 
 model ConfigGenerales {
-  id             Int      @id @default(autoincrement())
-  formatoBalanza String?  @default("iipppppeeeeef")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  creatorUserId  Int
-  creatorUser    Usuarios @relation(fields: [creatorUserId], references: [id])
+  id                Int      @id @default(autoincrement())
+  formatoBalanza    String?  @default("iipppppeeeeef")
+  nombreEmpresa     String?  @default("Equinoccio Technology")
+  nombreSucursal    String?  @default("Sucursal principal")
+  domicilioSucursal String?  @default("9 DE JULIO 811")
+  telefonoSucursal  String?  @default("2664869642")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  creatorUserId     Int
+  creatorUser       Usuarios @relation(fields: [creatorUserId], references: [id])
 }
 
 // AFIP

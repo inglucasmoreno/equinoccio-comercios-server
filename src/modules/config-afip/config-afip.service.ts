@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Afip } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 

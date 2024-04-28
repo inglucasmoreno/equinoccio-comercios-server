@@ -56,6 +56,11 @@ export class ConfigGeneralesService {
 
     const { formato, creatorUserId } = createData;
 
+    // UPPERCASE
+    createData.nombreEmpresa = createData.nombreEmpresa?.toString().toLocaleUpperCase().trim();
+    createData.nombreSucursal = createData.nombreSucursal?.toString().toLocaleUpperCase().trim();
+    createData.domicilioSucursal = createData.domicilioSucursal?.toString().toLocaleUpperCase().trim();
+
     // Verificacion: La configuracion ya fue inicializada
     const configGeneralDB = await this.prisma.configGenerales.findMany({});
     if (configGeneralDB[0]) throw new NotFoundException('La configuracion ya se encuentra inicializada');
@@ -66,11 +71,17 @@ export class ConfigGeneralesService {
     };
 
     return await this.prisma.configGenerales.create({ data, include: { creatorUser: true } });
-  
+
   }
 
   // Actualizar configGeneral
   async update(id: number, updateData: Prisma.ConfigGeneralesUpdateInput): Promise<ConfigGenerales> {
+
+    // UPPERCASE
+    updateData.nombreEmpresa = updateData.nombreEmpresa?.toString().toLocaleUpperCase().trim();
+    updateData.nombreSucursal = updateData.nombreSucursal?.toString().toLocaleUpperCase().trim();
+    updateData.domicilioSucursal = updateData.domicilioSucursal?.toString().toLocaleUpperCase().trim();
+
     return await this.prisma.configGenerales.update({
       where: { id },
       data: updateData,

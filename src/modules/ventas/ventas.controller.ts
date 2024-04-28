@@ -52,6 +52,22 @@ export class VentasController {
 
     }
 
+    // @UseGuards(JwtAuthGuard)
+    @Get('generar/comprobante/fiscal/:id')
+    async generarComprobanteFiscal(@Res() res, @Param('id') id: number): Promise<any> {
+
+        const buffer = await this.ventasService.generarComprobanteFiscal(id);
+
+        // res.set({
+        //     'Content-Type': 'application/pdf',
+        //     'Content-Disposition': 'attachment; filename-example.pdf',
+        //     'Content-Length': buffer.length
+        // })
+
+        res.end(buffer);
+
+    }
+
     @UseGuards(JwtAuthGuard)
     @Get()
     async getAll(@Res() res, @Query() query): Promise<any> {

@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 3000,
     "height": 3000,
-    "scrollTop": 0,
-    "scrollLeft": -5,
+    "scrollTop": -400,
+    "scrollLeft": 0,
     "zoomLevel": 1,
     "show": {
       "tableComment": true,
@@ -284,7 +284,7 @@
           "active": false,
           "left": 89.445,
           "top": 39.1116,
-          "zIndex": 20,
+          "zIndex": 19,
           "widthName": 60,
           "widthComment": 60,
           "color": "#00FF13"
@@ -1249,7 +1249,7 @@
           "active": false,
           "left": 464.8572,
           "top": 456.9997,
-          "zIndex": 17,
+          "zIndex": 22,
           "widthName": 60,
           "widthComment": 60,
           "color": "#3411FF"
@@ -1927,7 +1927,7 @@
           "active": false,
           "left": 1505.195,
           "top": 14.9723,
-          "zIndex": 19,
+          "zIndex": 18,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00F6"
@@ -2691,7 +2691,7 @@
           "active": false,
           "left": 2051,
           "top": 296.5,
-          "zIndex": 23,
+          "zIndex": 21,
           "widthName": 109.67529296875,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -4703,6 +4703,98 @@
             }
           },
           {
+            "id": "e2dd0551-0161-4682-ae68-054ab54ffc7b",
+            "name": "nombreEmpresa",
+            "comment": "",
+            "dataType": "string",
+            "default": "\"\"",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 98.09716796875,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "ecba9a9b-9ea3-4b8b-9be5-41b5a30c6a62",
+            "name": "nombreSucursal",
+            "comment": "",
+            "dataType": "string",
+            "default": "\"\"",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 96.65625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "a788aa9e-e21d-45bb-90e7-6fb6376c0ff1",
+            "name": "domicilioSucursal",
+            "comment": "",
+            "dataType": "string",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 103.14990234375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "dfa6bc38-6244-4904-b635-fb02c8d89e50",
+            "name": "telefonoSucursal",
+            "comment": "",
+            "dataType": "string",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 98.83984375,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "09424793-7d05-43a0-8cc5-845087ceab4e",
             "name": "activo",
             "comment": "",
@@ -4796,10 +4888,10 @@
           }
         ],
         "ui": {
-          "active": false,
-          "left": 34.5,
-          "top": 624.9906,
-          "zIndex": 22,
+          "active": true,
+          "left": 33.5,
+          "top": 609.9906,
+          "zIndex": 46,
           "widthName": 99.55712890625,
           "widthComment": 60,
           "color": "#C9C9C9"
@@ -5368,7 +5460,7 @@
           "active": false,
           "left": 453.75,
           "top": 1108.1467,
-          "zIndex": 18,
+          "zIndex": 17,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -5971,7 +6063,7 @@
           "active": false,
           "left": 89.25,
           "top": 390.25,
-          "zIndex": 21,
+          "zIndex": 20,
           "widthName": 107.47265625,
           "widthComment": 60,
           "color": "#00FF00"
@@ -6286,8 +6378,8 @@
         "ui": {
           "active": false,
           "left": 35,
-          "top": 832.1217,
-          "zIndex": 24,
+          "top": 851.1217,
+          "zIndex": 23,
           "widthName": 60,
           "widthComment": 60,
           "color": "#C7C7C7"
