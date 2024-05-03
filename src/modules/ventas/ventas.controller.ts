@@ -36,6 +36,7 @@ export class VentasController {
 
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('/afip/datos-contribuyente/:cuit')
     async datosContribuyentes(@Res() res, @Param('cuit') CUIT: number): Promise<any> {
 
@@ -49,52 +50,22 @@ export class VentasController {
 
     }
 
-    // @UseGuards(JwtAuthGuard)
     @Get('generar/comprobante/:id')
     async generarComprobante(@Res() res, @Param('id') id: number): Promise<any> {
-
         const buffer = await this.ventasService.generarComprobante(id);
-
-        // res.set({
-        //     'Content-Type': 'application/pdf',
-        //     'Content-Disposition': 'attachment; filename-example.pdf',
-        //     'Content-Length': buffer.length
-        // })
-
         res.end(buffer);
-
     }
 
-    // @UseGuards(JwtAuthGuard)
     @Get('generar/comprobante/fiscal/:id')
     async generarComprobanteFiscal(@Res() res, @Param('id') id: number): Promise<any> {
-
         const buffer = await this.ventasService.generarComprobanteFiscal(id);
-
-        // res.set({
-        //     'Content-Type': 'application/pdf',
-        //     'Content-Disposition': 'attachment; filename-example.pdf',
-        //     'Content-Length': buffer.length
-        // })
-
         res.end(buffer);
-
     }
 
-    // @UseGuards(JwtAuthGuard)
     @Get('generar/comprobante/fiscal-tipo-a/:id')
     async generarComprobanteFiscalTipoA(@Res() res, @Param('id') id: number): Promise<any> {
-
         const buffer = await this.ventasService.generarComprobanteFiscalTipoA(id);
-
-        // res.set({
-        //     'Content-Type': 'application/pdf',
-        //     'Content-Disposition': 'attachment; filename-example.pdf',
-        //     'Content-Length': buffer.length
-        // })
-
         res.end(buffer);
-
     }
 
     @UseGuards(JwtAuthGuard)

@@ -276,7 +276,7 @@ export class ReservasService {
           {
             columns: [
               {
-                image: this.configService.get('NODE_ENV') === 'production' ? `../assets/Logo.png` : './assets/Logo.png',
+                image: this.configService.get('NODE_ENV') === 'production' ? `../public/files/img/Logo.png` : './public/files/img/Logo.png',
                 width: 70,
               },
               [
@@ -543,7 +543,7 @@ export class ReservasService {
           {
             columns: [
               {
-                image: this.configService.get('NODE_ENV') === 'production' ? `../assets/Logo.png` : './assets/Logo.png',
+                image: this.configService.get('NODE_ENV') === 'production' ? `../public/files/img/Logo.png` : './public/files/img/Logo.png',
                 width: 70,
               },
               [

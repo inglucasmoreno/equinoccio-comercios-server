@@ -58,6 +58,7 @@ export class VentasService {
         if (!CUIT) throw new Error('Debe ingresar un CUIT');
         await this.afipConnection();
         const datosContribuyente = await this.afipInstance.RegisterInscriptionProof.getTaxpayerDetails(CUIT);
+        console.log(datosContribuyente);
         return datosContribuyente;
     }
 
@@ -423,6 +424,9 @@ export class VentasService {
             razonSocial,
             tipoDocContribuyente,
             docContribuyente,
+            domicilio,
+            tipoPersona,
+            tipoDomicilio
         } = dataFacturacion;
 
         // Verificacion: Caja activa
@@ -609,6 +613,9 @@ export class VentasService {
                 clienteRazonSocial: tipoFactura === 'A' ? razonSocial : '',
                 clienteDocTipo: tipoFactura === 'A' ? tipoDocContribuyente : '',
                 clienteDoc: tipoFactura === 'A' ? docContribuyente : '',
+                clienteDomicilio: tipoFactura === 'A' ? domicilio : '',
+                clienteTipoPersona: tipoFactura === 'A' ? tipoPersona : '',
+                clienteTipoDomicilio: tipoFactura === 'A' ? tipoDomicilio : '',
                 creatorUserId: ventaDB.creatorUserId
             }
         });
@@ -1246,7 +1253,8 @@ export class VentasService {
                     {
                         text: [`CUIT:${configAfip.cuit}  IIBB:${configAfip.iibb}`],
                         marginTop: 5,
-                        fontSize: 8
+                        fontSize: 8,
+                        
                     },
                     {
                         text: [`${configAfip.domicilio}`],
@@ -1282,13 +1290,31 @@ export class VentasService {
                     },
                     {
                         text: `CLIENTE: ${ventaDB.ventasFacturacion[0].clienteRazonSocial}`,
-                        fontSize: 9,
+                        fontSize: 8,
+                        alignment: 'left',
+                        marginTop: 5,
+                    },
+                    {
+                        text: `TIPO PERSONA: ${ventaDB.ventasFacturacion[0].clienteTipoPersona}`,
+                        fontSize: 8,
                         alignment: 'left',
                         marginTop: 5,
                     },
                     {
                         text: `${ventaDB.ventasFacturacion[0].clienteDocTipo}: ${ventaDB.ventasFacturacion[0].clienteDoc}`,
-                        fontSize: 9,
+                        fontSize: 8,
+                        alignment: 'left',
+                        marginTop: 5,
+                    },
+                    {
+                        text: `DOMICILIO: ${ventaDB.ventasFacturacion[0].clienteDomicilio}`,
+                        fontSize: 8,
+                        alignment: 'left',
+                        marginTop: 5,
+                    },
+                    {
+                        text: `TIPO DOMICILIO: ${ventaDB.ventasFacturacion[0].clienteTipoDomicilio}`,
+                        fontSize: 8,
                         alignment: 'left',
                         marginTop: 5,
                     },
