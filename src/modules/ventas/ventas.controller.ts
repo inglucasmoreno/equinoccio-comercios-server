@@ -36,6 +36,19 @@ export class VentasController {
 
     }
 
+    @Get('/afip/datos-contribuyente/:cuit')
+    async datosContribuyentes(@Res() res, @Param('cuit') CUIT: number): Promise<any> {
+
+        const contribuyente = await this.ventasService.datosContribuyente(CUIT);
+
+        return res.status(HttpStatus.OK).json({
+            contribuyente,
+            success: true,
+            message: 'Datos de contribuyentes obtenidos correctamente',
+        });
+
+    }
+
     // @UseGuards(JwtAuthGuard)
     @Get('generar/comprobante/:id')
     async generarComprobante(@Res() res, @Param('id') id: number): Promise<any> {
@@ -57,6 +70,22 @@ export class VentasController {
     async generarComprobanteFiscal(@Res() res, @Param('id') id: number): Promise<any> {
 
         const buffer = await this.ventasService.generarComprobanteFiscal(id);
+
+        // res.set({
+        //     'Content-Type': 'application/pdf',
+        //     'Content-Disposition': 'attachment; filename-example.pdf',
+        //     'Content-Length': buffer.length
+        // })
+
+        res.end(buffer);
+
+    }
+
+    // @UseGuards(JwtAuthGuard)
+    @Get('generar/comprobante/fiscal-tipo-a/:id')
+    async generarComprobanteFiscalTipoA(@Res() res, @Param('id') id: number): Promise<any> {
+
+        const buffer = await this.ventasService.generarComprobanteFiscalTipoA(id);
 
         // res.set({
         //     'Content-Type': 'application/pdf',
@@ -99,8 +128,8 @@ export class VentasController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post('/facturacion-b')
-    async insertFacturacionB(@Res() res, @Body() createData: any): Promise<any> {
+    @Post('/facturacion')
+    async insertFacturacion(@Res() res, @Body() createData: any): Promise<any> {
 
         const venta = await this.ventasService.insertFacturacion(createData);
 

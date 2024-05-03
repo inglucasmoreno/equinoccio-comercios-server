@@ -15,9 +15,17 @@ export class VentasService {
         private prisma: PrismaService
     ) { }
 
+    // Tipos de factura
     public facturaA = 1;
     public facturaB = 6;
     public facturaC = 11;
+
+    // Tipos de documentos
+    public DNI = 96;
+    public CUIL = 86;
+    public CUIT = 80;
+
+    // Punto de venta
     public ptoVenta = 0;
 
     // Funcion para redondeo
@@ -43,6 +51,14 @@ export class VentasService {
             key: decodeURIComponent(configuraciones.key),
         });
         return true;
+    }
+
+    // Datos de contribuyente
+    async datosContribuyente(CUIT: any): Promise<any> {
+        if (!CUIT) throw new Error('Debe ingresar un CUIT');
+        await this.afipConnection();
+        const datosContribuyente = await this.afipInstance.RegisterInscriptionProof.getTaxpayerDetails(CUIT);
+        return datosContribuyente;
     }
 
     // Obtenemos el ultimo numero de factura
@@ -136,6 +152,15 @@ export class VentasService {
             activo: activoTotales
         }
 
+        let whereTotalFacturadasTipoA: any = {
+            comprobante: 'FacturaA',
+            fechaVenta: {
+                gte: fechaDesde !== '' ? add(new Date(fechaDesde), { hours: 3 }) : new Date('1970-01-01T00:00:00.000Z'),
+                lte: fechaHasta !== '' ? add(new Date(fechaHasta), { days: 1, hours: 3 }) : new Date('9000-01-01T00:00:00.000Z'),
+            },
+            activo: activoTotales
+        }
+
         let whereTotalPedidosYa: any = {
             ventasFormasPago: {
                 some: {
@@ -220,7 +245,7 @@ export class VentasService {
                 }
         }
 
-        const [totalItems, ventas, totalVentasTMP, totalVentasFacturadasTMP, totalVentasPedidosYaTMP] = await Promise.all([
+        const [totalItems, ventas, totalVentasTMP, totalVentasFacturadasTMP, totalVentasFacturadasTipoATMP, totalVentasPedidosYaTMP] = await Promise.all([
 
             // Total de items
             await this.prisma.ventas.count({
@@ -282,6 +307,14 @@ export class VentasService {
                 where: whereTotalFacturadas
             }),
 
+            // Total ventas facturadas tipo A - TMP
+            await this.prisma.ventas.aggregate({
+                _sum: {
+                    precioTotal: true,
+                },
+                where: whereTotalFacturadasTipoA
+            }),
+
             // Calcular precioTotal acumulado de las ventas pedidosYa
             await this.prisma.ventas.aggregate({
                 _sum: {
@@ -294,6 +327,7 @@ export class VentasService {
         let totalVentasPedidosYa = totalVentasPedidosYaTMP._sum.precioTotal;
         let totalVentas = totalVentasTMP._sum.precioTotal;
         let totalVentasFacturadas = totalVentasFacturadasTMP._sum.precioTotal;
+        let totalVentasFacturadasTipoA = totalVentasFacturadasTipoATMP._sum.precioTotal;
 
         return {
             ventas,
@@ -301,6 +335,7 @@ export class VentasService {
             totales: {
                 totalVentas: totalVentas ? totalVentas : 0,
                 totalVentasFacturadas: totalVentasFacturadas ? totalVentasFacturadas : 0,
+                totalVentasFacturadasTipoA: totalVentasFacturadasTipoA ? totalVentasFacturadasTipoA : 0,
                 totalVentasPedidosYa: totalVentasPedidosYa ? totalVentasPedidosYa : 0,
             }
         };
@@ -314,7 +349,6 @@ export class VentasService {
             dataVenta,
             dataFormasPago,
             dataProductos,
-            dataOtros
         } = createData;
 
         // Verificacion: Caja activa
@@ -380,9 +414,16 @@ export class VentasService {
             dataVenta,
             dataFormasPago,
             dataProductos,
-            dataOtros,
+            dataFacturacion,
             sena
         } = createData;
+
+        const {
+            tipoFactura,
+            razonSocial,
+            tipoDocContribuyente,
+            docContribuyente,
+        } = dataFacturacion;
 
         // Verificacion: Caja activa
         const cajaDB = await this.prisma.cajas.findFirst({
@@ -403,7 +444,7 @@ export class VentasService {
         let impTotal = createData.dataVenta.precioTotal;
 
         // Ultimo numero de comprobante
-        const ultimoNumeroFactura = await this.afipInstance.ElectronicBilling.getLastVoucher(this.ptoVenta, this.facturaB).catch(() => {
+        const ultimoNumeroFactura = await this.afipInstance.ElectronicBilling.getLastVoucher(this.ptoVenta, tipoFactura === 'A' ? this.facturaA : this.facturaB).catch(() => {
             throw new NotFoundException('No hay conexión con el servidor de AFIP');
         })
 
@@ -481,13 +522,21 @@ export class VentasService {
 
         }
 
+        // Adaptando tipo de documento
+        let DocTipo = 99;
+        if (tipoFactura !== 'B') {
+            DocTipo = tipoDocContribuyente === 'CUIT' ?
+                this.CUIT : tipoDocContribuyente === 'CUIL' ?
+                    this.CUIL : this.DNI;
+        }
+
         let dataFactura = {
-            'CantReg': 1,                                   // Cantidad de comprobantes a registrar
-            'PtoVta': this.ptoVenta,                        // Punto de venta
-            'CbteTipo': this.facturaB,                      // Tipo de comprobante (Ej. 6 = B y 11 = C)
-            'Concepto': 1,                                  // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
-            'DocTipo': 99,                                  // Tipo de documento del comprador (99 consumidor final, ver tipos disponibles)
-            'DocNro': 0,                                    // Número de documento del comprador (0 consumidor final)
+            'CantReg': 1,                                                    // Cantidad de comprobantes a registrar
+            'PtoVta': this.ptoVenta,                                         // Punto de venta
+            'CbteTipo': tipoFactura === 'B' ? this.facturaB : this.facturaA, // Tipo de comprobante (Ej. 6 = B y 11 = C)
+            'Concepto': 1,                                                   // (1)Productos, (2)Servicios, (3)Productos y Servicios
+            'DocTipo': DocTipo,                                              // (99 consumidor final, ver tipos disponibles)
+            'DocNro': tipoFactura === 'B' ? 0 : docContribuyente,            // Número de documento del comprador (0 consumidor final)
             'CbteDesde': cbteNro,                           // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
             'CbteHasta': cbteNro,                           // Número de comprobante o numero del último comprobante en caso de ser mas de uno
             'CbteFch': parseInt(date.replace(/-/g, '')),    // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
@@ -552,11 +601,14 @@ export class VentasService {
             data: {
                 ventaId: ventaDB.id,
                 nroComprobante: cbteNro,
-                tipoComprobante: 'Factura B',
+                tipoComprobante: `Factura ${tipoFactura}`,
                 codigoComprobante: this.facturaB,
                 nroFormatComprobante: `${this.ptoVenta.toString().padStart(5, '0')}-${(cbteNro).toString().padStart(8, '0')}`,
                 cae: facturacion.CAE,
                 caeFechaVencimiento: facturacion.CAEFchVto,
+                clienteRazonSocial: tipoFactura === 'A' ? razonSocial : '',
+                clienteDocTipo: tipoFactura === 'A' ? tipoDocContribuyente : '',
+                clienteDoc: tipoFactura === 'A' ? docContribuyente : '',
                 creatorUserId: ventaDB.creatorUserId
             }
         });
@@ -946,7 +998,7 @@ export class VentasService {
         // Adaptando -> Fecha de Venta
         const fechaVenta = add(ventaDB.fechaVenta, { hours: -3 });
         const fechaInicioActividad = format(configAfip.inicioActividad, 'dd-MM-yyyy');
-        const fechaCaeVencimiento = format(add(new Date(ventaDB.ventasFacturacion[0].caeFechaVencimiento), { hours: 3 }),'dd-MM-yyyy');
+        const fechaCaeVencimiento = format(add(new Date(ventaDB.ventasFacturacion[0].caeFechaVencimiento), { hours: 3 }), 'dd-MM-yyyy');
 
         const pdfBuffer: Buffer = await new Promise(resolve => {
 
@@ -1121,6 +1173,225 @@ export class VentasService {
         return pdfBuffer;
 
     }
+
+    // Comprobante - Fiscal tipo A
+    async generarComprobanteFiscalTipoA(id: number): Promise<any> {
+
+        const ventaDB: any = await this.prisma.ventas.findFirst({
+            where: { id },
+            include: {
+                ventasProductos: {
+                    include: {
+                        producto: {
+                            include: {
+                                unidadMedida: true
+                            }
+                        }
+                    }
+                },
+                ventasFacturacion: true,
+                ventasFormasPago: true,
+                creatorUser: true,
+            }
+        });
+
+        // Verificacion: La venta no existe
+        if (!ventaDB) throw new NotFoundException('La venta no existe');
+
+        // Configuraciones - AFIP
+        const configAfip = await this.prisma.afip.findFirst();
+
+        // Adaptando -> Fecha de Venta
+        const fechaVenta = add(ventaDB.fechaVenta, { hours: -3 });
+        const fechaInicioActividad = format(configAfip.inicioActividad, 'dd-MM-yyyy');
+        const fechaCaeVencimiento = format(add(new Date(ventaDB.ventasFacturacion[0].caeFechaVencimiento), { hours: 3 }), 'dd-MM-yyyy');
+
+        const pdfBuffer: Buffer = await new Promise(resolve => {
+
+            let fonts = {
+                Helvetica: {
+                    normal: 'Helvetica',
+                    bold: 'Helvetica-Bold',
+                    italics: 'Helvetica-Oblique',
+                    bolditalics: 'Helvetica-BoldOblique'
+                },
+            }
+
+            const printer = new PdfPrinter(fonts);
+
+            const docDefinition: TDocumentDefinitions = {
+                defaultStyle: { font: 'Helvetica' },
+                pageMargins: 10,
+                pageSize: { width: 226.772, height: 841.89105 }, // 1 milimetro = 2.83465
+                content: [
+                    {
+                        columns: [
+                            {
+                                image: this.configService.get('NODE_ENV') === 'production' ? `../public/files/img/Logo.png` : './public/files/img/Logo.png',
+                                width: 70,
+                            },
+                            [
+                                { text: `Fecha y hora`, fontSize: 9, marginLeft: 30, marginTop: 10 },
+                                { text: `${format(fechaVenta, 'dd-MM-yyyy')} ${format(fechaVenta, 'HH:mm')}`, fontSize: 9, marginLeft: 20, marginTop: 4 },
+                            ],
+                        ],
+                    },
+
+                    {
+                        text: `${configAfip.razonSocial}`,
+                        marginTop: 10,
+                        fontSize: 10,
+                        bold: true,
+                    },
+                    {
+                        text: [`CUIT:${configAfip.cuit}  IIBB:${configAfip.iibb}`],
+                        marginTop: 5,
+                        fontSize: 8
+                    },
+                    {
+                        text: [`${configAfip.domicilio}`],
+                        marginTop: 5,
+                        fontSize: 8
+                    },
+                    {
+                        text: [`SAN LUIS (5700) - SAN LUIS`],
+                        marginTop: 5,
+                        fontSize: 8
+                    },
+                    {
+                        text: [`INICIO DE ACTIVIDAD: ${fechaInicioActividad}`],
+                        marginTop: 5,
+                        fontSize: 8
+                    },
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+                    {
+                        text: 'FACTURA A',
+                        fontSize: 9,
+                        bold: true,
+                        alignment: 'left',
+                        marginTop: 5,
+                    },
+                    {
+                        text: 'ORIGINAL (Cod. 001)',
+                        fontSize: 9,
+                        alignment: 'left',
+                        marginTop: 5,
+                    },
+                    {
+                        text: `CLIENTE: ${ventaDB.ventasFacturacion[0].clienteRazonSocial}`,
+                        fontSize: 9,
+                        alignment: 'left',
+                        marginTop: 5,
+                    },
+                    {
+                        text: `${ventaDB.ventasFacturacion[0].clienteDocTipo}: ${ventaDB.ventasFacturacion[0].clienteDoc}`,
+                        fontSize: 9,
+                        alignment: 'left',
+                        marginTop: 5,
+                    },
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+
+                    {
+                        text: 'Listado de productos',
+                        bold: true,
+                        fontSize: 11,
+                        marginTop: 5,
+                        marginBottom: 2,
+                    },
+
+                    ventaDB.ventasProductos.map((producto: any) => {
+                        return [
+                            {
+                                text: `${producto.producto.descripcion} x ${producto.cantidad}`,
+                                marginTop: 7,
+                                fontSize: 9,
+                            },
+                            {
+                                text: `$${parseFloat(producto.precioTotal).toFixed(2)}`,
+                                marginTop: 3,
+                                fontSize: 9,
+                            }
+                        ]
+                    }),
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+                    {
+                        text: [
+                            {
+                                text: 'TOTAL:',
+                                bold: true,
+                            }, ` $${parseFloat(ventaDB.precioTotal).toFixed(2)}`,
+                        ],
+                        marginTop: 7,
+                        fontSize: 9
+                    },
+                    {
+                        text: [
+                            {
+                                text: 'Forma de pago:',
+                                bold: true,
+                            }, ` ${ventaDB.ventasFormasPago.map(forma => forma.descripcion).join(', ')}`,
+                        ],
+                        marginTop: 7,
+                        fontSize: 9
+                    },
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+                    {
+                        text: [`REFERENCIA ELECTRONICA DEL COMPROBANTE`],
+                        marginTop: 5,
+                        fontSize: 8
+                    },
+                    {
+                        text: [`CAE                                 Fecha Vto.`],
+                        marginTop: 5,
+                        marginLeft: 30,
+                        fontSize: 8
+                    },
+                    {
+                        text: [`${ventaDB.ventasFacturacion[0].cae}            ${fechaCaeVencimiento}`],
+                        marginTop: 5,
+                        marginLeft: 30,
+                        fontSize: 8
+                    },
+                    {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+                ],
+                styles: {}
+            }
+
+            const pdfDoc = printer.createPdfKitDocument(docDefinition);
+            const chunks = [];
+
+            pdfDoc.on("data", (chunk) => {
+                chunks.push(chunk);
+            });
+
+            pdfDoc.end();
+
+            pdfDoc.on("end", () => {
+                const result = Buffer.concat(chunks);
+                resolve(result)
+            })
+
+        })
+
+        return pdfBuffer;
+
+    }
+
 
 
 

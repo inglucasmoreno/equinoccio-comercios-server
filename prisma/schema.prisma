@@ -210,6 +210,9 @@ model VentasFacturacion {
   nroFormatComprobante String
   cae                  String
   caeFechaVencimiento  String
+  clienteRazonSocial   String?  @default("")
+  clienteDocTipo       String?  @default("")
+  clienteDoc           String?  @default("")
   activo               Boolean? @default(true)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
@@ -249,6 +252,7 @@ model Cajas {
   cantidadVentas          Int?            @default(0)
   totalVentas             Float?          @default(0)
   totalFacturado          Float?          @default(0)
+  totalFacturadoTipoA     Float?          @default(0)
   totalBalanza            Float?          @default(0)
   totalNoBalanza          Float?          @default(0)
   totalOtrosIngresos      Float?          @default(0)

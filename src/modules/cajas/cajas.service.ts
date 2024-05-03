@@ -145,6 +145,7 @@ export class CajasService {
     let totalPedidosYa = 0;
     let totalPedidosYaOnline = 0;
     let totalFacturado = 0;
+    let totalFacturadoTipoA = 0;
     let totalAdelantoReserva = 0;
     let totalCompletarReserva = 0;
 
@@ -158,6 +159,7 @@ export class CajasService {
       totalCompletarReserva += venta.totalCompletarReserva;
 
       if (venta.comprobante === 'Fiscal') totalFacturado += venta.precioTotal;
+      if (venta.comprobante === 'FacturaA') totalFacturadoTipoA += venta.precioTotal;
 
       venta.ventasFormasPago.map(formaPago => {
         if (formaPago.descripcion === 'Efectivo') totalEfectivo += formaPago.valor;
@@ -172,7 +174,6 @@ export class CajasService {
 
     let totalVentas = totalBalanza + totalNoBalanza + totalAdicionalCredito + totalAdelantoReserva + totalCompletarReserva;
     let totalPostnet = totalDebito + totalCredito + totalMercadoPago;
-    console.log(totalPostnet);
     let totalEfectivoEnCaja = totalVentas + totalIngresos + caja.saldoInicial - totalPostnet - totalPedidosYaOnline - totalGastos;
 
     return {
@@ -182,6 +183,7 @@ export class CajasService {
         totalBalanza: Number(totalBalanza.toFixed(2)),
         totalNoBalanza: Number(totalNoBalanza.toFixed(2)),
         totalFacturado: Number(totalFacturado.toFixed(2)),
+        totalFacturadoTipoA: Number(totalFacturadoTipoA.toFixed(2)),
         totalPedidosYa: Number(totalPedidosYa.toFixed(2)),
         totalPedidosYaOnline: Number(totalPedidosYaOnline.toFixed(2)),
         totalAdicionalCredito: Number(totalAdicionalCredito.toFixed(2)),
@@ -239,6 +241,7 @@ export class CajasService {
       totalBalanza,
       totalNoBalanza,
       totalFacturado,
+      totalFacturadoTipoA,
       totalPedidosYa,
       totalPedidosYaOnline,
       totalAdicionalCredito,
@@ -266,6 +269,7 @@ export class CajasService {
       totalBalanza,
       totalNoBalanza,
       totalFacturado,
+      totalFacturadoTipoA,
       totalPedidosYa,
       totalPedidosYaOnline,
       totalAdicionalCredito,

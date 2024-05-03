@@ -4,14 +4,14 @@ import { AfipService } from './afip.service';
 @Controller('afip')
 export class AfipController {
 
-  constructor( private readonly afipService: AfipService ){}
+  constructor(private readonly afipService: AfipService) { }
 
 
   @Get('/generar-certificado-desarrollo')
   async generarCertificadoDesarrollo(@Res() res): Promise<any> {
 
     const respuesta = await this.afipService.generarCertificadoDesarrollo();
-    
+
     return res.status(HttpStatus.OK).json({
       respuesta,
       success: true,
@@ -24,7 +24,7 @@ export class AfipController {
   async obtenerComprobanteTipoB(@Res() res, @Param('nroComprobante') nroComprobante: number): Promise<any> {
 
     const comprobante = await this.afipService.obtenerComprobanteTipoB(nroComprobante);
-    
+
     return res.status(HttpStatus.OK).json({
       comprobante,
       success: true,
@@ -37,7 +37,7 @@ export class AfipController {
   async ultimoNumeroFactura(@Res() res, @Param('nroFactura') nroFactura: number): Promise<any> {
 
     const respuesta = await this.afipService.ultimoNumeroFactura(nroFactura);
-    
+
     return res.status(HttpStatus.OK).json({
       respuesta,
       success: true,
@@ -50,7 +50,7 @@ export class AfipController {
   async constanciaInscripcion(@Res() res, @Param('cuit') cuit: number): Promise<any> {
 
     const constancia = await this.afipService.constanciaInscripcion(cuit);
-    
+
     return res.status(HttpStatus.OK).json({
       constancia,
       success: true,
@@ -63,7 +63,7 @@ export class AfipController {
   async estadoServidor(@Res() res): Promise<any> {
 
     const estado = await this.afipService.estadoServidor();
-    
+
     return res.status(HttpStatus.OK).json({
       estado,
       success: true,
@@ -72,11 +72,24 @@ export class AfipController {
 
   }
 
+  @Get('/facturacion-tipo-a')
+  async facturacionTipoA(@Res() res): Promise<any> {
+
+    const respuesta = await this.afipService.facturacionTipoA();
+
+    return res.status(HttpStatus.OK).json({
+      respuesta,
+      success: true,
+      message: 'Facturacion Tipo A - Realizada correctamente',
+    })
+
+  }
+
   @Get('/facturacion-tipo-b')
   async facturacionTipoB(@Res() res): Promise<any> {
 
     const respuesta = await this.afipService.facturacionTipoB();
-    
+
     return res.status(HttpStatus.OK).json({
       respuesta,
       success: true,

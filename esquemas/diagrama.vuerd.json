@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 3000,
     "height": 3000,
-    "scrollTop": -400,
-    "scrollLeft": 0,
+    "scrollTop": -919,
+    "scrollLeft": -1596,
     "zoomLevel": 1,
     "show": {
       "tableComment": true,
@@ -1249,7 +1249,7 @@
           "active": false,
           "left": 464.8572,
           "top": 456.9997,
-          "zIndex": 22,
+          "zIndex": 21,
           "widthName": 60,
           "widthComment": 60,
           "color": "#3411FF"
@@ -2595,6 +2595,75 @@
             }
           },
           {
+            "id": "c2eaffab-25f1-476c-abc9-0525d7936678",
+            "name": "clienteRazonSocial",
+            "comment": "",
+            "dataType": "string",
+            "default": "''",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 112.5634765625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "d064329a-c943-4473-b551-96d7dee1d600",
+            "name": "clienteDocTipo",
+            "comment": "",
+            "dataType": "string",
+            "default": "''",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 87.5029296875,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "d40df062-f9b9-4d26-8871-2e828cf6615c",
+            "name": "clienteDoc",
+            "comment": "",
+            "dataType": "string",
+            "default": "''",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 62.6962890625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "821caeb0-4e25-4f43-9551-74e214006ee0",
             "name": "activo",
             "comment": "",
@@ -2689,9 +2758,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 2051,
+          "left": 2052,
           "top": 296.5,
-          "zIndex": 21,
+          "zIndex": 24,
           "widthName": 109.67529296875,
           "widthComment": 60,
           "color": "#FF00FF"
@@ -2859,6 +2928,29 @@
               "fk": false,
               "pfk": false,
               "widthName": 85.103515625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "21bb7c9a-1b2e-497a-9207-c79a267f690a",
+            "name": "totalFacturadoTipoA",
+            "comment": "",
+            "dataType": "float",
+            "default": "0",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 118.5810546875,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
@@ -3303,10 +3395,10 @@
           }
         ],
         "ui": {
-          "active": false,
+          "active": true,
           "left": 2017.3054,
           "top": 895.555,
-          "zIndex": 2,
+          "zIndex": 33,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF9800"
@@ -4888,10 +4980,10 @@
           }
         ],
         "ui": {
-          "active": true,
-          "left": 33.5,
-          "top": 609.9906,
-          "zIndex": 46,
+          "active": false,
+          "left": 22.5,
+          "top": 619.9906,
+          "zIndex": 23,
           "widthName": 99.55712890625,
           "widthComment": 60,
           "color": "#C9C9C9"
@@ -6377,9 +6469,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 35,
-          "top": 851.1217,
-          "zIndex": 23,
+          "left": 25,
+          "top": 910.1217,
+          "zIndex": 22,
           "widthName": 60,
           "widthComment": 60,
           "color": "#C7C7C7"
@@ -6595,8 +6687,8 @@
           "columnIds": [
             "7c54dff1-6281-4b69-9b07-bc8a0922e9b7"
           ],
-          "x": 2051,
-          "y": 454,
+          "x": 2052,
+          "y": 484.75,
           "direction": "left"
         },
         "constraintName": "fk_ventas_to_facturacion",
@@ -6638,9 +6730,9 @@
           "columnIds": [
             "fade10a8-5fe0-4392-b48d-33bcabadfe61"
           ],
-          "x": 2017.3054,
-          "y": 1196.5549999999998,
-          "direction": "left"
+          "x": 2231.8993941406247,
+          "y": 895.555,
+          "direction": "top"
         },
         "end": {
           "tableId": "fccf8cd9-1702-4276-a7fd-912e2ac731fb",
@@ -6717,7 +6809,7 @@
             "fade10a8-5fe0-4392-b48d-33bcabadfe61"
           ],
           "x": 2446.49338828125,
-          "y": 1196.5549999999998,
+          "y": 1206.8049999999998,
           "direction": "right"
         },
         "end": {
@@ -6742,7 +6834,7 @@
           "columnIds": [
             "fade10a8-5fe0-4392-b48d-33bcabadfe61"
           ],
-          "x": 2339.1963912109377,
+          "x": 2374.9620569010413,
           "y": 895.555,
           "direction": "top"
         },
@@ -6768,7 +6860,7 @@
           "columnIds": [
             "fade10a8-5fe0-4392-b48d-33bcabadfe61"
           ],
-          "x": 2124.6023970703127,
+          "x": 2088.836731380208,
           "y": 895.555,
           "direction": "top"
         },
