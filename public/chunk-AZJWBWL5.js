@@ -1,0 +1,1 @@
+import{ea as e}from"./chunk-GQGQXF3A.js";var a=(()=>{let t=class t{transform(i){return new Intl.NumberFormat("es-AR",{minimumFractionDigits:2,maximumFractionDigits:2}).format(i)}};t.\u0275fac=function(m){return new(m||t)},t.\u0275pipe=e({name:"moneda",type:t,pure:!0,standalone:!0});let r=t;return r})();export{a};

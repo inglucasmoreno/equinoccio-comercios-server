@@ -1322,7 +1322,6 @@ export class VentasService {
                         text: '------------------------------------------------',
                         marginTop: 5,
                     },
-
                     {
                         text: 'Listado de productos',
                         bold: true,
