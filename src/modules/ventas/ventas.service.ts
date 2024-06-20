@@ -49,6 +49,7 @@ export class VentasService {
             CUIT: configuraciones.cuit,
             cert: decodeURIComponent(configuraciones.cert),
             key: decodeURIComponent(configuraciones.key),
+            production: false
         });
         return true;
     }
@@ -57,7 +58,7 @@ export class VentasService {
     async datosContribuyente(CUIT: any): Promise<any> {
         if (!CUIT) throw new Error('Debe ingresar un CUIT');
         await this.afipConnection();
-        const datosContribuyente = await this.afipInstance.RegisterInscriptionProof.getTaxpayerDetails(CUIT);
+        const datosContribuyente = await this.afipInstance.RegisterScopeThirteen.getTaxpayerDetails(CUIT);
         console.log(datosContribuyente);
         return datosContribuyente;
     }
