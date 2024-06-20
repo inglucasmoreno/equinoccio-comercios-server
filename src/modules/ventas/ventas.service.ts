@@ -59,7 +59,6 @@ export class VentasService {
         if (!CUIT) throw new Error('Debe ingresar un CUIT');
         await this.afipConnection();
         const datosContribuyente = await this.afipInstance.RegisterScopeThirteen.getTaxpayerDetails(CUIT);
-        console.log(datosContribuyente);
         return datosContribuyente;
     }
 
