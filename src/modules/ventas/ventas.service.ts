@@ -59,7 +59,6 @@ export class VentasService {
         if (!CUIT) throw new Error('Debe ingresar un CUIT');
         await this.afipConnection();
         const datosContribuyente = await this.afipInstance.RegisterScopeThirteen.getTaxpayerDetails(CUIT);
-        console.log(datosContribuyente);
         return datosContribuyente;
     }
 
@@ -420,6 +419,8 @@ export class VentasService {
             sena
         } = createData;
 
+        console.log(createData);
+
         const {
             tipoFactura,
             razonSocial,
@@ -555,6 +556,8 @@ export class VentasService {
             'MonCotiz': 1,                                  // Cotización de la moneda usada (1 para pesos argentinos)
             'Iva': alicuotas,
         };
+
+        console.log(dataFactura);
 
         const facturacion = await this.afipInstance.ElectronicBilling.createVoucher(dataFactura).catch((error) => {
             throw new NotFoundException(error.message);
@@ -905,13 +908,23 @@ export class VentasService {
                         marginTop: 5,
                     },
 
-                    {
-                        text: 'Listado de productos',
-                        bold: true,
-                        fontSize: 11,
-                        marginTop: 5,
-                        marginBottom: 2,
-                    },
+                    ventaDB.ventasProductos.length > 0 ?
+                        {
+                            text: 'Listado de productos',
+                            bold: true,
+                            fontSize: 11,
+                            marginTop: 5,
+                            marginBottom: 2,
+                        } : {
+                            text: [
+                                {
+                                    text: 'En concepto de:',
+                                    bold: true,
+                                }, ` PAGO DE SEÑA - RESERVA`,
+                            ],
+                            marginTop: 7,
+                            fontSize: 9
+                        }, ,
 
                     ventaDB.ventasProductos.map((producto: any) => {
                         return [
@@ -932,6 +945,17 @@ export class VentasService {
                         text: '------------------------------------------------',
                         marginTop: 5,
                     },
+                    ventaDB.totalCompletarReserva !== 0 ?
+                        {
+                            text: [
+                                {
+                                    text: 'En concepto de:',
+                                    bold: true,
+                                }, ` CANCELACION DE RESERVA`,
+                            ],
+                            marginTop: 7,
+                            fontSize: 9
+                        } : '',
                     {
                         text: [
                             {
@@ -1083,16 +1107,32 @@ export class VentasService {
                         marginTop: 5,
                     },
                     {
-                        text: '------------------------------------------------',
+                        text: `${ventaDB.ventasFacturacion[0].nroFormatComprobante}`,
+                        fontSize: 9,
+                        alignment: 'center',
                         marginTop: 5,
                     },
 
                     {
+                        text: '------------------------------------------------',
+                        marginTop: 5,
+                    },
+
+                    ventaDB.ventasProductos.length > 0 ? {
                         text: 'Listado de productos',
                         bold: true,
                         fontSize: 11,
                         marginTop: 5,
                         marginBottom: 2,
+                    } : {
+                        text: [
+                            {
+                                text: 'En concepto de:',
+                                bold: true,
+                            }, ` PAGO DE SEÑA - RESERVA`,
+                        ],
+                        marginTop: 7,
+                        fontSize: 9
                     },
 
                     ventaDB.ventasProductos.map((producto: any) => {
@@ -1113,6 +1153,17 @@ export class VentasService {
                         text: '------------------------------------------------',
                         marginTop: 5,
                     },
+                    ventaDB.totalCompletarReserva !== 0 ?
+                        {
+                            text: [
+                                {
+                                    text: 'En concepto de:',
+                                    bold: true,
+                                }, ` COMPLETANDO RESERVA`,
+                            ],
+                            marginTop: 7,
+                            fontSize: 9
+                        } : '',
                     {
                         text: [
                             {
@@ -1255,7 +1306,7 @@ export class VentasService {
                         text: [`CUIT:${configAfip.cuit}  IIBB:${configAfip.iibb}`],
                         marginTop: 5,
                         fontSize: 8,
-                        
+
                     },
                     {
                         text: [`${configAfip.domicilio}`],
@@ -1285,6 +1336,12 @@ export class VentasService {
                     },
                     {
                         text: 'ORIGINAL (Cod. 001)',
+                        fontSize: 9,
+                        alignment: 'left',
+                        marginTop: 5,
+                    },
+                    {
+                        text: `${ventaDB.ventasFacturacion[0].nroFormatComprobante}`,
                         fontSize: 9,
                         alignment: 'left',
                         marginTop: 5,
@@ -1323,13 +1380,24 @@ export class VentasService {
                         text: '------------------------------------------------',
                         marginTop: 5,
                     },
-                    {
-                        text: 'Listado de productos',
-                        bold: true,
-                        fontSize: 11,
-                        marginTop: 5,
-                        marginBottom: 2,
-                    },
+
+                    ventaDB.ventasProductos.length > 0 ?
+                        {
+                            text: 'Listado de productos',
+                            bold: true,
+                            fontSize: 11,
+                            marginTop: 5,
+                            marginBottom: 2,
+                        } : {
+                            text: [
+                                {
+                                    text: 'En concepto de:',
+                                    bold: true,
+                                }, ` PAGO DE SEÑA - RESERVA`,
+                            ],
+                            marginTop: 7,
+                            fontSize: 9
+                        }, ,
 
                     ventaDB.ventasProductos.map((producto: any) => {
                         return [
@@ -1349,6 +1417,17 @@ export class VentasService {
                         text: '------------------------------------------------',
                         marginTop: 5,
                     },
+                    ventaDB.totalCompletarReserva !== 0 ?
+                        {
+                            text: [
+                                {
+                                    text: 'En concepto de:',
+                                    bold: true,
+                                }, ` COMPLETANDO RESERVA`,
+                            ],
+                            marginTop: 7,
+                            fontSize: 9
+                        } : '',
                     {
                         text: [
                             {
