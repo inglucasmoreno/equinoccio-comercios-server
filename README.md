@@ -6,11 +6,11 @@
 ## Comenzando
 ```bash
 # Instalacion de librerias
-$ yarn install
+$ pnpm install
 ```
 
 ## Variables de entorno
-- Configurar las `variables de entorno` primero que todo
+- Configurar el archivo `.env` tomando como referencia `.env.template`
 
 ## Docker
 - Se inicia contenedor de docker - `Mysql y phpMyAdmin`
@@ -21,18 +21,18 @@ $ docker compose up -d
 ## Prisma ORM
 - Migracion de inicializacion
 ```bash
-$ yarn prisma:init
+$ pnpm prisma:migrate init
 
 ## Ejecucion de proyecto
 ```bash
 # Desarrollo
-$ yarn start
+$ pnpm start
 
 # Modo seguimiento
-$ yarn start:dev
+$ pnpm start:dev
 
 # Modo produccion
-$ yarn start:prod
+$ pnpm start:prod
 ```
 
 ## Desarrollado por
