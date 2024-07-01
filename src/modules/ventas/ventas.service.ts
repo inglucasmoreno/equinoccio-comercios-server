@@ -874,6 +874,8 @@ export class VentasService {
                         fontSize: 10,
                         bold: true,
                     },
+
+                    sucursalDB.domicilioSucursal ?
                     {
                         text: [
                             {
@@ -883,7 +885,9 @@ export class VentasService {
                         ],
                         marginTop: 5,
                         fontSize: 9
-                    },
+                    } : null,
+
+                    sucursalDB.telefonoSucursal ? 
                     {
                         text: [
                             {
@@ -893,7 +897,7 @@ export class VentasService {
                         ],
                         marginTop: 7,
                         fontSize: 9
-                    },
+                    } : null,
                     {
                         text: '------------------------------------------------',
                         marginTop: 5,
@@ -1069,16 +1073,19 @@ export class VentasService {
                         fontSize: 10,
                         bold: true,
                     },
+
                     {
                         text: [`CUIT:${configAfip.cuit}  IIBB:${configAfip.iibb}`],
                         marginTop: 5,
                         fontSize: 8
                     },
+
+                    configAfip.domicilio ?
                     {
                         text: [`${configAfip.domicilio}`],
                         marginTop: 5,
                         fontSize: 8
-                    },
+                    } : null,
                     {
                         text: [`SAN LUIS (5700) - SAN LUIS`],
                         marginTop: 5,
